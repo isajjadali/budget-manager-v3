@@ -18,9 +18,9 @@
             }
         },
         "authentication": {
-            "enabled": false,
+            "enabled": true,
             "priority": 10,
-            "route": "\/api\/v1((?!$))((?!\/root\/))((?!\/users))*",
+            "route": "\/api\/v1((?!$))((?!\/root\/))((?!\/users))((?!\/signup))((?!\/login))*",
             "module": {
                 "name": "path:./middlewares/auth"
             }

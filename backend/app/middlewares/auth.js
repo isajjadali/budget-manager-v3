@@ -19,18 +19,11 @@ module.exports = function () {
                     where: {
                         id: decodedToken.id,
                         email: decodedToken.email,
-                        deleted: false,
                     }
                 },
                 error: Errors.Auth.InvalidToken,
             });
 
-            const onlineDetails = await user.getOnlineDevices({ where: { id: decodedToken.onlineId } });
-            if (!onlineDetails.length) {
-                throw Errors.Auth.UnSynchronized;
-            }
-
-            user.dataValues.onlineId = decodedToken.onlineId;
             req.user = user;
             next();
         } catch (err) {
