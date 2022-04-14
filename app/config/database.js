@@ -23,7 +23,7 @@ const config = {
     logging: message => dbLogger.debug(message),
 };
 
-const envConfigPath = path.resolve(path.join(__dirname, `./database.${env}.js`));
+const envConfigPath = path.resolve(path.join(__dirname, `./database.${env.trim()}.js`));
 
 if (existsSync(envConfigPath)) {
     const envConfig = require(envConfigPath);

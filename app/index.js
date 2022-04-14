@@ -8,7 +8,9 @@ require('./global-keys');
 const express = require('express');
 const bodyParser = require('body-parser');
 const kraken = require('kraken-js');
+const compression = require('compression');
 const cors = require('cors');
+const path = require('path');
 
 const customResponseMethodAppender = require('customize-response-appender')({
     reponsesConfigFilePath: '/app/config/responses-config.js',
@@ -34,6 +36,8 @@ app.use(kraken(options));
 
 // parse application/json
 app.use(bodyParser.json());
+app.use(compression());
+app.use(express.static(path.resolve(path.join(__dirname, '../public'))));
 
 app.use(cors(require(`${global.paths.config}/cors-options`)()));
 

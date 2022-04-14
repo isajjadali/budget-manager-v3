@@ -64,6 +64,11 @@ export default {
       ],
     },
   }),
+  created() {
+    console.log('<<<<<--------------Start-------------------->>>>>');
+    console.log(process.env);
+    console.log('<<<<<---------------End--------------------->>>>>');
+  },
   methods: {
     ...mapActions("global", ["login"]),
     async onLogin() {

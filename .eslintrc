@@ -7,6 +7,9 @@
     },
     "extends": "eslint:recommended",
     "parser": "babel-eslint",
+    // "parserOptions": {
+    //     "parser": "@babel/eslint-parser"
+    // },
     "rules": {
         "indent": [
             2,
