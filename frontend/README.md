@@ -1,4 +1,4 @@
-# frontend
+# Budget Manager v3
 
 ## Project setup
 ```

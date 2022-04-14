@@ -1,12 +1,13 @@
+const { getSetMethods } = global.sequelizeFunctions;
+
 module.exports = function (sequelize, DataTypes) {
-    const { STRING, INTEGER } = DataTypes;
+    const { STRING, DECIMAL } = DataTypes;
     const TaskDescriptions = sequelize.$$defineModel('TaskDescriptions', {
-        taskId: {
-            references: {
-                key: 'id',
-                model: 'tasks',
-            },
-            type: INTEGER,
+        materialCost: {
+            type: DECIMAL,
+        },
+        laborCost: {
+            type: DECIMAL,
         },
         description: {
             type: STRING,
@@ -14,12 +15,7 @@ module.exports = function (sequelize, DataTypes) {
     });
 
     /* ================== Model Associations ================== */
-    TaskDescriptions.associate = (models) => {
-        TaskDescriptions.belongsTo(models.Tasks, {
-            foreignKey: 'taskId',
-            as: models.Tasks.$$singularName,
-        });
-    };
+    TaskDescriptions.associate = (models) => {};
 
     return TaskDescriptions;
 };
