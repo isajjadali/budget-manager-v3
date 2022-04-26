@@ -7,14 +7,18 @@ module.exports = (router) => {
     async function getEmployee(req, res, next) {
         const id =
       req.body.employeeId || req.params.employeeId || req.query.employeeId;
+
         const employee = await Users.$$findOne({
-            where: {
+            query:{
+              where: {
                 id,
                 roles: Roles.Employee,
             },
+            }
         });
         req.employee = employee;
         next();
+
     }
 
     router
