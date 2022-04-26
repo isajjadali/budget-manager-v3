@@ -1,8 +1,14 @@
 const { Dates } = global.db;
-module.exports = () =>
-    async function getDate(req, res, next) {
-        const { date } = req.body;
-        const dateObject = await Dates.findCreate(date);
-        req.date = dateObject;
-        next();
-    };
+module.exports = (isRequired = true) =>
+  async function getDate(req, res, next) {
+    const { date } = req.body;
+
+    if (!isRequired && !date) {
+      next();
+      return;
+    }
+
+    const dateObject = await Dates.findCreate(date);
+    req.date = dateObject;
+    next();
+  };
