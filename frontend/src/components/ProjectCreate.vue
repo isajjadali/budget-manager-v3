@@ -1,7 +1,6 @@
 <template>
-  <div>
-    <v-row class="ma-6 pa-3" justify="center">
-      <v-card width="960px">
+  <v-row>
+      <v-card width="100%">
         <v-card-title>
           <span class="text-h5 pa-3"><b> Create Project </b></span>
         </v-card-title>
@@ -10,6 +9,7 @@
             <v-row>
               <v-col cols="12" sm="6" md="4" class="ma-3">
                 <v-text-field
+                 v-model="project.name"
                   :rules="[rules.required]"
                   value=""
                   label="Enter Name"
@@ -18,6 +18,8 @@
               </v-col>
               <v-col cols="12" sm="6" md="4" class="ma-3">
                 <v-text-field
+                  v-model="project.amount"
+
                   label="Amount"
                   required
                   value=""
@@ -38,7 +40,7 @@
                 >
                   <template v-slot:activator="{ on, attrs }">
                     <v-text-field
-                      v-model="startDate"
+                      v-model="project.startDate"
                       label="Enter Start Date"
                       prepend-icon="mdi-calendar"
                       readonly
@@ -47,7 +49,7 @@
                     ></v-text-field>
                   </template>
                   <v-date-picker
-                    v-model="startDate"
+                    v-model="project.startDate"
                     @input="menu2 = false"
                   ></v-date-picker>
                 </v-menu>
@@ -64,7 +66,7 @@
                 >
                   <template v-slot:activator="{ on, attrs }">
                     <v-text-field
-                      v-model="endDate"
+                      v-model="project.endDate"
                       label="Enter End Date"
                       prepend-icon="mdi-calendar"
                       readonly
@@ -73,7 +75,7 @@
                     ></v-text-field>
                   </template>
                   <v-date-picker
-                    v-model="endDate"
+                    v-model="project.endDate"
                     @input="menu2 = false"
                   ></v-date-picker>
                 </v-menu>
@@ -82,6 +84,7 @@
             <v-row>
               <v-col>
                 <v-textarea
+                  v-model="project.notes"
                   value="Enter Notes here :)"
                   class="pa-1"
                   clearable
@@ -95,12 +98,11 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="blue darken-1" text @click="onCancel()"> Close </v-btn>
-          <v-btn color="blue darken-1" text @click="onSave()"> Save </v-btn>
+          <v-btn color="blue darken-1" text @click="onCancel"> Close </v-btn>
+          <v-btn color="blue darken-1" text @click="onSave"> Save </v-btn>
         </v-card-actions>
       </v-card>
     </v-row>
-  </div>
 </template>
 
 <script>
@@ -116,18 +118,21 @@ export default {
     rules: {
       required: (value) => !!value || "Required.",
     },
-    startDate: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
-      .toISOString()
-      .substr(0, 10),
+    
+    startDateMenu: false,
+    endDateMenu: false,
+    project: {
+      startDate: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+        .toISOString()
+        .substr(0, 10),
     endDate: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
       .toISOString()
       .substr(0, 10),
-    startDateMenu: false,
-    endDateMenu: false,
+    }
   }),
   methods: {
     onSave() {
-      this.$emit("project-save", this.project);
+      this.$emit("save", this.project);
     },
     onCancel() {
       this.$emit("cancel");

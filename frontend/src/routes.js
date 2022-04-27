@@ -27,6 +27,10 @@ export default [
         component: ProjectUpdatePage,
         name: 'edit-project',
       },
+      {
+        path: '*',
+        redirect: 'projects'
+      },
     ],
   },
 

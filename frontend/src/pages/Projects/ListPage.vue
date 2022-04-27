@@ -1,13 +1,22 @@
 <template>
-    <ProjectCreate />
+    <v-container>
+        <ModalProjectCreate />
+        <v-row>
+            <v-col cols='12'>
+                <ProjectList />
+            </v-col>
+        </v-row>
+    </v-container>
 </template>
 
 <script>
-import ProjectCreate from '../../components/EmployeeUpdate.vue';
+import ModalProjectCreate from '../../components/ModalProjectCreate.vue';
+import ProjectList from '../../components/ProjectList.vue'
 
 export default {
     components: {
-        ProjectCreate
+        ModalProjectCreate,
+        ProjectList,
     },
     name: "ProjectsListPage",
 };

@@ -3,6 +3,7 @@ import axios from "axios";
 export const state = () => ({
   user: null,
   projects: [],
+  isCreatingProject: false,
 });
 
 export const mutations = {
@@ -23,6 +24,10 @@ export const mutations = {
     const allProjects = state.projects.filter((p) => p.id !== project.id);
     state.todos = [project, ...allProjects];
   },
+
+  SET_IS_CREATING_PROJECT(state, isCreatingProject) {
+    state.isCreatingProject = isCreatingProject;
+  }
 };
 
 export const actions =  {
@@ -51,6 +56,14 @@ export const actions =  {
     const responseJson = await response.json();
     commit("UPDATE_PROJECT", responseJson);
   },
+
+  async createProject({ commit, state }, project) {
+    commit('SET_IS_CREATING_PROJECT', true);
+    const response = await axios.post('/admin/project', project);
+
+    commit('SET_PROJECTS_LIST', [response.data, ...state.projects]);
+    commit('SET_IS_CREATING_PROJECT', false);
+  }
   
 };
 

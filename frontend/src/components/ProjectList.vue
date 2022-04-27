@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <div>
     <v-row no-gutters>
       <v-col>
         <h1 class="text-center">{{ header }}</h1>
@@ -7,8 +7,8 @@
     </v-row>
     <v-row>
       <v-col>
-        <div class="d-flex justify-center">
-          <v-card width="500px">
+        <div class="d-flex">
+          <v-card width="100%">
             <v-simple-table>
               <template v-slot: default>
                 <thead>
@@ -55,12 +55,7 @@
         </div>
       </v-col>
     </v-row>
-    <v-row>
-      <v-col class="text-center">
-        <v-btn>Create</v-btn>
-      </v-col>
-    </v-row>
-  </v-container>
+  </div>
 </template>
 
 <script>
@@ -69,7 +64,7 @@ import { mapState, mapActions } from "vuex";
 export default {
   name: "ProjectList",
   methods: {
-    ...mapActions("global", ["fetchAllProjects", "updateProject"]),
+    ...mapActions("global", ["fetchAllProjects"]),
 
     editProject(project) {
       this.activeProject = project;
@@ -78,8 +73,6 @@ export default {
   data() {
     return {
       header: "All Projects ",
-      dialogueOpen: "false",
-      activeProject: null,
     };
   },
   computed: {
