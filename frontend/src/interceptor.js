@@ -5,7 +5,7 @@ axios.defaults.baseURL = process.env.VUE_APP_SERVER_URL;
 axios.interceptors.request.use(
     config => {
         const token = localStorage.getItem("token");
-        if (token) { config.headers.common["Authorization"] = token; }
+        if (token) { config.headers.common["Authorization"] = `Bearer ${token}`; }
         return config;
     },
     error => Promise.reject(error)

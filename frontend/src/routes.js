@@ -1,7 +1,8 @@
 // Pages
 import LoginPage from "./pages/LoginPage";
 import DashBoardPage from "./pages/DashBoardPage";
-import PageNotFound from "./pages/PageNotFound";
+import ProjectListPage from './pages/Projects/ListPage';
+import ProjectUpdatePage from './pages/Projects/UpdatePage';
 
 export default [
   {
@@ -10,9 +11,27 @@ export default [
     name: 'login',
     meta: { authNotRequired: true }
   },
-  { path: "/dashboard", component: DashBoardPage, name: 'dashboard' },
+
+  { 
+    path: "/dashboard",
+    component: DashBoardPage,
+    name: 'dashboard',
+    children: [
+      {
+        path: "projects", 
+        component: ProjectListPage, 
+        name: 'all-project',
+      },
+      {
+        path: "projects/:id",
+        component: ProjectUpdatePage,
+        name: 'edit-project',
+      },
+    ],
+  },
+
   {
     path: '*',
-    component: PageNotFound
-  }
+    redirect: '/dashboard/projects'
+  },
 ];
