@@ -10,6 +10,10 @@ module.exports = (router) => {
       next();
       return;
     }
+    if (req.activity) {
+      req.activityOwnedByEmployee = await req.activity.getEmployee();
+    }
+
     const employee = await Users.$$findOne({
       query: {
         where: {
@@ -129,15 +133,16 @@ module.exports = (router) => {
         };
 
         let activityAmount = +req.activity.amount;
+
         if (!req.activity.isPaid) {
           activityAmount = activityAmount * -1;
         }
 
-        await req.employee.update({
-          balance: +req.employee.balance + activityAmount,
+        await req.activityOwnedByEmployee.update({
+          balance: +req.activityOwnedByEmployee.balance + activityAmount,
         });
 
-        await req.activity.destroy();
+        await req.activity.destroy({ paranoid: false });
         const activity = await req.employee.logActivity(newActivity);
 
         return res.http200(activity);
