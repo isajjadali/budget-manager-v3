@@ -13,24 +13,18 @@
               <template v-slot: default>
                 <thead>
                   <tr>
-                    <th class="text-left">Name</th>
-                    <th class="text-left">Balance</th>
-                    <th class="text-left">Rate</th>
-                    <th class="text-left">Address</th>
-                    <th class="text-left">Status</th>
+                    <th class="text-left">Employee Name</th>
+                    <th class="text-left">Amount</th>
+                    <th class="text-left">Date</th>
                     <th class="text-left">Edit</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-for="employee in employees" :key="employee.name">
-                    <td>{{ employee.fullName }}</td>
-                    <td>{{ employee.balance }}</td>
-                    <td>{{ employee.rate }}</td>
-                    <td>{{ employee.address }}</td>
-                    <td v-if="employee.status">Available</td>
-                    <td v-else>Not-Available</td>
-                    <td>
-                      <!-- Edit Button -->
+                  <tr v-for="activity in activities" :key="activity.id">
+                    <td>{{ activity.employee.fullName }}</td>
+                    <td>{{ activity.amount }}</td>
+                    <td>{{ activity.date }}</td>
+                    <td><!-- Edit Button -->
                       <div class="text-center pa-1">
                         <v-btn
                           style="height: 43px; width: 50px"
@@ -64,17 +58,17 @@ export default {
   name: "EmployeeList",
   data() {
     return {
-      header: "All Employees ",
+      header: "All Activities ",
     };
   },
   methods: {
-    ...mapActions("global", ["fetchAllEmployees"]),
+    ...mapActions("global", ["fetchAllActivities"]),
   },
   computed: {
-    ...mapState("global", ["employees"]),
+    ...mapState("global", ["activities"]),
   },
   mounted() {
-    this.fetchAllEmployees();
+    this.fetchAllActivities();
   },
 };
 </script>

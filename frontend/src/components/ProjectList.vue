@@ -63,17 +63,17 @@ import { mapState, mapActions } from "vuex";
 
 export default {
   name: "ProjectList",
+  data() {
+    return {
+      header: "All Projects ",
+    };
+  },
   methods: {
     ...mapActions("global", ["fetchAllProjects"]),
 
     editProject(project) {
       this.activeProject = project;
     },
-  },
-  data() {
-    return {
-      header: "All Projects ",
-    };
   },
   computed: {
     ...mapState("global", ["projects"]),

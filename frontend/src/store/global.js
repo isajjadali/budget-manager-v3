@@ -3,7 +3,10 @@ import axios from "axios";
 export const state = () => ({
   user: null,
   projects: [],
+  employees: [],
+  activities: [],
   isCreatingProject: false,
+  isCreatingEmployee: false,
 });
 
 export const mutations = {
@@ -15,18 +18,30 @@ export const mutations = {
   SET_LOGGED_IN_USER(state, payload) {
     state.user = payload.user;
   },
-
+  //==================================== Projects Mutations
   SET_PROJECTS_LIST(state, projects) {
     state.projects = projects;
   },
-
+  
   UPDATE_PROJECT(state, project) {
     const allProjects = state.projects.filter((p) => p.id !== project.id);
     state.todos = [project, ...allProjects];
   },
-
+  
   SET_IS_CREATING_PROJECT(state, isCreatingProject) {
     state.isCreatingProject = isCreatingProject;
+  },
+  //==================================== Employees Mutations
+  SET_EMPLOYEES_LIST(state, employees) {
+    state.employees = employees;
+  },
+
+  SET_IS_CREATING_EMPLOYEE(state, isCreatingEmployee) {
+    state.isCreatingEmployee = isCreatingEmployee;
+  },
+  //==================================== Activities Mutations
+  SET_ACTIVITIES_LIST(state, activities) {
+    state.activities = activities;
   }
 };
 
@@ -40,7 +55,7 @@ export const actions =  {
     const response = await axios.get("/me");
     commit("SET_LOGGED_IN_USER", response.data);
   },
-
+  //==================================== Projects Actions
   async fetchAllProjects({ commit }) {
     const response = await axios.get("/admin/project");
     commit("SET_PROJECTS_LIST", response.dataItems);
@@ -63,8 +78,37 @@ export const actions =  {
 
     commit('SET_PROJECTS_LIST', [response.data, ...state.projects]);
     commit('SET_IS_CREATING_PROJECT', false);
-  }
+  },
+  //==================================== Employees Actions
+  async fetchAllEmployees({ commit }) {
+    const response = await axios.get("/admin/employee");
+    commit("SET_EMPLOYEES_LIST", response.dataItems);
+  },
   
+  async createEmployee({ commit, state }, newEmployee) {
+    commit('SET_IS_CREATING_EMPLOYEE', true);
+    const response = await axios.post('/admin/employee', newEmployee);
+    
+    commit('SET_EMPLOYEES_LIST', [response.data, ...state.employees]);
+    commit('SET_IS_CREATING_EMPLOYEE', false);
+  },
+  //==================================== Activities Actions
+  async fetchAllActivities({ commit }) {
+    const response = await axios.get("/admin/activities");
+    const allActivities = response.dataItems.reduce((acc, dateItem) => {
+      acc.push(...dateItem.Activities.map((activity) => ({...activity, date: dateItem.date})));
+      return acc;
+    }, [])
+    commit("SET_ACTIVITIES_LIST", allActivities);
+  },
+
+  async createActivity({ commit, state }, newActivity) {
+    commit('SET_IS_CREATING_EMPLOYEE', true);
+    const response = await axios.post('/admin/activities', newActivity);
+    
+    commit('SET_ACTIVITIES_LIST', [response.data, ...state.activities]);
+    commit('SET_IS_CREATING_EMPLOYEE', false);
+  },
 };
 
 export default {
