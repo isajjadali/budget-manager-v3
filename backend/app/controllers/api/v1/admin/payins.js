@@ -1,7 +1,12 @@
 const {  asyncMiddleware } = global;
-const { Dates, ProjectPayins } = global.db;
+const { Dates, ProjectPayins, Projects, Activities } = global.db;
+const findCreateDate = require(`${global.paths.middlewares}/find-create-date`);
 
 module.exports = (router) => {
+  async function getProjectById(req, res, next) {
+    req.project = await Projects.$$findByPk({id:req.body.projectId});
+    next();
+  }
     router.get(
         '/',
         asyncMiddleware(async (req, res) => {
@@ -29,5 +34,20 @@ module.exports = (router) => {
             });
             res.http200(payins);
         })
+    );
+
+    router.post(
+      '/',
+      [
+        asyncMiddleware(findCreateDate()),
+        asyncMiddleware(getProjectById),
+      ],
+      asyncMiddleware(async (req, res, ) => {
+        const activity = await Activities.create({
+          ...req.body,
+          isPaid: true
+        });
+        return res.http200(activity);
+      })
     );
 };
