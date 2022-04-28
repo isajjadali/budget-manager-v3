@@ -22,12 +22,12 @@ export const mutations = {
   SET_PROJECTS_LIST(state, projects) {
     state.projects = projects;
   },
-  
+
   UPDATE_PROJECT(state, project) {
     const allProjects = state.projects.filter((p) => p.id !== project.id);
     state.todos = [project, ...allProjects];
   },
-  
+
   SET_IS_CREATING_PROJECT(state, isCreatingProject) {
     state.isCreatingProject = isCreatingProject;
   },
@@ -42,10 +42,10 @@ export const mutations = {
   //==================================== Activities Mutations
   SET_ACTIVITIES_LIST(state, activities) {
     state.activities = activities;
-  }
+  },
 };
 
-export const actions =  {
+export const actions = {
   async login({ commit }, payload) {
     const response = await axios.post("/login", payload);
     commit("SET_USER", response.data);
@@ -73,41 +73,46 @@ export const actions =  {
   },
 
   async createProject({ commit, state }, project) {
-    commit('SET_IS_CREATING_PROJECT', true);
-    const response = await axios.post('/admin/project', project);
+    commit("SET_IS_CREATING_PROJECT", true);
+    const response = await axios.post("/admin/project", project);
 
-    commit('SET_PROJECTS_LIST', [response.data, ...state.projects]);
-    commit('SET_IS_CREATING_PROJECT', false);
+    commit("SET_PROJECTS_LIST", [response.data, ...state.projects]);
+    commit("SET_IS_CREATING_PROJECT", false);
   },
   //==================================== Employees Actions
   async fetchAllEmployees({ commit }) {
     const response = await axios.get("/admin/employee");
     commit("SET_EMPLOYEES_LIST", response.dataItems);
   },
-  
+
   async createEmployee({ commit, state }, newEmployee) {
-    commit('SET_IS_CREATING_EMPLOYEE', true);
-    const response = await axios.post('/admin/employee', newEmployee);
-    
-    commit('SET_EMPLOYEES_LIST', [response.data, ...state.employees]);
-    commit('SET_IS_CREATING_EMPLOYEE', false);
+    commit("SET_IS_CREATING_EMPLOYEE", true);
+    const response = await axios.post("/admin/employee", newEmployee);
+
+    commit("SET_EMPLOYEES_LIST", [response.data, ...state.employees]);
+    commit("SET_IS_CREATING_EMPLOYEE", false);
   },
   //==================================== Activities Actions
   async fetchAllActivities({ commit }) {
     const response = await axios.get("/admin/activities");
     const allActivities = response.dataItems.reduce((acc, dateItem) => {
-      acc.push(...dateItem.Activities.map((activity) => ({...activity, date: dateItem.date})));
+      acc.push(
+        ...dateItem.Activities.map((activity) => ({
+          ...activity,
+          date: dateItem.date,
+        }))
+      );
       return acc;
-    }, [])
+    }, []);
     commit("SET_ACTIVITIES_LIST", allActivities);
   },
 
   async createActivity({ commit, state }, newActivity) {
-    commit('SET_IS_CREATING_EMPLOYEE', true);
-    const response = await axios.post('/admin/activities', newActivity);
-    
-    commit('SET_ACTIVITIES_LIST', [response.data, ...state.activities]);
-    commit('SET_IS_CREATING_EMPLOYEE', false);
+    commit("SET_IS_CREATING_EMPLOYEE", true);
+    const response = await axios.post("/admin/activities", newActivity);
+
+    commit("SET_ACTIVITIES_LIST", [response.data, ...state.activities]);
+    commit("SET_IS_CREATING_EMPLOYEE", false);
   },
 };
 
@@ -115,4 +120,4 @@ export default {
   state,
   mutations,
   actions,
-}
+};

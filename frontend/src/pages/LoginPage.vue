@@ -32,8 +32,8 @@
             <v-card-actions>
               <v-spacer></v-spacer>
               <v-btn color="primary" :disabled="!valid" @click="onLogin"
-                >Login</v-btn
-              >
+                >Login
+              </v-btn>
             </v-card-actions>
           </v-card>
         </v-flex>
@@ -71,7 +71,7 @@ export default {
         email: this.email,
         password: this.password,
       });
-      this.$router.push('/dashboard')
+      this.$router.push("/dashboard");
     },
   },
 };
