@@ -4,7 +4,6 @@ const findCreateDate = require(`${global.paths.middlewares}/find-create-date`);
 
 module.exports = (router) => {
   async function getProjectById(req, res, next) {
-    console.log(req.body);
     req.project = await Projects.$$findByPk({id:req.body.projectId});
     next();
   }
@@ -44,7 +43,6 @@ module.exports = (router) => {
         asyncMiddleware(getProjectById),
       ],
       asyncMiddleware(async (req, res, ) => {
-        console.log(req.body)
         const activity = await Activities.create({
           ...req.body,
           isPaid: true
