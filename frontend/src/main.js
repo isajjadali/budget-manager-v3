@@ -5,6 +5,7 @@ import App from "./App.vue";
 import vuetify from "./plugins/vuetify";
 import routes from "./routes";
 import store from "./store";
+import axiosInterceptor from './interceptor';
 
 Vue.config.productionTip = false;
 
