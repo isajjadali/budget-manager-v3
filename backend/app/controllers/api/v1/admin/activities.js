@@ -5,8 +5,7 @@ const { Users, Activities, Projects, Dates } = global.db;
 
 module.exports = (router) => {
   async function getEmployee(req, res, next) {
-    const id =
-      req.body.employeeId || req.params.employeeId || req.query.employeeId;
+    const id = req.body.employeeId;
     if (!id) {
       next();
       return;
@@ -23,16 +22,18 @@ module.exports = (router) => {
     next();
   }
 
-  async function projectByIdMiddleware(req, res, next) {
-    const { projectId } = req.body;
-    if (!projectId) {
+  function projectByIdMiddleware(isRequired) {
+    return async (req, res, next) => {
+      const { projectId } = req.body;
+      if (!isRequired && !projectId) {
+        next();
+        return;
+      }
+      req.project = await Projects.$$findByPk({ id: projectId });
       next();
-      return;
-    }
-    console.log("===============", projectId);
-    req.project = await Projects.$$findByPk({ id: projectId });
-    next();
+    };
   }
+
   router.param(
     "activityId",
     asyncMiddleware(async (req, res, next, activityId) => {
@@ -114,21 +115,32 @@ module.exports = (router) => {
     .route("/:activityId")
     .get(
       asyncMiddleware(async (req, res) => {
-        console.log("In Activity ID");
         res.http200(req.activity);
       })
     )
     .put(
       asyncMiddleware(findCreateDate(false)),
-      asyncMiddleware(projectByIdMiddleware),
+      asyncMiddleware(projectByIdMiddleware(false)),
       asyncMiddleware(getEmployee),
       asyncMiddleware(async (req, res) => {
-        console.log("===============", req);
-        const updatedActivity = await req.activity.update({
+        const newActivity = {
+          ...req.activity.toJSON(),
           ...req.body,
-          dateId: req.date.id,
+        };
+
+        let activityAmount = +req.activity.amount;
+        if (!req.activity.isPaid) {
+          activityAmount = activityAmount * -1;
+        }
+
+        await req.employee.update({
+          balance: +req.employee.balance + activityAmount,
         });
-        return res.http200(updatedActivity);
+
+        await req.activity.destroy();
+        const activity = await req.employee.logActivity(newActivity);
+
+        return res.http200(activity);
       })
     );
 };
