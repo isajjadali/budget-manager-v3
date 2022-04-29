@@ -1,14 +1,8 @@
 <template>
-    <v-container fluid>
-      <h1>{{ header }}</h1>
-    </v-container>
+  <h1>Dashboard content</h1>
 </template>
-
 <script>
 export default {
   name: "DashBoardPage",
-  data: () => ({
-    header: "Dashboard",
-  }),
 };
 </script>

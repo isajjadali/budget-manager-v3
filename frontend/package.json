@@ -8,8 +8,10 @@
     "start": "vue-cli-service serve"
   },
   "dependencies": {
+    "@mdi/js": "^6.6.96",
     "axios": "^0.26.1",
     "core-js": "^3.8.3",
+    "vee-validate": "^4.5.11",
     "vue": "^2.6.14",
     "vue-router": "^3.2.0",
     "vuetify": "^2.6.0",

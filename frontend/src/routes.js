@@ -1,18 +1,54 @@
 // Pages
 import LoginPage from "./pages/LoginPage";
 import DashBoardPage from "./pages/DashBoardPage";
-import PageNotFound from "./pages/PageNotFound";
+import ProjectListPage from "./pages/Projects/ListPage";
+import ProjectUpdatePage from "./pages/Projects/UpdatePage";
+import EmployeeListPage from "./pages/Employees/ListPage";
+import ActivitiesListPage from "./pages/Activities/ListPage";
+import LayoutPage from "@/pages/LayoutPage";
 
 export default [
   {
-    path: "/",
+    path: "/login",
     component: LoginPage,
-    name: 'login',
-    meta: { authNotRequired: true }
+    name: "login",
+    meta: { authNotRequired: true },
   },
-  { path: "/dashboard", component: DashBoardPage, name: 'dashboard' },
   {
-    path: '*',
-    component: PageNotFound
-  }
+    path: "/",
+    component: LayoutPage,
+    name: "index",
+    children: [
+      {
+        path: "dashboard",
+        component: DashBoardPage,
+        name: "dashboard",
+      },
+      {
+        path: "projects",
+        component: ProjectListPage,
+        name: "all-project",
+      },
+      {
+        path: "projects/:id",
+        component: ProjectUpdatePage,
+        name: "edit-project",
+      },
+      {
+        path: "employees",
+        component: EmployeeListPage,
+        name: "all-employee",
+      },
+      {
+        path: "activities",
+        component: ActivitiesListPage,
+        name: "all-activities",
+      },
+      {
+        path: "*",
+        redirect: "projects",
+      },
+    ],
+    redirect: "/dashboard",
+  },
 ];
