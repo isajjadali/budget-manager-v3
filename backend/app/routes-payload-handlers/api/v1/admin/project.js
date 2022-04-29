@@ -8,7 +8,7 @@ module.exports = {
       },
     },
   },
-  "/:Id":{
+  "/:id":{
     put:{
       body:{
         amount: {...projectCommonFields.amount, isOptional:true},

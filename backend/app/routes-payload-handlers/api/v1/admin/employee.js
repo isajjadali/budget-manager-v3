@@ -13,7 +13,7 @@ module.exports = {
       },
     },
   },
-  "/:Id":{
+  "/:id":{
     put:{
       body:{
         firstName:{...EmployeeCommonField.firstName,isOptional:true},

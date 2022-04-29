@@ -12,7 +12,7 @@ module.exports = {
       },
     },
   },
-  "/:Id":{
+  "/:id":{
     put:{
       body:{
         date:{...activitiesCommonField.date,isOptional:true},
