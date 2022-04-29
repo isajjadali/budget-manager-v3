@@ -28,26 +28,6 @@ module.exports = (router) => {
     req.employee = employee;
     next();
   }
-  // async function getEmployee(req, res, next) {
-  //   let id = req.body.employeeId;
-  //   if (req.activity) {
-  //     req.activityOwnedByEmployee = await req.activity.getEmployee();
-  //   }
-  //   if (!id) {
-  //     id = req.activityOwnedByEmployee.id;
-  //   }
-
-  //   const employee = await Users.$$findOne({
-  //     query: {
-  //       where: {
-  //         id,
-  //         roles: Roles.Employee,
-  //       },
-  //     },
-  //   });
-  //   req.employee = employee;
-  //   next();
-  // }
 
   function projectByIdMiddleware(isRequired) {
     return async (req, res, next) => {
