@@ -1,10 +1,19 @@
+const projectCommonFields={amount:{type:"number"},}
 module.exports = {
   "/": {
     post: {
       body: {
-        amount:{type:"number"},
+        ...projectCommonFields,
         allowableKeys:["name","startDate","endDate","amount"],
       },
     },
   },
+  "/:Id":{
+    put:{
+      body:{
+        amount: {...projectCommonFields.amount, isOptional:true},
+        allowableKeys:["name","startDate","endDate","amount"],
+      }
+    }
+  }
 };
