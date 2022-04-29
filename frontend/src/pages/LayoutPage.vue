@@ -13,9 +13,6 @@ export default {
   components: {
     NavBar,
   },
-  mounted() {
-    console.log("this is the LayoutPage");
-  },
 };
 </script>
 

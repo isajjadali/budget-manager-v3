@@ -87,24 +87,8 @@
 
 <script>
 export default {
-  // props: {
-  //   project: {
-  //     type: Object,
-  //     required: true,
-  //   },
-  // },
-  name: "ProjectCreate",
+  name: "ActivitiesUpdate",
   data: () => ({
-    project: {
-      type: Object,
-      name: 'Task for testing',
-      amount: 100.0,
-      date: "2019-04-10",
-      notes: "This is a testing task description",
-      isPaid: true,
-    },
-    employees: ["employee 1", "employee 2", "employee 3"],
-    value: ["employee 1", "employee 2", "employee 3"],
     rules: {
       required: (value) => !!value || "Required.",
     },

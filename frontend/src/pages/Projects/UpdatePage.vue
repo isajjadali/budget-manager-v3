@@ -18,7 +18,6 @@ export default {
             const id = this.$route.params.id;
             if (id) {
                 const project = this.projects.find((project) => project.id === +id) 
-                console.log(project)
                 return project
             }
             return null;
@@ -26,7 +25,6 @@ export default {
     },
     methods: {
         onProjectSave(project) {
-            console.log(project)
         },
     },
 };

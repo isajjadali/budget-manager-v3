@@ -126,13 +126,7 @@ extend("email", {
 });
 
 export default {
-  // props: {
-  //   project: {
-  //     type: Object,
-  //     required: true,
-  //   },
-  // },
-  name: "ProjectCreate",
+  name: "EmployeeUpdate",
   data: () => ({
     icons: {
       mdiAccount,

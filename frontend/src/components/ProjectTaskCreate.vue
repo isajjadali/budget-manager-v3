@@ -65,13 +65,7 @@
 
 <script>
 export default {
-  // props: {
-  //   project: {
-  //     type: Object,
-  //     required: true,
-  //   },
-  // },
-  name: "ProjectCreate",
+  name: "ProjectTaskCreate",
   data: () => ({
     rules: {
       required: (value) => !!value || "Required.",

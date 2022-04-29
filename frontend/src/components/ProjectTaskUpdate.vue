@@ -69,13 +69,7 @@
 
 <script>
 export default {
-  // props: {
-  //   project: {
-  //     type: Object,
-  //     required: true,
-  //   },
-  // },
-  name: "ProjectCreate",
+  name: "ProjectTaskUpdate",
   data: () => ({
     project: {
       type: Object,

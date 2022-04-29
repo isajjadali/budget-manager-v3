@@ -55,7 +55,7 @@
 import { mapState, mapActions } from "vuex";
 
 export default {
-  name: "EmployeeList",
+  name: "ActivitiesList",
   data() {
     return {
       header: "All Activities ",
