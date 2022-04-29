@@ -10,8 +10,8 @@
             <v-row>
               <v-col cols="12" sm="6" md="4" class="ma-3">
                 <v-text-field
-                  :rules="[rules.required]"
                   v-model="project.name"
+                  :rules="[rules.required]"
                   label="Enter Name"
                   required
                 ></v-text-field>
@@ -47,7 +47,7 @@
                     ></v-text-field>
                   </template>
                   <v-date-picker
-                    v-model="startDate"
+                    v-model="project.startDate"
                     @input="menu2 = false"
                   ></v-date-picker>
                 </v-menu>
@@ -73,7 +73,7 @@
                     ></v-text-field>
                   </template>
                   <v-date-picker
-                    v-model="endDate"
+                    v-model="project.endDate"
                     @input="menu2 = false"
                   ></v-date-picker>
                 </v-menu>
@@ -95,12 +95,8 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="blue darken-1" text @click="onCancel()">
-            Close
-          </v-btn>
-          <v-btn color="blue darken-1" text @click="onSave()">
-            Save
-          </v-btn>
+          <v-btn color="blue darken-1" text @click="onCancel"> Close </v-btn>
+          <v-btn color="blue darken-1" text @click="onSave"> Save </v-btn>
         </v-card-actions>
       </v-card>
     </v-row>
@@ -113,26 +109,24 @@ export default {
     project: {
       type: Object,
       required: true,
+      startDate: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+        .toISOString()
+        .substr(0, 10),
+      endDate: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+        .toISOString()
+        .substr(0, 10),
     },
   },
   data: () => ({
-    dialog: true,
-    inputRequired: "",
     rules: {
       required: (value) => !!value || "Required.",
     },
-    startDate: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
-      .toISOString()
-      .substr(0, 10),
-    endDate: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
-      .toISOString()
-      .substr(0, 10),
     startDateMenu: false,
     endDateMenu: false,
   }),
   methods: {
     onSave() {
-      this.$emit("project-save", this.project);
+      this.$emit("save", this.project);
     },
     onCancel() {
       this.$emit("cancel");

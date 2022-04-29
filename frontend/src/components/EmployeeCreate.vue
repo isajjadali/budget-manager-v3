@@ -39,10 +39,15 @@
             <v-col cols="12" sm="6" md="4" class="ma-3">
               <v-text-field
                 v-model="employee.password"
-                :rules="[rules.required]"
+                :rules="[rules.required, rules.min]"
+                :type="show ? 'text' : 'password'"
+                :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
                 value=""
                 label="Enter Password"
                 required
+                counter
+                hint="At least 8 characters"
+                @click:append="show = !show"
               ></v-text-field>
             </v-col>
           </v-row>
@@ -83,6 +88,7 @@ export default {
     rules: {
       required: (value) => !!value || "Required.",
     },
+    show: false,
   }),
   methods: {
     onSave() {

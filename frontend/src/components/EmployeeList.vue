@@ -32,18 +32,25 @@
                     <td>
                       <!-- Edit Button -->
                       <div class="text-center pa-1">
-                        <v-btn
-                          style="height: 43px; width: 50px"
-                          class="mx-1"
-                          fab
-                          dark
-                          large
-                          color="cyan"
+                        <router-link
+                          :to="{
+                            name: 'edit-employee',
+                            params: { id: employee.id },
+                          }"
                         >
-                          <v-icon @click="editProject(project)" dark>
-                            mdi-pencil
-                          </v-icon>
-                        </v-btn>
+                          <v-btn
+                            style="height: 43px; width: 50px"
+                            class="mx-1"
+                            fab
+                            dark
+                            large
+                            color="cyan"
+                          >
+                            <v-icon @click="editEmployee(employee)" dark>
+                              mdi-pencil
+                            </v-icon>
+                          </v-btn>
+                        </router-link>
                       </div>
                     </td>
                   </tr>
@@ -69,6 +76,10 @@ export default {
   },
   methods: {
     ...mapActions("global", ["fetchAllEmployees"]),
+
+    editEmployee(employee){
+      this.activeEmployee = employee;
+    }
   },
   computed: {
     ...mapState("global", ["employees"]),
