@@ -6,12 +6,15 @@ const { Users, Activities, Projects, Dates } = global.db;
 module.exports = (router) => {
   async function getEmployee(req, res, next) {
     const id = req.body.employeeId;
+    if (req.activity) {
+      req.activityOwnedByEmployee = await req.activity.getEmployee();
+      if (!id) {
+        req.employee = req.activityOwnedByEmployee;
+      }
+    }
     if (!id) {
       next();
       return;
-    }
-    if (req.activity) {
-      req.activityOwnedByEmployee = await req.activity.getEmployee();
     }
 
     const employee = await Users.$$findOne({
@@ -25,6 +28,26 @@ module.exports = (router) => {
     req.employee = employee;
     next();
   }
+  // async function getEmployee(req, res, next) {
+  //   let id = req.body.employeeId;
+  //   if (req.activity) {
+  //     req.activityOwnedByEmployee = await req.activity.getEmployee();
+  //   }
+  //   if (!id) {
+  //     id = req.activityOwnedByEmployee.id;
+  //   }
+
+  //   const employee = await Users.$$findOne({
+  //     query: {
+  //       where: {
+  //         id,
+  //         roles: Roles.Employee,
+  //       },
+  //     },
+  //   });
+  //   req.employee = employee;
+  //   next();
+  // }
 
   function projectByIdMiddleware(isRequired) {
     return async (req, res, next) => {
@@ -130,6 +153,8 @@ module.exports = (router) => {
         const newActivity = {
           ...req.activity.toJSON(),
           ...req.body,
+          dateId: req.date ? req.date.id : req.activity.dateId,
+          projectId: req.project ? req.project.id : req.activity.projectId,
         };
 
         let activityAmount = +req.activity.amount;
@@ -137,11 +162,9 @@ module.exports = (router) => {
         if (!req.activity.isPaid) {
           activityAmount = activityAmount * -1;
         }
-
         await req.activityOwnedByEmployee.update({
           balance: +req.activityOwnedByEmployee.balance + activityAmount,
         });
-
         await req.activity.destroy({ paranoid: false });
         const activity = await req.employee.logActivity(newActivity);
 
