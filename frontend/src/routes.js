@@ -4,7 +4,9 @@ import DashBoardPage from "./pages/DashBoardPage";
 import ProjectListPage from "./pages/Projects/ListPage";
 import ProjectUpdatePage from "./pages/Projects/UpdatePage";
 import EmployeeListPage from "./pages/Employees/ListPage";
+import EmployeeUpdatePage from "./pages/Employees/UpdatePage";
 import ActivitiesListPage from "./pages/Activities/ListPage";
+import ActivitiesUpdatePage from "./pages/Activities/UpdatePage";
 import LayoutPage from "@/pages/LayoutPage";
 
 export default [
@@ -40,9 +42,19 @@ export default [
         name: "all-employee",
       },
       {
+        path: "employees/:id",
+        component: EmployeeUpdatePage,
+        name: "edit-employee",
+      },
+      {
         path: "activities",
         component: ActivitiesListPage,
         name: "all-activities",
+      },
+      {
+        path: "activities/:id",
+        component: ActivitiesUpdatePage,
+        name: "edit-activity",
       },
       {
         path: "*",

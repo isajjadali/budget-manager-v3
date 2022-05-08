@@ -25,7 +25,7 @@ export const mutations = {
 
   UPDATE_PROJECT(state, project) {
     const allProjects = state.projects.filter((p) => p.id !== project.id);
-    state.todos = [project, ...allProjects];
+    state.projects = [project, ...allProjects];
   },
 
   SET_IS_CREATING_PROJECT(state, isCreatingProject) {
@@ -36,12 +36,22 @@ export const mutations = {
     state.employees = employees;
   },
 
+  UPDATE_EMPLOYEE (state, updatedEmployee){
+    const allEmployees = state.employees.filter((employee) => employee.id !== updatedEmployee.id);
+    state.employees = [updatedEmployee, ...allEmployees];
+  },
+
   SET_IS_CREATING_EMPLOYEE(state, isCreatingEmployee) {
     state.isCreatingEmployee = isCreatingEmployee;
   },
   //==================================== Activities Mutations
   SET_ACTIVITIES_LIST(state, activities) {
     state.activities = activities;
+  },
+
+  UPDATE_ACTIVITY(state, updatedActivity) {
+    const allActivities = state.activities.filter((activity) => activity.id !== updatedActivity.id);
+    state.activities = [updatedActivity, ...allActivities];
   },
 };
 
@@ -62,14 +72,8 @@ export const actions = {
   },
 
   async updateProject({ commit }, project) {
-    const response = await axios.put(`${BASE_URL}/${project.id}`, {
-      body: JSON.stringify(project),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    const responseJson = await response.json();
-    commit("UPDATE_PROJECT", responseJson);
+    const response = await axios.put(`/admin/project/${project.id}`, project);
+    commit("UPDATE_PROJECT", response.data);
   },
 
   async createProject({ commit, state }, project) {
@@ -92,6 +96,11 @@ export const actions = {
     commit("SET_EMPLOYEES_LIST", [response.data, ...state.employees]);
     commit("SET_IS_CREATING_EMPLOYEE", false);
   },
+
+  async updateEmployee ({ commit }, employee) {
+    const updatedEmployee = await axios.put(`/admin/employee/${employee.id}`, employee);
+    commit("UPDATE_EMPLOYEE", updatedEmployee.data);
+  },
   //==================================== Activities Actions
   async fetchAllActivities({ commit }) {
     const response = await axios.get("/admin/activities");
@@ -113,6 +122,10 @@ export const actions = {
 
     commit("SET_ACTIVITIES_LIST", [response.data, ...state.activities]);
     commit("SET_IS_CREATING_EMPLOYEE", false);
+  },
+
+  async updateActivity({ commit }, updatedActivity) {
+    commit("UPDATE_ACTIVITY", updatedActivity);
   },
 };
 
