@@ -1,7 +1,7 @@
 const {asyncMiddleware} = global;
 const findCreateDate = require(`${global.paths.middlewares}/find-create-date`);
 const {Roles} = global.appEnums;
-const {Users, Activities, Projects, Dates} = global.db;
+const {Users, Activities, Projects, Dates, Sequelize} = global.db;
 
 module.exports = (router) => {
   async function getEmployee(req, res, next) {
@@ -85,7 +85,11 @@ module.exports = (router) => {
           limit: req.limit,
           offset: req.offset,
         };
-        const where = {};
+        const where = {
+          employeeId: {
+            [Sequelize.Op.ne]: null
+          }
+        };
         if (projectId) {
           where.projectId = +projectId;
         }
