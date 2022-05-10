@@ -17,6 +17,7 @@
     <v-col cols="12">
       <ActivitiesCreate
         :employees="employees"
+        :projects="projects"
         @cancel="onClose"
         @save="onSave"
       />
@@ -36,10 +37,10 @@ export default {
     dialog: false,
   }),
   computed: {
-    ...mapState('global', ['isCreatingActivity', 'employees']),
+    ...mapState('global', ['isCreatingActivity', 'employees', 'projects']),
   },
   methods: {
-    ...mapActions('global', ['createActivity', 'fetchAllEmployees']),
+    ...mapActions('global', ['createActivity', 'fetchAllEmployees', 'fetchAllProjects']),
     onClose() {
       this.dialog = false;
       this.$emit('close');
@@ -47,11 +48,12 @@ export default {
     async onSave(newActivity) {
       this.dialog = false;
       await this.createActivity(newActivity);
-      this.$emit('save', newActivity);
+      this.$emit('save', newActivity.data);
     },
   },
   mounted() {
     this.fetchAllEmployees();
+    this.fetchAllProjects();
   }
 };
 </script>

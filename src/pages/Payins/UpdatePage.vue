@@ -2,9 +2,10 @@
   <p v-if="!currentPayin">
     <b> Invalid ID </b>
   </p>
-  <PayinsUpdate
+  <ActivitiesUpdate
     v-else
-    :payin="currentPayin"
+    :currentData="currentPayin"
+    :employees="employees"
     :projects="projects"
     @save="onSave"
     @cancel="onCancel"
@@ -13,15 +14,15 @@
 
 <script>
 import { mapState, mapActions } from 'vuex';
-import PayinsUpdate from '../../components/PayinsUpdate.vue';
+import ActivitiesUpdate from '../../components/ActivitiesUpdate.vue';
 
 export default {
   name: 'UpdatePage',
   components: {
-    PayinsUpdate,
+    ActivitiesUpdate,
   },
   computed: {
-    ...mapState('global', ['projects', 'payins']),
+    ...mapState('global', ['projects', 'payins', 'employees']),
     currentPayin() {
       const id = this.$route.params.id;
       if (id) {

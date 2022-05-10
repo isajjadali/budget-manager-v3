@@ -15,7 +15,7 @@
                 class="ma-3"
               >
                 <v-text-field
-                  v-model="activity.amount"
+                  v-model.number="activity.amount"
                   label="Amount"
                   :rules="[rules.required]"
                   value=""
@@ -65,6 +65,17 @@
                 />
               </v-col>
             </v-row>
+            <v-row>
+              <v-col>
+                <v-select
+                  v-model="activity.projectId"
+                  :items="projects"
+                  item-text="name"
+                  item-value="id"
+                  label="Select Projects"
+                />
+              </v-col>
+            </v-row>
           </v-container>
         </v-card-text>
         <v-card-actions>
@@ -92,7 +103,7 @@
 <script>
 export default {
   name: 'ActivityCreate',
-  props: ['employees'],
+  props: ['employees', 'projects'],
   data: () => ({
     activity: {
       date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)

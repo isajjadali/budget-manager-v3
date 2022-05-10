@@ -100,7 +100,10 @@ export const actions = {
     commit('SET_IS_CREATING_PROJECT', false);
   },
   //==================================== Employees Actions
-  async fetchAllEmployees({ commit }) {
+  async fetchAllEmployees({ commit, state }, forceRefresh = false) {
+    if (!forceRefresh && state.employees.length) {
+      return;
+    }
     const response = await axios.get('/admin/employee');
     commit('SET_EMPLOYEES_LIST', response.dataItems);
   },
@@ -142,9 +145,12 @@ export const actions = {
     commit('SET_ACTIVITIES_LIST', [response.data, ...state.activities]);
     commit('SET_IS_CREATING_EMPLOYEE', false);
   },
-  
-  async updateActivity({ commit }, updatedActivity) {
-    commit('UPDATE_ACTIVITY', updatedActivity);
+
+  async updateActivity({ commit }, activity) {
+    console.log(activity);
+    const updatedActivity = await axios.put(`/admin/activities/${activity.id}`, activity);
+    console.log(updatedActivity.data);
+    commit('UPDATE_ACTIVITY', updatedActivity.data);
   },
   //==================================== Payins Actions
   async fetchAllPayins({ commit }) {

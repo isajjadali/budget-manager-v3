@@ -37,7 +37,7 @@
                     v-for="payin in payins"
                     :key="payin.id"
                   >
-                    <td>{{ payin.projectId }}</td>
+                    <td>{{ payin.project.name }}</td>
                     <td>{{ payin.amount }}</td>
                     <td>{{ payin.date }}</td>
                     <td>

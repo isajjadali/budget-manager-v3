@@ -1,7 +1,6 @@
 <template>
   <v-card
-    class="mx-auto overflow-hidden"
-    height="100vh"
+    class="mx-auto"
   >
     <NavBar />
     <router-view />
@@ -19,4 +18,9 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.wrapper {
+  height: calc(100vh - 64px + 12px);
+  overflow-y: scroll;
+}
+</style>

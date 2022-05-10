@@ -31,6 +31,12 @@ module.exports = (router) => {
           model: Activities,
           as: Activities.$$name,
           required: true,
+          include: [
+            {
+              model: Projects,
+              as: Projects.$$singularName
+            }
+          ]
         },
       ];
       const payins = await Dates.getResultsOf({

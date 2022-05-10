@@ -4,8 +4,9 @@
   </p>
   <ActivitiesUpdate
     v-else
-    :activity="currentActivity"
+    :currentData="currentActivity"
     :employees="employees"
+    :projects="projects"
     @save="onSave"
     @cancel="onCancel"
   />
@@ -21,7 +22,7 @@ export default {
     ActivitiesUpdate,
   },
   computed: {
-    ...mapState('global', ['activities', 'employees']),
+    ...mapState('global', ['activities', 'employees', 'projects']),
     currentActivity() {
       const id = this.$route.params.id;
       if (id) {
@@ -38,8 +39,8 @@ export default {
       this.$router.push({ name: 'all-activities' });
     },
 
-    onSave(activity) {
-      this.updateActivity(activity);
+    async onSave(activity) {
+      await this.updateActivity(activity);
       this.$router.push({ name: 'all-activities' });
     },
   },

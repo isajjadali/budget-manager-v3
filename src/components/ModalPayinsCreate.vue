@@ -15,7 +15,8 @@
       </v-btn>
     </template>
     <v-col cols="12">
-      <PayinsCreate
+      <ActivitiesCreate
+        :employees="employees"
         :projects="projects"
         @cancel="onClose"
         @save="onSave"
@@ -26,20 +27,20 @@
 
 <script>
 import { mapActions, mapState } from 'vuex';
-import PayinsCreate from './PayinsCreate.vue';
+import ActivitiesCreate from './ActivitiesCreate.vue';
 
 export default {
   components: {
-    PayinsCreate,
+    ActivitiesCreate,
   },
   data: () => ({
     dialog: false,
   }),
   computed: {
-    ...mapState('global', ['projects']),
+    ...mapState('global', ['projects', 'employees']),
   },
   methods: {
-    ...mapActions('global', ['createPayin']),
+    ...mapActions('global', ['createPayin', 'fetchAllEmployees', 'fetchAllProjects']),
     onClose() {
       this.dialog = false;
       this.$emit('close');
@@ -49,6 +50,10 @@ export default {
       this.$emit('save', newPayin);
       this.dialog = false;
     },
+  },
+  mounted() {
+    this.fetchAllEmployees();
+    this.fetchAllProjects();
   },
 };
 </script>
