@@ -147,9 +147,7 @@ export const actions = {
   },
 
   async updateActivity({ commit }, activity) {
-    console.log(activity);
     const updatedActivity = await axios.put(`/admin/activities/${activity.id}`, activity);
-    console.log(updatedActivity.data);
     commit('UPDATE_ACTIVITY', updatedActivity.data);
   },
   //==================================== Payins Actions
@@ -169,7 +167,6 @@ export const actions = {
 
   async createPayin({ commit, state }, newPayin) {
     const response = await axios.post('/admin/payins', newPayin);
-    console.log(response);
     commit('SET_PAYINS_LIST', [response.data, ...state.payins]);
   },
 
