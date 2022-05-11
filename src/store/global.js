@@ -72,6 +72,7 @@ export const mutations = {
 };
 
 export const actions = {
+
   async login({ commit }, payload) {
     const response = await axios.post('/login', payload);
     commit('SET_USER', response.data);
@@ -82,7 +83,10 @@ export const actions = {
     commit('SET_LOGGED_IN_USER', response.data);
   },
   //==================================== Projects Actions
-  async fetchAllProjects({ commit }) {
+  async fetchAllProjects({ commit, state }, forceRefresh = false) {
+    if(!forceRefresh && state.projects.length) {
+      return;
+    }
     const response = await axios.get('/admin/project');
     commit('SET_PROJECTS_LIST', response.dataItems);
   },
@@ -124,7 +128,10 @@ export const actions = {
     commit('UPDATE_EMPLOYEE', updatedEmployee.data);
   },
   //==================================== Activities Actions
-  async fetchAllActivities({ commit }) {
+  async fetchAllActivities({ commit, state }, forceRefresh = false) {
+    if(!forceRefresh && state.activities.length) {
+      return;
+    }
     const response = await axios.get('/admin/activities');
     const allActivities = response.dataItems.reduce((acc, dateItem) => {
       acc.push(
@@ -151,7 +158,10 @@ export const actions = {
     commit('UPDATE_ACTIVITY', updatedActivity.data);
   },
   //==================================== Payins Actions
-  async fetchAllPayins({ commit }) {
+  async fetchAllPayins({ commit, state }, forceRefresh = false) {
+    if(!forceRefresh && state.payins.length) {
+      return;
+    }
     const response = await axios.get('/admin/payins');
     const allPayins = response.dataItems.reduce((acc, dateItem) => {
       acc.push(
