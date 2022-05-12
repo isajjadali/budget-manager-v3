@@ -36,7 +36,7 @@
                   <tr
                     v-for="project in projects"
                     :key="project.name"
-                  >
+                  >                  
                     <td>{{ project.name }}</td>
                     <td>{{ project.amount }}</td>
                     <td>{{ project.notes }}</td>

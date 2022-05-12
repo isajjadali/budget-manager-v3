@@ -146,11 +146,8 @@ export const actions = {
   },
 
   async createActivity({ commit, state }, newActivity) {
-    commit('SET_IS_CREATING_EMPLOYEE', true);
     const response = await axios.post('/admin/activities', newActivity);
-    
     commit('SET_ACTIVITIES_LIST', [response.data, ...state.activities]);
-    commit('SET_IS_CREATING_EMPLOYEE', false);
   },
 
   async updateActivity({ commit }, activity) {
