@@ -1,11 +1,8 @@
 <template>
-  <v-card
-    class="mx-auto overflow-hidden"
-    height="100vh"
-  >
+  <div>
     <NavBar />
     <router-view />
-  </v-card>
+  </div>
 </template>
 
 <script>
@@ -18,5 +15,3 @@ export default {
   },
 };
 </script>
-
-<style scoped></style>

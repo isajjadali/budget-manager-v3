@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <ModalActivitiesList />
+    <ModalActivitiesCreate />
     <v-row>
       <v-col cols="12">
         <ActivitiesList />
@@ -10,13 +10,13 @@
 </template>
 
 <script>
-import ModalActivitiesList from '../../components/ModalActivitiesCreate.vue';
+import ModalActivitiesCreate from '../../components/ModalActivitiesCreate.vue';
 import ActivitiesList from '../../components/ActivitiesList.vue';
 
 export default {
   name: 'ActivitiesListPage',
   components: {
-    ModalActivitiesList,
+    ModalActivitiesCreate,
     ActivitiesList,
   },
 };

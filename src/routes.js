@@ -7,6 +7,8 @@ import EmployeeListPage from './pages/Employees/ListPage';
 import EmployeeUpdatePage from './pages/Employees/UpdatePage';
 import ActivitiesListPage from './pages/Activities/ListPage';
 import ActivitiesUpdatePage from './pages/Activities/UpdatePage';
+import PayinsListPage from './pages/Payins/ListPage';
+import PayinsUpdatePage from './pages/Payins/UpdatePage';
 import LayoutPage from '@/pages/LayoutPage';
 
 export default [
@@ -55,6 +57,16 @@ export default [
         path: 'activities/:id',
         component: ActivitiesUpdatePage,
         name: 'edit-activity',
+      },
+      {
+        path: 'payins',
+        component: PayinsListPage,
+        name: 'all-payins',
+      },
+      {
+        path: 'payins/:id',
+        component: PayinsUpdatePage,
+        name: 'edit-payins',
       },
       {
         path: '*',

@@ -36,6 +36,7 @@ export default {
         { title: 'Projects', path: '/projects' },
         { title: 'Employees', path: '/employees' },
         { title: 'Activities', path: '/activities' },
+        { title: 'Payins', path: '/payins' },
       ],
     };
   },

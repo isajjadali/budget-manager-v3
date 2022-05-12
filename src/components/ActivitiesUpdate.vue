@@ -18,7 +18,7 @@
                 class="ma-3"
               >
                 <v-text-field
-                  v-model="activity.amount"
+                  v-model.number="currentData.amount"
                   label="Amount"
                   :rules="[rules.required]"
                   value=""
@@ -42,7 +42,7 @@
                 >
                   <template #activator="{ on, attrs }">
                     <v-text-field
-                      v-model="activity.date"
+                      v-model="currentData.date"
                       label="Enter Date"
                       prepend-icon="mdi-calendar"
                       readonly
@@ -51,7 +51,7 @@
                     />
                   </template>
                   <v-date-picker
-                    v-model="activity.date"
+                    v-model="currentData.date"
                     @input="menu2 = false"
                   />
                 </v-menu>
@@ -60,11 +60,22 @@
             <v-row>
               <v-col>
                 <v-select
-                  v-model="activity.employeeId"
+                  v-model="currentData.employeeId"
                   :items="employees"
                   item-text="fullName"
                   item-value="id"
                   label="Available Employees"
+                />
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col>
+                <v-select
+                  v-model="currentData.projectId"
+                  :items="projects"
+                  item-text="name"
+                  item-value="id"
+                  label="Select Project"
                 />
               </v-col>
             </v-row>
@@ -96,7 +107,7 @@
 export default {
   name: 'ActivitiesUpdate',
   props: {
-    activity: {
+    currentData: {
       type: Object,
       required: true,
       date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
@@ -104,6 +115,7 @@ export default {
         .substr(0, 10),
     },
     employees: [],
+    projects: [],
   },
   data: () => ({
     taskDateMenu: false,
@@ -113,7 +125,7 @@ export default {
   }),
   methods: {
     onSave() {
-      this.$emit('save', this.activity);
+      this.$emit('save', this.currentData);
     },
     onCancel() {
       this.$emit('cancel');

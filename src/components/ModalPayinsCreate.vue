@@ -11,7 +11,7 @@
         v-bind="attrs"
         v-on="on"
       >
-        Create Activity
+        Create Payin
       </v-btn>
     </template>
     <v-col cols="12">
@@ -37,23 +37,23 @@ export default {
     dialog: false,
   }),
   computed: {
-    ...mapState('global', ['isCreatingActivity', 'employees', 'projects']),
+    ...mapState('global', ['projects', 'employees']),
   },
   methods: {
-    ...mapActions('global', ['createActivity', 'fetchAllEmployees', 'fetchAllProjects']),
+    ...mapActions('global', ['createPayin', 'fetchAllEmployees', 'fetchAllProjects']),
     onClose() {
       this.dialog = false;
       this.$emit('close');
     },
-    async onSave(newActivity) {
+    async onSave(newPayin) {
+      await this.createPayin(newPayin);
+      this.$emit('save', newPayin);
       this.dialog = false;
-      await this.createActivity(newActivity);
-      this.$emit('save', newActivity.data);
     },
   },
   mounted() {
     this.fetchAllEmployees();
     this.fetchAllProjects();
-  }
+  },
 };
 </script>
