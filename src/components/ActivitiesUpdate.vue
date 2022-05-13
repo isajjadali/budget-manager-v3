@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-row
-      class="ma-6 pa-3"
+      
       justify="center"
     >
       <v-card width="960px">

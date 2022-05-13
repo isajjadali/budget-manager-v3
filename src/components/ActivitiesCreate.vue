@@ -116,9 +116,6 @@ export default {
       };
       this.$emit("cancel");
     },
-    disableSaveBtn() {
-      !!this.invalid;
-    },
   },
   mounted() {
     (this.invalid = false), this.activity;

@@ -66,6 +66,7 @@ module.exports = (router) => {
     .post(
       asyncMiddleware(findCreateDate()),
       asyncMiddleware(getEmployee),
+      asyncMiddleware(projectByIdMiddleware(true)),
       asyncMiddleware(async (req, res) => {
         const {amount, projectId} = req.body;
         const activity = await req.employee.logActivity({

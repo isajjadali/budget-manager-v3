@@ -2,10 +2,10 @@
   <div class="text--primary">
     <v-hover>
       <template v-slot:default="{ hover }">
-        <v-card :elevation="hover ? 24 : 6" class="mx-auto pa-4" @click="onItemClick">
+        <v-card :elevation="hover ? 18 : 3" class="pa-5" @click="onItemClick">
           <v-row>
             <v-col cols="12" sm="6" md="4">
-              {{ activity.project.name }}
+              {{ projectName }}
             </v-col>
             <v-col cols="12" sm="6" md="4">
               {{ activity.employee.fullName }}
@@ -22,8 +22,17 @@
 
 <script>
 export default {
-  props: ['activity'],
-
+  props: {
+    activity: {
+      type: Object,
+      required: true,
+    }
+  },
+  computed: {
+    projectName() {
+      return this.activity.project?.name || 'No Project';
+    }
+  },
   methods: {
     onItemClick() {
       this.$emit('itemClicked', this.activity);

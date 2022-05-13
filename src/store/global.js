@@ -142,7 +142,7 @@ export const actions = {
       );
       return acc;
     }, []);
-    commit('SET_ACTIVITIES_LIST', allActivities);
+    commit('SET_ACTIVITIES_LIST', response.dataItems);
   },
 
   async createActivity({ commit, state }, newActivity) {

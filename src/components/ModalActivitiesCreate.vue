@@ -5,7 +5,8 @@
     max-width="600px"
   >
     <template #activator="{ on, attrs }">
-      <v-btn 
+      <v-btn
+        rounded
         color="primary"
         dark
         v-bind="attrs"
