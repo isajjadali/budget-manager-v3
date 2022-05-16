@@ -1,10 +1,7 @@
 <template>
   <div>
-    <v-row
-      class="ma-6 pa-3"
-      justify="center"
-    >
-      <v-card width="960px">
+    <v-row>
+      <v-card width="100%">
         <v-card-title>
           <span class="text-h5 pa-3"><b> Update Activity </b></span>
         </v-card-title>
@@ -22,7 +19,7 @@
                   label="Amount"
                   :rules="[rules.required]"
                   value=""
-                  prefix="$"
+                  :prefix="CURRENCY_SYMBOL"
                   type="number"
                 />
               </v-col>
@@ -104,6 +101,8 @@
 </template>
 
 <script>
+import { CURRENCY_SYMBOL } from '@/enums';
+
 export default {
   name: 'ActivitiesUpdate',
   props: {
@@ -122,6 +121,7 @@ export default {
     rules: {
       required: (value) => !!value || 'Required.',
     },
+    CURRENCY_SYMBOL,
   }),
   methods: {
     onSave() {

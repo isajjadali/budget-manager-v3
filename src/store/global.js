@@ -51,13 +51,6 @@ export const mutations = {
   SET_ACTIVITIES_LIST(state, activities) {
     state.activities = activities;
   },
-
-  UPDATE_ACTIVITY(state, updatedActivity) {
-    const allActivities = state.activities.filter(
-      (activity) => activity.id !== updatedActivity.id
-    );
-    state.activities = [updatedActivity, ...allActivities];
-  },
   //==================================== Payins Mutations
   SET_PAYINS_LIST(state, allPayins) {
     state.payins = allPayins;
@@ -133,16 +126,7 @@ export const actions = {
       return;
     }
     const response = await axios.get('/admin/activities');
-    const allActivities = response.dataItems.reduce((acc, dateItem) => {
-      acc.push(
-        ...dateItem.Activities.map((activity) => ({
-          ...activity,
-          date: dateItem.date,
-        }))
-      );
-      return acc;
-    }, []);
-    commit('SET_ACTIVITIES_LIST', allActivities);
+    commit('SET_ACTIVITIES_LIST', response.dataItems);
   },
 
   async createActivity({ commit, state }, newActivity) {
@@ -152,7 +136,10 @@ export const actions = {
 
   async updateActivity({ commit }, activity) {
     const updatedActivity = await axios.put(`/admin/activities/${activity.id}`, activity);
-    commit('UPDATE_ACTIVITY', updatedActivity.data);
+  },
+
+  async deleteActivity({ commit, state }, activity) {
+    const response = await axios.delete(`/admin/activities/${activity.id}`, activity);
   },
   //==================================== Payins Actions
   async fetchAllPayins({ commit, state }, forceRefresh = false) {

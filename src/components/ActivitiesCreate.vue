@@ -14,7 +14,7 @@
                     v-model.number="activity.amount"
                     label="Amount"
                     :rules="[requiredAmount]"
-                    prefix="$"
+                    :prefix="CURRENCY_SYMBOL"
                     type="number"
                   />
                 </v-col>
@@ -75,9 +75,10 @@
             <v-btn color="blue darken-1" text @click="onCancel"> Close </v-btn>
             <v-btn
               :disabled="!invalid"
-              color="blue darken-1"
+              color="primary"
               text
               @click="onSave"
+              rounded
             >
               Save
             </v-btn>
@@ -89,6 +90,8 @@
 </template>
 
 <script>
+import { CURRENCY_SYMBOL } from '@/enums';
+
 export default {
   name: "ActivityCreate",
   props: ["employees", "projects"],
@@ -103,6 +106,7 @@ export default {
     requiredAmount: (value) => !!value || "Amount is Required.",
     dateMenu: false,
     invalid: true,
+    CURRENCY_SYMBOL,
   }),
   methods: {
     onSave() {
@@ -115,9 +119,6 @@ export default {
           .substr(0, 10),
       };
       this.$emit("cancel");
-    },
-    disableSaveBtn() {
-      !!this.invalid;
     },
   },
   mounted() {
