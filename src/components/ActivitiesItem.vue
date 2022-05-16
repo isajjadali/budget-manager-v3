@@ -16,7 +16,7 @@
             <v-col cols="12" md="1" class="d-flex justify-end align-center">
               <DropDownMenu @onActionSelected="onActionSelected" />
             </v-col>
-            <ConfirmationModal :toggleDialog="toggleDialog" @cancel="onCancel" @delete="onDelete"/>
+            <ConfirmationModal :toggleDialog="toggleConfirmationModal" @cancel="onCancel" @delete="onDelete"/>
           </v-row>
         </v-card>
       </template>
@@ -40,7 +40,7 @@ export default {
     return {
       CURRENCY_SYMBOL,
       items: [{title: 'Edit', i: 1}, {title: 'Delete', i: 2}],
-      toggleDialog: false,
+      toggleConfirmationModal: false,
     };
   },
   computed: {
@@ -57,14 +57,14 @@ export default {
         this.$emit("itemClicked", this.activity);
       }
       else {
-        this.toggleDialog = true;
+        this.toggleConfirmationModal = true;
       }
     },
     onCancel(){
-      this.toggleDialog = false;
+      this.toggleConfirmationModal = false;
     },
     onDelete(){
-      this.toggleDialog = false;
+      this.toggleConfirmationModal = false;
       this.$emit('delete', this.activity);
     },
   },
