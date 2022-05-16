@@ -154,5 +154,28 @@ module.exports = (router) => {
 
         return res.http200(activity);
       })
+    )
+    .delete(
+      asyncMiddleware(async (req, res) => {
+        let activityAmount = +req.activity.amount;
+
+        if (!req.activity.isPaid) {
+          activityAmount = activityAmount * -1;
+        }
+        const employee = await Users.$$findOne({
+          query: {
+            where: {
+              id: req.activity.employeeId,
+              roles: Roles.Employee,
+            },
+          },
+        });
+
+        await employee.update({
+          balance: +employee.balance + activityAmount,
+        });
+        await req.activity.destroy({ paranoid: false });
+        return res.http200({ message: "Deleted employee successfully." });
+      })
     );
 };
