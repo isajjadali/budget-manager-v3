@@ -69,7 +69,7 @@
                   value=""
                   label="Enter Rate per-day"
                   type="number"
-                  prefix="$"
+                  :prefix="CURRENCY_SYMBOL"
                 />
               </v-col>
             </v-row>
@@ -114,6 +114,7 @@
 
 <script>
 import { mdiAccount } from '@mdi/js';
+import { CURRENCY_SYMBOL } from '@/enums';
 
 export default {
   name: 'EmployeeUpdate',
@@ -132,6 +133,7 @@ export default {
       min: (v) => v.length >= 8 || 'Min 8 characters',
     },
     show: false,
+    CURRENCY_SYMBOL,
   }),
   methods: {
     onSave() {

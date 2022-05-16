@@ -4,15 +4,19 @@
       <template v-slot:default="{ hover }">
         <v-card :elevation="hover ? 18 : 3" class="pa-5" @click="onItemClick">
           <v-row>
-            <v-col cols="12" sm="6" md="4">
-              {{ projectName }}
+            <v-col cols="12" sm="6" md="4" class="d-flex align-center">
+              {{ projectName }} 
             </v-col>
-            <v-col cols="12" sm="6" md="4">
+            <v-col cols="12" sm="6" md="3" class="d-flex align-center">
               {{ activity.employee.fullName }}
             </v-col>
-            <v-col cols="12" sm="6" md="4">
-              {{ activity.amount }}
+            <v-col cols="12" sm="6" md="4" class="d-flex justify-end align-center">
+              <b>{{ CURRENCY_SYMBOL }}</b> {{ activity.amount }}
             </v-col>
+            <v-col cols="12" md="1" class="d-flex justify-end align-center">
+              <DropDownMenu @onActionSelected="onActionSelected" />
+            </v-col>
+            <DeleteItem :toggleDialog="toggleDialog" @cancel="onCancel" @delete="onDelete"/>
           </v-row>
         </v-card>
       </template>
@@ -21,22 +25,52 @@
 </template>
 
 <script>
+import { CURRENCY_SYMBOL } from "@/enums";
+import DeleteItem from './ConfirmationModel.vue';
+import DropDownMenu from './DropDownMenu.vue';
+
 export default {
   props: {
     activity: {
       type: Object,
       required: true,
-    }
+    },
+  },
+  data() {
+    return {
+      CURRENCY_SYMBOL,
+      items: [{title: 'Edit', i: 1}, {title: 'Delete', i: 2}],
+      toggleDialog: false,
+    };
   },
   computed: {
     projectName() {
-      return this.activity.project?.name || 'No Project';
-    }
+      return this.activity.project?.name || "No Project";
+    },
   },
   methods: {
     onItemClick() {
-      this.$emit('itemClicked', this.activity);
+      this.$emit("itemClicked", this.activity);
+    },
+    onActionSelected(Action) {
+      if(Action == "Edit") {
+        this.$emit("itemClicked", this.activity);
+      }
+      else {
+        this.toggleDialog = true;
+      }
+    },
+    onCancel(){
+      this.toggleDialog = false;
+    },
+    onDelete(){
+      this.toggleDialog = false;
+      this.$emit('delete', this.activity);
     },
   },
+  components: {
+    DeleteItem,
+    DropDownMenu,
+  }
 };
 </script>

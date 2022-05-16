@@ -3,10 +3,18 @@
     <v-dialog 
       v-model="isOpen"
       persistent
-      width="auto"
+      width="600px"
       transition="dialog-bottom-transition"
     >
-    <ActivitiesUpdate :currentData="activity" @cancel="onCancel" @save="onSave" />
+    <v-col cols="12">
+      <ActivitiesUpdate
+      :currentData="activity" 
+      :projects="projects"
+      :employees="employees"
+      @cancel="onCancel"
+      @save="onSave"
+    />
+    </v-col>
     </v-dialog>
   
 </template>
@@ -26,7 +34,9 @@ export default {
     },
     activity: {
       type: Object,
-    }
+    },
+    projects: [],
+    employees: [],
   },
   methods: {
     onCancel() {

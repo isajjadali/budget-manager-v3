@@ -1,20 +1,22 @@
 <template>
   <div>
-    <h1>{{toggleModalOpen}}</h1>
-    <v-row v-for="j in activities" :key='j.id'>
+    <v-row v-for="item in activities" :key='item.id'>
       <v-col cols='12'>
-        <h3>{{getSectionLabel(j.date)}}</h3>
+        <h3>{{getSectionLabel(item.date)}}</h3>
       </v-col>
-      <v-col cols='12' v-for='activity in j.Activities' :key="activity.id">
+      <v-col cols='12' v-for='activity in item.Activities' :key="activity.id">
         <ActivitiesItem 
-          :activity="activity" 
-          @itemClicked="OnActivityClick" 
+          :activity="activity"
+          @itemClicked="OnActivityClick(item, $event)" 
+          @delete="onActivityDelete"
         />
       </v-col>
     </v-row>
     <ModalEdit 
       :activity="activeActivity"
       :isOpen="toggleModalOpen"
+      :projects="projects"
+      :employees="employees"
       @cancel="OnCancel"
       @save="OnSave"
     />
@@ -30,20 +32,21 @@ export default {
   name: "ActivitiesListing",
   data: () => ({
     toggleModalOpen: false,
-    activeActivity: {
-      type: Object,
-    }
+    activeActivity: {},
   }),
   components: {
     ActivitiesItem,
     ModalEdit,
   },
+  computed: {
+    ...mapState("global", ["activities", "projects", "employees"]),
+  },
   methods: {
-    ...mapActions("global", ["fetchAllActivities"]),
+    ...mapActions("global", ["fetchAllActivities", "updateActivity", "deleteActivity"]),
 
-    OnActivityClick(activity) {
+    OnActivityClick(item, activity) {
       this.toggleModalOpen = true;
-      this.activeActivity = activity;
+      this.activeActivity = { ...activity, date: item.date };
     },
     getSectionLabel(date) {
         const today = new Date();
@@ -66,15 +69,17 @@ export default {
         }
     },
     async OnSave(activity) {
-      await updateActivity(activity);
+      await this.updateActivity(activity);
       this.toggleModalOpen = false;
+      this.fetchAllActivities(true);
     },
     OnCancel() {
       this.toggleModalOpen = false;
     },
-  },
-  computed: {
-    ...mapState("global", ["activities", "updateActivity"]),
+    onActivityDelete(activity){
+      this.deleteActivity(activity);
+      this.fetchAllActivities(true);
+    }
   },
   mounted() {
     this.fetchAllActivities();
