@@ -16,7 +16,7 @@
             <v-col cols="12" md="1" class="d-flex justify-end align-center">
               <DropDownMenu @onActionSelected="onActionSelected" />
             </v-col>
-            <DeleteItem :toggleDialog="toggleDialog" @cancel="onCancel" @delete="onDelete"/>
+            <ConfirmationModal :toggleDialog="toggleDialog" @cancel="onCancel" @delete="onDelete"/>
           </v-row>
         </v-card>
       </template>
@@ -26,7 +26,7 @@
 
 <script>
 import { CURRENCY_SYMBOL } from "@/enums";
-import DeleteItem from './ConfirmationModel.vue';
+import ConfirmationModal from './ConfirmationModal.vue';
 import DropDownMenu from './DropDownMenu.vue';
 
 export default {
@@ -69,7 +69,7 @@ export default {
     },
   },
   components: {
-    DeleteItem,
+    ConfirmationModal,
     DropDownMenu,
   }
 };
