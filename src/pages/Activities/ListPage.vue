@@ -1,23 +1,25 @@
 <template>
   <v-container>
-    <ModalActivitiesList />
     <v-row>
+      <v-col cols='12' class="d-flex justify-end">
+        <ModalActivitiesCreate />
+      </v-col>
       <v-col cols="12">
-        <ActivitiesList />
+        <ActivitiesListing />
       </v-col>
     </v-row>
   </v-container>
 </template>
 
 <script>
-import ModalActivitiesList from '../../components/ModalActivitiesCreate.vue';
-import ActivitiesList from '../../components/ActivitiesList.vue';
+import ModalActivitiesCreate from '../../components/ModalActivitiesCreate.vue';
+import ActivitiesListing from '../../components/ActivitiesListing.vue';
 
 export default {
-  name: 'ActivitiesListPage',
+  name: 'ActivitesListPage',
   components: {
-    ModalActivitiesList,
-    ActivitiesList,
+    ModalActivitiesCreate,
+    ActivitiesListing,
   },
 };
 </script>

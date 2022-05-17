@@ -9,7 +9,7 @@ module.exports = {
     post: {
       body: {
         ...EmployeeCommonField,
-        allowableKeys: ['firstName', 'lastName', 'email', 'password'],
+        allowableKeys: ['firstName', 'lastName', 'email', 'password', 'rate', 'address'],
       },
     },
   },
@@ -19,7 +19,7 @@ module.exports = {
         firstName: {...EmployeeCommonField.firstName, isOptional: true},
         lastName: {...EmployeeCommonField.lastName, isOptional: true},
         email: {...EmployeeCommonField.email, isOptional: true},
-        allowableKeys: ['firstName', 'lastName', 'email'],
+        allowableKeys: ['firstName', 'lastName', 'email', 'password', 'rate', 'address'],
       }
     }
   }

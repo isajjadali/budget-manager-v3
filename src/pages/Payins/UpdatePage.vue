@@ -1,10 +1,10 @@
 <template>
-  <p v-if="!currentActivity">
+  <p v-if="!currentPayin">
     <b> Invalid ID </b>
   </p>
   <ActivitiesUpdate
     v-else
-    :currentData="currentActivity"
+    :currentData="currentPayin"
     :employees="employees"
     :projects="projects"
     @save="onSave"
@@ -22,30 +22,30 @@ export default {
     ActivitiesUpdate,
   },
   computed: {
-    ...mapState('global', ['activities', 'employees', 'projects']),
-    currentActivity() {
+    ...mapState('global', ['projects', 'payins', 'employees']),
+    currentPayin() {
       const id = this.$route.params.id;
       if (id) {
-        const activity = this.activities.find((activity) => activity.id === +id);
-        return activity;
+        const payin = this.payins.find((payin) => payin.id === +id);
+        return payin;
       }
       return null;
     },
   },
   methods: {
-    ...mapActions('global', ['updateActivity', 'fetchAllEmployees']),
+    ...mapActions('global', ['fetchAllPayins', 'updatePayin']),
 
     onCancel() {
-      this.$router.push({ name: 'all-activities' });
+      this.$router.push({ name: 'all-payins' });
     },
 
-    async onSave(activity) {
-      await this.updateActivity(activity);
-      this.$router.push({ name: 'all-activities' });
+    onSave(payin) {
+      this.updatePayin(payin);
+      this.$router.push({ name: 'all-payins' });
     },
   },
   mounted() {
-    this.fetchAllEmployees();
+    this.fetchAllPayins();
   },
 };
 </script>
