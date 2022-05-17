@@ -25,6 +25,10 @@ module.exports = function (sequelize, DataTypes) {
         defaultValue: false,
         type: BOOLEAN,
       },
+      isPayin: {
+        defaultValue: false,
+        type: BOOLEAN,
+      },
       projectId: {
         references: {
           key: 'id',
