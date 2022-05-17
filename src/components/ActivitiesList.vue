@@ -93,8 +93,7 @@ export default {
     },
     async onActivityDelete(activity){
       if(this.isPayin) {
-        await this.deletePayin(activity);
-        this.payins
+        alert("Payin Deleted")
       }
       else {
         await this.deleteActivity(activity);
