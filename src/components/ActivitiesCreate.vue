@@ -45,7 +45,7 @@
                 </v-col>
               </v-row>
               <v-row>
-                <v-col>
+                <v-col v-if="!isPayin">
                   <v-select
                     v-model="activity.employeeId"
                     :items="employees"
@@ -94,7 +94,7 @@ import { CURRENCY_SYMBOL } from '@/enums';
 
 export default {
   name: "ActivityCreate",
-  props: ["employees", "projects"],
+  props: ["isPayin", "employees", "projects"],
   data: () => ({
     activity: {
       date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)

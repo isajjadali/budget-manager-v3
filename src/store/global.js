@@ -147,16 +147,7 @@ export const actions = {
       return;
     }
     const response = await axios.get('/admin/payins');
-    const allPayins = response.dataItems.reduce((acc, dateItem) => {
-      acc.push(
-        ...dateItem.Activities.map((activity) => ({
-          ...activity,
-          date: dateItem.date,
-        }))
-      );
-      return acc;
-    }, []);
-    commit('SET_PAYINS_LIST', allPayins);
+    commit('SET_PAYINS_LIST', response.dataItems);
   },
 
   async createPayin({ commit, state }, newPayin) {
@@ -167,6 +158,12 @@ export const actions = {
   async updatePayin({ commit }, updatedPayin) {
     commit('UPDATE_PAYIN', updatedPayin);
   },
+
+  async deletePayin({ commit, state }, payin) {
+    state.payins = state.payins.filter(
+      (p) => p.id !== payin.id
+    );
+  }
 };
 
 export default {

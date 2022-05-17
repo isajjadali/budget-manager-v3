@@ -5,9 +5,9 @@
         <v-card :elevation="hover ? 18 : 3" class="pa-5" @click="onItemClick">
           <v-row>
             <v-col cols="12" sm="6" md="4" class="d-flex align-center">
-              {{ projectName }} 
+              {{ projectName }}
             </v-col>
-            <v-col cols="12" sm="6" md="3" class="d-flex align-center">
+            <v-col v-if="!isPayin" cols="12" sm="6" md="3" class="d-flex align-center">
               {{ activity.employee.fullName }}
             </v-col>
             <v-col cols="12" sm="6" md="4" class="d-flex justify-end align-center">
@@ -34,6 +34,9 @@ export default {
     activity: {
       type: Object,
       required: true,
+    },
+    isPayin: {
+      type: Boolean,
     },
   },
   data() {

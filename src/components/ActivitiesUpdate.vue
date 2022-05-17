@@ -55,7 +55,7 @@
               </v-col>
             </v-row>
             <v-row>
-              <v-col>
+              <v-col v-if="currentData.employeeId">
                 <v-select
                   v-model="currentData.employeeId"
                   :items="employees"
@@ -115,6 +115,9 @@ export default {
     },
     employees: [],
     projects: [],
+    isPayin: {
+      type: Boolean,
+    },
   },
   data: () => ({
     taskDateMenu: false,

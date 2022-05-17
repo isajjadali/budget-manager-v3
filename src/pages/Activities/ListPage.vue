@@ -5,7 +5,7 @@
         <ModalActivitiesCreate />
       </v-col>
       <v-col cols="12">
-        <ActivitiesListing />
+        <ActivitiesList :isPayin="false" />
       </v-col>
     </v-row>
   </v-container>
@@ -13,13 +13,13 @@
 
 <script>
 import ModalActivitiesCreate from '../../components/ModalActivitiesCreate.vue';
-import ActivitiesListing from '../../components/ActivitiesListing.vue';
+import ActivitiesList from '../../components/ActivitiesList.vue';
 
 export default {
   name: 'ActivitesListPage',
   components: {
     ModalActivitiesCreate,
-    ActivitiesListing,
+    ActivitiesList,
   },
 };
 </script>

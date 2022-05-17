@@ -1,111 +1,116 @@
 <template>
   <div>
-    <v-row no-gutters>
-      <v-col>
-        <h1 class="text-center">
-          {{ header }}
-        </h1>
+    <v-row v-for="item in currentList" :key='item.id'>
+      <v-col cols='12'>
+        <h3>{{getSectionLabel( item.date )}}</h3>
+      </v-col>
+      <v-col cols='12' v-for="activity in item.Activities" :key="activity.id">
+        <ActivitiesItem 
+          :activity="activity"
+          :isPayin="isPayin"
+          @itemClicked="onItemClick(item, $event)" 
+          @delete="onActivityDelete"
+        />
       </v-col>
     </v-row>
-    <v-row>
-      <v-col>
-        <div class="d-flex">
-          <v-card width="100%">
-            <v-simple-table>
-              <template
-                v-slot:
-                default
-              >
-                <thead>
-                  <tr>
-                    <th class="text-left">
-                      Employee Name
-                    </th>
-                    <th class="text-left">
-                      Amount
-                    </th>
-                    <th class="text-left">
-                      Date
-                    </th>
-                    <th class="text-left">
-                      Edit
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr
-                    v-for="activity in activities"
-                    :key="activity.id"
-                  >
-                    <td>{{ activity.employee.fullName }}</td>
-                    <td>{{ activity.amount }}</td>
-                    <td>{{ activity.date }}</td>
-                    <td>
-                      <!-- Edit Button -->
-                      <div class="text-center pa-1">
-                        <router-link
-                          :to="{
-                            name: 'edit-activity',
-                            params: { id: activity.id },
-                          }"
-                        >
-                          <v-btn
-                            style="height: 43px; width: 50px"
-                            class="mx-1"
-                            fab
-                            dark
-                            large
-                            color="cyan"
-                          >
-                            <v-icon
-                              dark
-                              @click="editActivity(activity)"
-                            >
-                              mdi-pencil
-                            </v-icon>
-                          </v-btn>
-                        </router-link>
-                      </div>
-                    </td>
-                  </tr>
-                </tbody>
-              </template>
-            </v-simple-table>
-          </v-card>
-        </div>
-      </v-col>
-    </v-row>
+    <ModalEdit
+      :isPayin="isPayin"
+      :activity="activeActivity"
+      :isOpen="toggleModalOpen"
+      :projects="projects"
+      :employees="employees"
+      @cancel="OnCancel"
+      @save="OnSave"
+    />
   </div>
 </template>
 
 <script>
-import {mapState, mapActions} from 'vuex';
+import { mapState, mapActions } from "vuex";
+import ActivitiesItem from "./ActivitiesItem.vue";
+import ModalEdit from "./ModalEdit.vue";
 
 export default {
-  name: 'ActivitiesList',
-  data() {
-    return {
-      header: 'All Activities ',
-    };
-  },
-  methods: {
-    ...mapActions('global', ['fetchAllActivities']),
-
-    editActivity(activity) {
-      this.currentActivity = activity;
+  props: {
+    isPayin: {
+      type: Boolean,
     },
   },
-  computed: {
-    ...mapState('global', ['activities']),
+  name: "ActivitiesListing",
+  data: () => ({
+    toggleModalOpen: false,
+    currentList: [],
+    activitiesDates: [],
+    activeActivity: {},
+  }),
+  components: {
+    ActivitiesItem,
+    ModalEdit,
   },
-  mounted() {
-    this.fetchAllActivities();
+  computed: {
+    ...mapState("global", ["activities", "payins", "projects", "employees"]),
+  },
+  methods: {
+    ...mapActions("global", ["fetchAllActivities", "fetchAllPayins", "updateActivity", "deleteActivity", "updatePayin", "deletePayin"]),
+
+    onItemClick(item, activity) {
+      this.toggleModalOpen = true;
+      this.activeActivity = { ...activity, date: item.date};
+    },
+    getSectionLabel(date) {
+        const today = new Date();
+        today.setHours(0);
+        today.setMinutes(0);
+        today.setSeconds(0);
+        today.setMilliseconds(0);
+        const compDate = new Date(date);
+        compDate.setHours(0);
+        compDate.setMinutes(0);
+        compDate.setSeconds(0);
+        compDate.setMilliseconds(0);
+        const diff = today.getTime() - compDate.getTime();
+        if (compDate.getTime() == today.getTime()) {
+          return "Today";
+        } else if (diff <= (24 * 60 * 60 * 1000)) {
+          return "Yesterday";
+        } else { 
+          return date; // or format it what ever way you want
+        }
+    },
+    async OnSave(activity) {
+      if(this.isPayin) {
+        await this.updatePayin(activity);
+        this.payins
+      }
+      else {
+        await this.updateActivity(activity);
+        this.fetchAllActivities(true);
+      }
+      this.toggleModalOpen = false;
+    },
+    OnCancel() {
+      this.toggleModalOpen = false;
+    },
+    async onActivityDelete(activity){
+      if(this.isPayin) {
+        await this.deletePayin(activity);
+        this.payins
+      }
+      else {
+        await this.deleteActivity(activity);
+        this.fetchAllActivities(true);
+      }
+    },
+  },
+  async mounted() {
+    if(this.isPayin) {
+      await this.fetchAllPayins();
+      this.currentList = this.payins;
+    }
+    else {
+      await this.fetchAllActivities();
+      this.currentList = this.activities;
+    }
   },
 };
 </script>
-
-<style>
-th {
-  width: 30%;
-}
-</style>

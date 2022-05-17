@@ -6,6 +6,7 @@
   >
     <template #activator="{ on, attrs }">
       <v-btn 
+        rounded
         color="primary"
         dark
         v-bind="attrs"
@@ -16,6 +17,7 @@
     </template>
     <v-col cols="12">
       <ActivitiesCreate
+        :isPayin="true"
         :employees="employees"
         :projects="projects"
         @cancel="onClose"
