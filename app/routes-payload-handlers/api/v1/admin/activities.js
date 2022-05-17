@@ -2,13 +2,14 @@ const activitiesCommonField = {
   date: {type: 'string'},
   employeeId: {type: 'number'},
   projectId: {type: 'number'},
+  amount: {type:'number', isOptional: true },
 };
 module.exports = {
   '/': {
     post: {
       body: {
         ...activitiesCommonField,
-        allowableKeys: ['date', 'employeeId', 'projectId'],
+        allowableKeys: ['date', 'employeeId', 'projectId', 'amount'],
       },
     },
   },
@@ -18,7 +19,8 @@ module.exports = {
         date: {...activitiesCommonField.date, isOptional: true},
         employeeId: {...activitiesCommonField.employeeId, isOptional: true},
         projectId: {...activitiesCommonField.projectId, isOptional: true},
-        allowableKeys: ['date', 'employeeId', 'projectId'],
+        amount: {...activitiesCommonField.amount},
+        allowableKeys: ['date', 'employeeId', 'projectId', 'amount'],
       }
     }
   }
