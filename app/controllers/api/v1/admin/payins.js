@@ -1,5 +1,5 @@
 const {asyncMiddleware} = global;
-const {Dates, Projects, Activities,Sequelize} = global.db;
+const {Dates, Activities, Projects, Sequelize} = global.db;
 const findCreateDate = require(`${global.paths.middlewares}/find-create-date`);
 
 module.exports = (router) => {
@@ -38,6 +38,12 @@ module.exports = (router) => {
           model: Activities,
           as: Activities.$$name,
           required: true,
+          include: [
+            {
+              model: Projects,
+              as: Projects.$$singularName
+            }
+          ]
         },
       ];
       const payins = await Dates.getResultsOf({

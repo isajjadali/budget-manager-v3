@@ -1,7 +1,7 @@
 const {asyncMiddleware} = global;
 const findCreateDate = require(`${global.paths.middlewares}/find-create-date`);
 const {Roles} = global.appEnums;
-const {Users, Activities, Projects, Dates} = global.db;
+const {Users, Activities, Projects, Dates, Sequelize} = global.db;
 
 module.exports = (router) => {
   async function getEmployee(req, res, next) {
@@ -85,7 +85,11 @@ module.exports = (router) => {
           limit: req.limit,
           offset: req.offset,
         };
-        const where = {};
+        const where = {
+          employeeId: {
+            [Sequelize.Op.ne]: null
+          }
+        };
         if (projectId) {
           where.projectId = +projectId;
         }
@@ -149,6 +153,29 @@ module.exports = (router) => {
         const activity = await req.employee.logActivity(newActivity);
 
         return res.http200(activity);
+      })
+    )
+    .delete(
+      asyncMiddleware(async (req, res) => {
+        let activityAmount = +req.activity.amount;
+
+        if (!req.activity.isPaid) {
+          activityAmount = activityAmount * -1;
+        }
+        const employee = await Users.$$findOne({
+          query: {
+            where: {
+              id: req.activity.employeeId,
+              roles: Roles.Employee,
+            },
+          },
+        });
+
+        await employee.update({
+          balance: +employee.balance + activityAmount,
+        });
+        await req.activity.destroy({ paranoid: false });
+        return res.http200({ message: "Deleted employee successfully." });
       })
     );
 };

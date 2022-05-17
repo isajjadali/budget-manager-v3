@@ -19,13 +19,13 @@
                 <thead>
                   <tr>
                     <th class="text-left">
-                      Name
+                      Project Name
                     </th>
                     <th class="text-left">
                       Amount
                     </th>
                     <th class="text-left">
-                      Notes
+                      Date
                     </th>
                     <th class="text-left">
                       Edit
@@ -34,18 +34,19 @@
                 </thead>
                 <tbody>
                   <tr
-                    v-for="project in projects"
-                    :key="project.name"
-                  >                  
-                    <td>{{ project.name }}</td>
-                    <td>{{ project.amount }}</td>
-                    <td>{{ project.notes }}</td>
+                    v-for="payin in payins"
+                    :key="payin.id"
+                  >
+                    <td>{{ payin.project.name }}</td>
+                    <td>{{ payin.amount }}</td>
+                    <td>{{ payin.date }}</td>
                     <td>
+                      <!-- Edit Button -->
                       <div class="text-center pa-1">
                         <router-link
                           :to="{
-                            name: 'edit-project',
-                            params: { id: project.id },
+                            name: 'edit-payins',
+                            params: { id: payin.id },
                           }"
                         >
                           <v-btn
@@ -58,7 +59,7 @@
                           >
                             <v-icon
                               dark
-                              @click="editProject(project)"
+                              @click="editPayin(payin)"
                             >
                               mdi-pencil
                             </v-icon>
@@ -78,27 +79,33 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex';
+import {mapState, mapActions} from 'vuex';
 
 export default {
-  name: 'ProjectList',
+  name: 'PayinsList',
   data() {
     return {
-      header: 'All Projects ',
+      header: 'All Payins',
     };
   },
   methods: {
-    ...mapActions('global', ['fetchAllProjects']),
+    ...mapActions('global', ['fetchAllPayins']),
 
-    editProject(project) {
-      this.activeProject = project;
+    editPayin(payin) {
+      this.currentPayin = payin;
     },
   },
   computed: {
-    ...mapState('global', ['projects']),
+    ...mapState('global', ['payins']),
   },
   mounted() {
-    this.fetchAllProjects();
-  },
+    this.fetchAllPayins();
+  },  
 };
 </script>
+
+<style>
+th {
+  width: 30%;
+}
+</style>

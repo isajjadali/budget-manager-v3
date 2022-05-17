@@ -1,10 +1,7 @@
 <template>
   <div>
-    <v-row
-      class="ma-6 pa-3"
-      justify="center"
-    >
-      <v-card width="960px">
+    <v-row>
+      <v-card width="100%">
         <v-card-title>
           <span class="text-h5 pa-3"><b> Update Activity </b></span>
         </v-card-title>
@@ -18,11 +15,11 @@
                 class="ma-3"
               >
                 <v-text-field
-                  v-model="activity.amount"
+                  v-model.number="currentData.amount"
                   label="Amount"
                   :rules="[rules.required]"
                   value=""
-                  prefix="$"
+                  :prefix="CURRENCY_SYMBOL"
                   type="number"
                 />
               </v-col>
@@ -42,7 +39,7 @@
                 >
                   <template #activator="{ on, attrs }">
                     <v-text-field
-                      v-model="activity.date"
+                      v-model="currentData.date"
                       label="Enter Date"
                       prepend-icon="mdi-calendar"
                       readonly
@@ -51,7 +48,7 @@
                     />
                   </template>
                   <v-date-picker
-                    v-model="activity.date"
+                    v-model="currentData.date"
                     @input="menu2 = false"
                   />
                 </v-menu>
@@ -60,11 +57,22 @@
             <v-row>
               <v-col>
                 <v-select
-                  v-model="activity.employeeId"
+                  v-model="currentData.employeeId"
                   :items="employees"
                   item-text="fullName"
                   item-value="id"
                   label="Available Employees"
+                />
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col>
+                <v-select
+                  v-model="currentData.projectId"
+                  :items="projects"
+                  item-text="name"
+                  item-value="id"
+                  label="Select Project"
                 />
               </v-col>
             </v-row>
@@ -93,10 +101,12 @@
 </template>
 
 <script>
+import { CURRENCY_SYMBOL } from '@/enums';
+
 export default {
   name: 'ActivitiesUpdate',
   props: {
-    activity: {
+    currentData: {
       type: Object,
       required: true,
       date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
@@ -104,16 +114,18 @@ export default {
         .substr(0, 10),
     },
     employees: [],
+    projects: [],
   },
   data: () => ({
     taskDateMenu: false,
     rules: {
       required: (value) => !!value || 'Required.',
     },
+    CURRENCY_SYMBOL,
   }),
   methods: {
     onSave() {
-      this.$emit('save', this.activity);
+      this.$emit('save', this.currentData);
     },
     onCancel() {
       this.$emit('cancel');

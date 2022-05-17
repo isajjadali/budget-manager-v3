@@ -83,6 +83,7 @@
                 value=""
                 label="Enter Rate per-day"
                 type="number"
+                :prefix="CURRENCY_SYMBOL"
               />
             </v-col>
             <v-col
@@ -122,6 +123,8 @@
 </template>
 
 <script>
+import { CURRENCY_SYMBOL } from '@/enums';
+
 export default {
   name: 'EmployeeCreate',
   data: () => ({
@@ -131,6 +134,7 @@ export default {
       required: (value) => !!value || 'Required.',
     },
     show: false,
+    CURRENCY_SYMBOL,
   }),
   methods: {
     onSave() {

@@ -5,6 +5,7 @@ export const state = () => ({
   projects: [],
   employees: [],
   activities: [],
+  payins: [],
   isCreatingProject: false,
   isCreatingEmployee: false,
 });
@@ -50,16 +51,21 @@ export const mutations = {
   SET_ACTIVITIES_LIST(state, activities) {
     state.activities = activities;
   },
+  //==================================== Payins Mutations
+  SET_PAYINS_LIST(state, allPayins) {
+    state.payins = allPayins;
+  },
 
-  UPDATE_ACTIVITY(state, updatedActivity) {
-    const allActivities = state.activities.filter(
-      (activity) => activity.id !== updatedActivity.id
+  UPDATE_PAYIN(state, updatedPayin) {
+    const allPayins = state.payins.filter(
+      (payins) => payins.id !== updatedPayin.id
     );
-    state.activities = [updatedActivity, ...allActivities];
+    state.payins = [updatedPayin, ...allPayins];
   },
 };
 
 export const actions = {
+
   async login({ commit }, payload) {
     const response = await axios.post('/login', payload);
     commit('SET_USER', response.data);
@@ -70,7 +76,10 @@ export const actions = {
     commit('SET_LOGGED_IN_USER', response.data);
   },
   //==================================== Projects Actions
-  async fetchAllProjects({ commit }) {
+  async fetchAllProjects({ commit, state }, forceRefresh = false) {
+    if(!forceRefresh && state.projects.length) {
+      return;
+    }
     const response = await axios.get('/admin/project');
     commit('SET_PROJECTS_LIST', response.dataItems);
   },
@@ -88,7 +97,10 @@ export const actions = {
     commit('SET_IS_CREATING_PROJECT', false);
   },
   //==================================== Employees Actions
-  async fetchAllEmployees({ commit }) {
+  async fetchAllEmployees({ commit, state }, forceRefresh = false) {
+    if (!forceRefresh && state.employees.length) {
+      return;
+    }
     const response = await axios.get('/admin/employee');
     commit('SET_EMPLOYEES_LIST', response.dataItems);
   },
@@ -109,9 +121,33 @@ export const actions = {
     commit('UPDATE_EMPLOYEE', updatedEmployee.data);
   },
   //==================================== Activities Actions
-  async fetchAllActivities({ commit }) {
+  async fetchAllActivities({ commit, state }, forceRefresh = false) {
+    if(!forceRefresh && state.activities.length) {
+      return;
+    }
     const response = await axios.get('/admin/activities');
-    const allActivities = response.dataItems.reduce((acc, dateItem) => {
+    commit('SET_ACTIVITIES_LIST', response.dataItems);
+  },
+
+  async createActivity({ commit, state }, newActivity) {
+    const response = await axios.post('/admin/activities', newActivity);
+    commit('SET_ACTIVITIES_LIST', [response.data, ...state.activities]);
+  },
+
+  async updateActivity({ commit }, activity) {
+    const updatedActivity = await axios.put(`/admin/activities/${activity.id}`, activity);
+  },
+
+  async deleteActivity({ commit, state }, activity) {
+    const response = await axios.delete(`/admin/activities/${activity.id}`, activity);
+  },
+  //==================================== Payins Actions
+  async fetchAllPayins({ commit, state }, forceRefresh = false) {
+    if(!forceRefresh && state.payins.length) {
+      return;
+    }
+    const response = await axios.get('/admin/payins');
+    const allPayins = response.dataItems.reduce((acc, dateItem) => {
       acc.push(
         ...dateItem.Activities.map((activity) => ({
           ...activity,
@@ -120,19 +156,16 @@ export const actions = {
       );
       return acc;
     }, []);
-    commit('SET_ACTIVITIES_LIST', allActivities);
+    commit('SET_PAYINS_LIST', allPayins);
   },
 
-  async createActivity({ commit, state }, newActivity) {
-    commit('SET_IS_CREATING_EMPLOYEE', true);
-    const response = await axios.post('/admin/activities', newActivity);
-
-    commit('SET_ACTIVITIES_LIST', [response.data, ...state.activities]);
-    commit('SET_IS_CREATING_EMPLOYEE', false);
+  async createPayin({ commit, state }, newPayin) {
+    const response = await axios.post('/admin/payins', newPayin);
+    commit('SET_PAYINS_LIST', [response.data, ...state.payins]);
   },
 
-  async updateActivity({ commit }, updatedActivity) {
-    commit('UPDATE_ACTIVITY', updatedActivity);
+  async updatePayin({ commit }, updatedPayin) {
+    commit('UPDATE_PAYIN', updatedPayin);
   },
 };
 
