@@ -42,13 +42,14 @@ export default {
     ...mapState('global', ['projects', 'employees']),
   },
   methods: {
-    ...mapActions('global', ['createPayin', 'fetchAllEmployees', 'fetchAllProjects']),
+    ...mapActions('global', ['createPayin', 'fetchAllEmployees', 'fetchAllProjects', 'fetchAllPayins']),
     onClose() {
       this.dialog = false;
       this.$emit('close');
     },
     async onSave(newPayin) {
       await this.createPayin(newPayin);
+      await this.fetchAllPayins(true);
       this.$emit('save', newPayin);
       this.dialog = false;
     },
