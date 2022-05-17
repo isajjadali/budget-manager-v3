@@ -1,7 +1,7 @@
-const { asyncMiddleware } = global;
+const {asyncMiddleware} = global;
 const findCreateDate = require(`${global.paths.middlewares}/find-create-date`);
-const { Roles } = global.appEnums;
-const { Users, Activities, Projects, Dates } = global.db;
+const {Roles} = global.appEnums;
+const {Users, Activities, Projects, Dates} = global.db;
 
 module.exports = (router) => {
   async function getEmployee(req, res, next) {
@@ -31,12 +31,12 @@ module.exports = (router) => {
 
   function projectByIdMiddleware(isRequired) {
     return async (req, res, next) => {
-      const { projectId } = req.body;
+      const {projectId} = req.body;
       if (!isRequired && !projectId) {
         next();
         return;
       }
-      req.project = await Projects.$$findByPk({ id: projectId });
+      req.project = await Projects.$$findByPk({id: projectId});
       next();
     };
   }
@@ -67,7 +67,7 @@ module.exports = (router) => {
       asyncMiddleware(findCreateDate()),
       asyncMiddleware(getEmployee),
       asyncMiddleware(async (req, res) => {
-        const { amount, projectId } = req.body;
+        const {amount, projectId} = req.body;
         const activity = await req.employee.logActivity({
           amount,
           projectId,
@@ -79,7 +79,7 @@ module.exports = (router) => {
     .get(
       asyncMiddleware(async (req, res) => {
         console.log("In Activity Gets");
-        const { projectId, employeeId, ...rest } = req.query;
+        const {projectId, employeeId, ...rest} = req.query;
         const filters = {
           ...rest,
           limit: req.limit,
@@ -145,7 +145,7 @@ module.exports = (router) => {
         await req.activityOwnedByEmployee.update({
           balance: +req.activityOwnedByEmployee.balance + activityAmount,
         });
-        await req.activity.destroy({ paranoid: false });
+        await req.activity.destroy({paranoid: false});
         const activity = await req.employee.logActivity(newActivity);
 
         return res.http200(activity);
@@ -170,8 +170,8 @@ module.exports = (router) => {
         await employee.update({
           balance: +employee.balance + activityAmount,
         });
-        await req.activity.destroy({ paranoid: false });
-        return res.http200({ message: "Deleted employee successfully." });
+        await req.activity.destroy({paranoid: false});
+        return res.http200({message: "Deleted activity successfully."});
       })
     );
 };
