@@ -112,6 +112,7 @@ export default {
   methods: {
     onSave() {
       this.$emit("save", this.activity);
+      this.activity = {};
     },
     onCancel() {
       this.activity = {
@@ -121,6 +122,8 @@ export default {
       };
       this.$emit("cancel");
     },
+  },
+  computed: {
   },
   mounted() {
     (this.invalid = false), this.activity;

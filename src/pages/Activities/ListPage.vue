@@ -2,7 +2,7 @@
   <v-container>
     <v-row>
       <v-col cols='12' class="d-flex justify-end">
-        <ModalActivitiesCreate />
+        <ModalActivitiesCreate :isPayin="false"/>
       </v-col>
       <v-col cols="12">
         <ActivitiesList :isPayin="false" />

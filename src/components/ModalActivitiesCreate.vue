@@ -17,6 +17,7 @@
     </template>
     <v-col cols="12">
       <ActivitiesCreate
+        :isPayin="isPayin"
         :employees="employees"
         :projects="projects"
         @cancel="onClose"
@@ -31,6 +32,9 @@ import { mapActions, mapState } from 'vuex';
 import ActivitiesCreate from './ActivitiesCreate.vue';
 
 export default {
+  props: {
+    isPayin: Boolean,
+  },
   components: {
     ActivitiesCreate,
   },
@@ -41,14 +45,21 @@ export default {
     ...mapState('global', ['isCreatingActivity', 'employees', 'projects']),
   },
   methods: {
-    ...mapActions('global', ['createActivity', 'fetchAllEmployees', 'fetchAllProjects']),
+    ...mapActions('global', ['createActivity', 'fetchAllEmployees', 'fetchAllProjects', 'fetchAllActivities', 'createPayin', 'fetchAllPayins']),
     onClose() {
       this.dialog = false;
       this.$emit('close');
     },
     async onSave(newActivity) {
       this.dialog = false;
-      await this.createActivity(newActivity);
+      if(this.isPayin) {
+        await this.createPayin(newActivity);
+        await this.fetchAllPayins(true);
+      }
+      else {
+        await this.createActivity(newActivity);
+        await this.fetchAllActivities(true);
+      }
       this.$emit('save', newActivity.data);
     },
   },

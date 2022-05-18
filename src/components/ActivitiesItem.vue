@@ -4,16 +4,16 @@
       <template v-slot:default="{ hover }">
         <v-card :elevation="hover ? 18 : 3" class="pa-5" @click="onItemClick">
           <v-row>
-            <v-col cols="12" sm="6" md="4" class="d-flex align-center">
+            <v-col cols="12" sm="6" :md="isPayin ? '5' : '4'" class="d-flex align-center">
               {{ projectName }}
             </v-col>
             <v-col v-if="!isPayin" cols="12" sm="6" md="3" class="d-flex align-center">
-              {{ activity.employee.fullName }}
+              {{ activity.employee.fullName }}            
             </v-col>
-            <v-col cols="12" sm="6" md="4" class="d-flex justify-end align-center">
+            <v-col cols="12" sm="6" :md="isPayin ? '5' : '4'" class="d-flex justify-end align-center">
               <b>{{ CURRENCY_SYMBOL }}</b> {{ activity.amount }}
             </v-col>
-            <v-col cols="12" md="1" class="d-flex justify-end align-center">
+            <v-col cols="12" :md="isPayin ? '2' : '1'" class="d-flex justify-end align-center">
               <DropDownMenu @onActionSelected="onActionSelected" />
             </v-col>
             <ConfirmationModal :toggleDialog="toggleConfirmationModal" @cancel="onCancel" @delete="onDelete"/>

@@ -6,8 +6,8 @@
       </v-col>
       <v-col cols='12' v-for="activity in item.Activities" :key="activity.id">
         <ActivitiesItem 
-          :activity="activity"
           :isPayin="isPayin"
+          :activity="activity"
           @itemClicked="onItemClick(item, $event)" 
           @delete="onActivityDelete"
         />
@@ -39,7 +39,6 @@ export default {
   name: "ActivitiesListing",
   data: () => ({
     toggleModalOpen: false,
-    currentList: [],
     activitiesDates: [],
     activeActivity: {},
   }),
@@ -49,6 +48,12 @@ export default {
   },
   computed: {
     ...mapState("global", ["activities", "payins", "projects", "employees"]),
+    currentList() {
+      if (this.isPayin) {
+        return this.payins;
+      }
+      return this.activities;
+    }
   },
   methods: {
     ...mapActions("global", ["fetchAllActivities", "fetchAllPayins", "updateActivity", "deleteActivity", "updatePayin", "deletePayin"]),
@@ -80,11 +85,11 @@ export default {
     async OnSave(activity) {
       if(this.isPayin) {
         await this.updatePayin(activity);
-        this.payins
+        await this.fetchAllPayins(true);
       }
       else {
         await this.updateActivity(activity);
-        this.fetchAllActivities(true);
+        await this.fetchAllActivities(true);
       }
       this.toggleModalOpen = false;
     },
@@ -97,18 +102,16 @@ export default {
       }
       else {
         await this.deleteActivity(activity);
-        this.fetchAllActivities(true);
+        await this.fetchAllActivities(true);
       }
     },
   },
   async mounted() {
     if(this.isPayin) {
       await this.fetchAllPayins();
-      this.currentList = this.payins;
     }
     else {
       await this.fetchAllActivities();
-      this.currentList = this.activities;
     }
   },
 };
