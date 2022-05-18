@@ -35,6 +35,10 @@ export default {
     isPayin: {
       type: Boolean,
     },
+    fetchData: {
+      type: Function,
+      default: () => {}
+    }
   },
   name: "ActivitiesListing",
   data: () => ({
@@ -56,7 +60,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions("global", ["fetchAllActivities", "fetchAllPayins", "updateActivity", "deleteActivity", "updatePayin", "deletePayin"]),
+    ...mapActions("global", ["updateActivity", "deleteActivity", "updatePayin", "deletePayin"]),
 
     onItemClick(item, activity) {
       this.toggleModalOpen = true;
@@ -83,14 +87,14 @@ export default {
         }
     },
     async OnSave(activity) {
-      if(this.isPayin) {
-        await this.updatePayin(activity);
-        await this.fetchAllPayins(true);
+      if (this.isPayin) {
+        await this.updatePayin(activity);        
       }
       else {
         await this.updateActivity(activity);
-        await this.fetchAllActivities(true);
       }
+
+      await this.fetchData(true);
       this.toggleModalOpen = false;
     },
     OnCancel() {
@@ -102,17 +106,12 @@ export default {
       }
       else {
         await this.deleteActivity(activity);
-        await this.fetchAllActivities(true);
       }
+      await this.fetchData(true);
     },
   },
   async mounted() {
-    if(this.isPayin) {
-      await this.fetchAllPayins();
-    }
-    else {
-      await this.fetchAllActivities();
-    }
+    await this.fetchData();
   },
 };
 </script>

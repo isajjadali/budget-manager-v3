@@ -120,6 +120,12 @@ export const actions = {
     );
     commit('UPDATE_EMPLOYEE', updatedEmployee.data);
   },
+
+  async getEmployeeDetails({ commit }, employee) {
+    const employeeDetail = await axios.get(`/admin/activities/${employee.id}`);
+    return employeeDetail;
+  },
+
   //==================================== Activities Actions
   async fetchAllActivities({ commit, state }, forceRefresh = false) {
     if(!forceRefresh && state.activities.length) {
@@ -138,7 +144,7 @@ export const actions = {
     const updatedActivity = await axios.put(`/admin/activities/${activity.id}`, activity);
   },
 
-  async deleteActivity({ commit, state }, activity) {
+  async deleteActivity({ commit }, activity) {
     const response = await axios.delete(`/admin/activities/${activity.id}`, activity);
   },
   //==================================== Payins Actions
@@ -155,15 +161,15 @@ export const actions = {
     commit('SET_PAYINS_LIST', [response.data, ...state.payins]);
   },
 
-  async updatePayin({ commit }, updatedPayin) {
-    commit('UPDATE_PAYIN', updatedPayin);
+  async updatePayin({ commit }, payin) {
+    const response = await axios.put(`/admin/payins/${payin.id}`, payin);
   },
 
   async deletePayin({ commit, state }, payin) {
     state.payins = state.payins.filter(
       (p) => p.id !== payin.id
     );
-  }
+  },
 };
 
 export default {

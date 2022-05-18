@@ -6,6 +6,7 @@ import EmployeeListPage from './pages/Employees/ListPage';
 import ActivitiesListPage from './pages/Activities/ListPage';
 import PayinsListPage from './pages/Payins/ListPage';
 import LayoutPage from '@/pages/LayoutPage';
+import EmployeeDetailsPage from './pages/Employees/DetailsPage';
 
 export default [
   {
@@ -33,6 +34,11 @@ export default [
         path: 'employees',
         component: EmployeeListPage,
         name: 'all-employee',
+      },
+      {
+        path: ':id/details',
+        component: EmployeeDetailsPage,
+        name: 'employee-details',
       },
       {
         path: 'activities',
