@@ -1,6 +1,6 @@
 const { getSetMethods } = global.sequelizeFunctions;
 const moment = require("moment");
-const { projectStatus } = require("../enums");
+const { ProjectStatus } = require("../enums");
 
 module.exports = function (sequelize, DataTypes) {
   const { STRING, DECIMAL, DATEONLY, TEXT } = DataTypes;
@@ -9,14 +9,6 @@ module.exports = function (sequelize, DataTypes) {
       type: STRING,
       defaultValue: "Unnamed Project",
       ...getSetMethods.call(this, "name", "startCase"),
-    },
-    startDate: {
-      type: DATEONLY,
-      defaultValue: moment().format("YYYY-MM-DD"),
-    },
-    endDate: {
-      type: DATEONLY,
-      defaultValue: null,
     },
     amount: {
       type: DECIMAL,
@@ -27,7 +19,7 @@ module.exports = function (sequelize, DataTypes) {
     },
     status: {
       type: STRING,
-      defaultValue: projectStatus.Draft,
+      defaultValue: ProjectStatus.Draft,
     },
   });
 

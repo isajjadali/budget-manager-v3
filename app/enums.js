@@ -27,7 +27,7 @@ module.exports.Roles = {
   Admin: "ADMIN",
   Employee: "EMPLOYEE",
 };
-module.exports.projectStatus = {
+module.exports.ProjectStatus = {
   Draft: "DRAFT",
   PendingReview: "PENDINGREVIEW",
   OnGoing: "ONGOING",
