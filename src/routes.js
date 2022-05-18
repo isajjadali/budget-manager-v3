@@ -2,13 +2,9 @@
 import LoginPage from './pages/LoginPage';
 import DashBoardPage from './pages/DashBoardPage';
 import ProjectListPage from './pages/Projects/ListPage';
-import ProjectUpdatePage from './pages/Projects/UpdatePage';
 import EmployeeListPage from './pages/Employees/ListPage';
-import EmployeeUpdatePage from './pages/Employees/UpdatePage';
 import ActivitiesListPage from './pages/Activities/ListPage';
-import ActivitiesUpdatePage from './pages/Activities/UpdatePage';
 import PayinsListPage from './pages/Payins/ListPage';
-import PayinsUpdatePage from './pages/Payins/UpdatePage';
 import LayoutPage from '@/pages/LayoutPage';
 
 export default [
@@ -34,19 +30,9 @@ export default [
         name: 'all-project',
       },
       {
-        path: 'projects/:id',
-        component: ProjectUpdatePage,
-        name: 'edit-project',
-      },
-      {
         path: 'employees',
         component: EmployeeListPage,
         name: 'all-employee',
-      },
-      {
-        path: 'employees/:id',
-        component: EmployeeUpdatePage,
-        name: 'edit-employee',
       },
       {
         path: 'activities',
@@ -54,19 +40,9 @@ export default [
         name: 'all-activities',
       },
       {
-        path: 'activities/:id',
-        component: ActivitiesUpdatePage,
-        name: 'edit-activity',
-      },
-      {
         path: 'payins',
         component: PayinsListPage,
         name: 'all-payins',
-      },
-      {
-        path: 'payins/:id',
-        component: PayinsUpdatePage,
-        name: 'edit-payins',
       },
       {
         path: '*',
