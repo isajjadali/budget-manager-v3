@@ -1,5 +1,4 @@
 <template>
-  
     <v-dialog 
       v-model="isOpen"
       persistent
@@ -8,11 +7,12 @@
     >
     <v-col cols="12">
       <ActivitiesUpdate
-      :currentData="activity" 
-      :projects="projects"
-      :employees="employees"
-      @cancel="onCancel"
-      @save="onSave"
+        :isPayin="isPayin"
+        :currentData="activity" 
+        :projects="projects"
+        :employees="employees"
+        @cancel="onCancel"
+        @save="onSave"
     />
     </v-col>
     </v-dialog>
@@ -37,6 +37,9 @@ export default {
     },
     projects: [],
     employees: [],
+    isPayin: {
+      type: Boolean,
+    },
   },
   methods: {
     onCancel() {

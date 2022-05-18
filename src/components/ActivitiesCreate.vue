@@ -4,7 +4,7 @@
       <v-row>
         <v-card width="100%">
           <v-card-title>
-            <span class="text-h5 pa-3"><b> Create Activity </b></span>
+            <span class="text-h5 pa-3"><b> {{ headerTitle }} </b></span>
           </v-card-title>
           <v-card-text>
             <v-container>
@@ -45,7 +45,7 @@
                 </v-col>
               </v-row>
               <v-row>
-                <v-col>
+                <v-col v-if="!isPayin">
                   <v-select
                     v-model="activity.employeeId"
                     :items="employees"
@@ -94,7 +94,7 @@ import { CURRENCY_SYMBOL } from '@/enums';
 
 export default {
   name: "ActivityCreate",
-  props: ["employees", "projects"],
+  props: ["isPayin", "employees", "projects"],
   data: () => ({
     activity: {
       date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
@@ -107,10 +107,12 @@ export default {
     dateMenu: false,
     invalid: true,
     CURRENCY_SYMBOL,
+    headerTitle: String,
   }),
   methods: {
     onSave() {
       this.$emit("save", this.activity);
+      this.activity = {};
     },
     onCancel() {
       this.activity = {
@@ -121,8 +123,16 @@ export default {
       this.$emit("cancel");
     },
   },
+  computed: {
+  },
   mounted() {
     (this.invalid = false), this.activity;
+    if (this.isPayin) {
+      this.headerTitle = "Create Payin";
+    }
+    else {
+      this.headerTitle = "Create Activity";
+    }
   },
 };
 </script>
