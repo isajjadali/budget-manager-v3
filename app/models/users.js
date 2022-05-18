@@ -118,6 +118,7 @@ module.exports = function (sequelize, DataTypes) {
       amount: amount || this.rate,
       employeeId: this.id,
       isPaid: !!amount,
+      isPayin: false,
     };
     const savedActivity = await global.db.Activities.create(newActivity);
     await this.update({
