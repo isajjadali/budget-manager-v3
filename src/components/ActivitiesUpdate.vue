@@ -3,7 +3,7 @@
     <v-row>
       <v-card width="100%">
         <v-card-title>
-          <span class="text-h5 pa-3"><b> Update Activity </b></span>
+          <span class="text-h5 pa-3"><b> {{ headerTitle }} </b></span>
         </v-card-title>
         <v-card-text>
           <v-container>
@@ -55,7 +55,7 @@
               </v-col>
             </v-row>
             <v-row>
-              <v-col>
+              <v-col v-if="currentData.employeeId">
                 <v-select
                   v-model="currentData.employeeId"
                   :items="employees"
@@ -115,6 +115,9 @@ export default {
     },
     employees: [],
     projects: [],
+    isPayin: {
+      type: Boolean,
+    },
   },
   data: () => ({
     taskDateMenu: false,
@@ -122,6 +125,7 @@ export default {
       required: (value) => !!value || 'Required.',
     },
     CURRENCY_SYMBOL,
+    headerTitle: String,
   }),
   methods: {
     onSave() {
@@ -131,5 +135,13 @@ export default {
       this.$emit('cancel');
     },
   },
+  mounted() {
+    if (this.isPayin) {
+      this.headerTitle = "Update Payin";
+    }
+    else {
+      this.headerTitle = "Update Activity";
+    }
+  }
 };
 </script>

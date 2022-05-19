@@ -1,23 +1,25 @@
 <template>
   <v-container>
-    <ModalPayinsCreate />
     <v-row>
+      <v-col cols='12' class="d-flex justify-end">
+        <ModalActivitiesCreate :isPayin="true" />
+      </v-col>
       <v-col cols="12">
-        <PayinsList />
+        <ActivitiesList :isPayin="true" />
       </v-col>
     </v-row>
   </v-container>
 </template>
 
 <script>
-import ModalPayinsCreate from '../../components/ModalPayinsCreate.vue';
-import PayinsList from '../../components/PayinsList.vue';
+import ModalActivitiesCreate from '../../components/ModalActivitiesCreate.vue';
+import ActivitiesList from '../../components/ActivitiesList.vue';
 
 export default {
   name: 'PayinsListPage',
   components: {
-    ModalPayinsCreate,
-    PayinsList,
+    ModalActivitiesCreate,
+    ActivitiesList,
   },
 };
 </script>

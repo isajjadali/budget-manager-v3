@@ -104,7 +104,10 @@ module.exports = (router) => {
             include: [
               {
                 model: Users,
-                as: "employee",
+                as: 'employee',
+                where: {
+                  roles: Roles.Employee,
+                }
               },
               {
                 model: Projects,
