@@ -1,12 +1,12 @@
 <template>
-  <v-container>
-    <ModalProjectCreate />
-    <v-row>
-      <v-col cols="12">
-        <ProjectList />
-      </v-col>
-    </v-row>
-  </v-container>
+  <v-row>
+    <v-col>
+      <ModalProjectCreate />
+    </v-col>
+    <v-col cols="12">
+      <ProjectList />
+    </v-col>
+  </v-row>
 </template>
 
 <script>

@@ -1,5 +1,15 @@
 <template>
   <div>
+    <v-row class="d-flex justify-end">
+      <v-col cols="12" sm="6" md="6" class="d-flex justify-end py-0">
+        <h3 class="green--text">Amount Paid: {{ CURRENCY_SYMBOL }} {{ amountPaid }} </h3>
+      </v-col>
+    </v-row>
+    <v-row class="d-flex justify-end">
+      <v-col cols="12" sm="6" md="6" class="d-flex justify-end py-0">
+        <h3 class="red--text">Amount payable: {{ CURRENCY_SYMBOL }}{{ amountPending }}</h3>
+      </v-col>
+    </v-row>
     <v-row
       v-for="item in currentList"
       :key="item.id"
@@ -34,8 +44,10 @@
 
 <script>
 import {mapState, mapActions} from 'vuex';
+import { flatMap, map, filter, sumBy} from 'lodash';
 import ActivitiesItem from './ActivitiesItem.vue';
 import ModalEdit from './ModalEdit.vue';
+import { CURRENCY_SYMBOL } from "@/enums";
 
 export default {
   name: 'ActivitiesListing',
@@ -60,6 +72,7 @@ export default {
     }
   },
   data: () => ({
+    CURRENCY_SYMBOL,
     toggleModalOpen: false,
     activitiesDates: [],
     activeActivity: {},
@@ -71,6 +84,15 @@ export default {
         return this.payins;
       }
       return this.activities;
+    },
+    allActivities() {
+      return flatMap(map(this.activities, a => a.Activities));
+    },
+    amountPaid() {
+      return sumBy(filter(this.allActivities, 'isPaid'), 'amount');
+    },
+    amountPending() {
+      return sumBy(filter(this.allActivities, {isPaid: false}), 'amount');
     }
   },
   methods: {

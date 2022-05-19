@@ -1,10 +1,7 @@
 <template>
   <div>
-    <v-row
-      class="ma-6 pa-3"
-      justify="center"
-    >
-      <v-card width="960px">
+    <v-row>
+      <v-card width="100%">
         <v-card-title>
           <span class="text-h5 ma-3 pa-3"><b> Update Employee </b></span>
         </v-card-title>

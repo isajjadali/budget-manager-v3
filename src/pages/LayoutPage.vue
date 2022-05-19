@@ -1,9 +1,9 @@
 <template>
   <div style="background-color: #eff0f2">
     <NavBar />
-    <div style="height: 100vh">
+    <v-container fluid class="px-16">
       <router-view />
-    </div>
+    </v-container>
   </div>
 </template>
 

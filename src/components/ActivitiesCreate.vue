@@ -13,7 +13,6 @@
                   <v-text-field
                     v-model.number="activity.amount"
                     label="Amount"
-                    :rules="[requiredAmount]"
                     :prefix="CURRENCY_SYMBOL"
                     type="number"
                   />
@@ -103,7 +102,6 @@ export default {
     },
     requiredProject: (p) => !!p || "Project is required",
     requiredEmployee: (e) => !!e || "Employee is required",
-    requiredAmount: (value) => !!value || "Amount is Required.",
     dateMenu: false,
     invalid: true,
     CURRENCY_SYMBOL,

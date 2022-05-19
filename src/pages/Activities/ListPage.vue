@@ -1,10 +1,10 @@
 <template>
-  <v-container>
-    <v-row>
+  <v-row>
       <v-col
         cols="12"
         sm="0"
         md="3"
+        class="pt-0"
       >
         <v-card
           max-width="100%"
@@ -38,7 +38,6 @@
         />
       </v-col>
     </v-row>
-  </v-container>
 </template>
 
 <script>

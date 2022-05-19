@@ -20,6 +20,7 @@
                     <th class="text-left">Rate</th>
                     <th class="text-left">Address</th>
                     <th class="text-left">Status</th>
+                    <th class="text-left">View Activities</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -32,10 +33,21 @@
                       <td>{{ employee.balance }}</td>
                       <td>{{ employee.rate }}</td>
                       <td>{{ employee.address }}</td>
-                      <td v-if="employee.status">Available</td>
-                      <td v-else>Not-Available</td>
+                      <td v-if="employee.status">Available</td> <td v-else>Not-Available</td>
+                      <td>
+                        <router-link
+                          :to="{
+                            name: 'all-activities',
+                            query: {employeeIds: `${employee.id}`},
+                          }"
+                          @click="onButtonClick(employee)"
+                        >
+                          Click Here
+                        </router-link>
+                      </td>
                     </tr>
                 </tbody>
+                <ModalEdit :isOpen="isToggleOpen" :isEmployee="true" :employee="activeEmployee" @save="onSave" @cancel="onCancel" />
               </template>
             </v-simple-table>
           </v-card>
@@ -47,6 +59,7 @@
 
 <script>
 import { mapState, mapActions } from "vuex";
+import ModalEdit from './ModalEdit.vue';
 
 export default {
   name: "EmployeeList",
@@ -56,16 +69,32 @@ export default {
       activeEmployee: {
         type: Object,
       },
+      isToggleOpen: false,
+      activityQuery: "employeeIds=",
     };
   },
   methods: {
-    ...mapActions("global", ["fetchAllEmployees", "getEmployeeDetails"]),
+    ...mapActions("global", ['fetchAllEmployees', 'updateEmployee']),
     editEmployee(employee) {
       this.activeEmployee = employee;
     },
     onEmployeeClick(employee) {
-      this.$router.push({ name: 'employee-details', params: { id: employee.id }})
+      this.activeEmployee = employee;
+      this.isToggleOpen = true;
     },
+    async onSave(employee) {
+      await this.updateEmployee(employee);
+      this.fetchAllEmployees(true);
+      // this.activeEmployee= {},
+      this.isToggleOpen = false;
+    },
+    onCancel() {
+      this.isToggleOpen = false;
+    },
+    onButtonClick(employee) {
+      // this.$router.push({ name: 'all-activities', query: {employeeIds: `${employee.id}`}})
+      // console.log(employee);
+    }
   },
   computed: {
     ...mapState("global", ["employees"]),
@@ -73,11 +102,8 @@ export default {
   mounted() {
     this.fetchAllEmployees();
   },
+  components: {
+    ModalEdit,
+  }
 };
 </script>
-
-<style>
-th {
-  width: 30%;
-}
-</style>

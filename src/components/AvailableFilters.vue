@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="width: 100%">
     <v-col
       v-for="filter in availableFilters"
       :key="filter.name"
@@ -17,7 +17,7 @@
 
 <script>
 import {mapState} from 'vuex';
-import {VSelect} from 'vuetify/lib';
+import {VSelect, VTextField} from 'vuetify/lib';
 
 export default {
   name: 'AvailableFilters',
@@ -77,7 +77,7 @@ export default {
         },
         component: VSelect,
       };
-    },
+    }
   },
   methods: {
     emitChange(updatedFilter) {
