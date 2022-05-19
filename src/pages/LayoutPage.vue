@@ -1,7 +1,9 @@
 <template>
-  <div>
+  <div style="background-color: #eff0f2">
     <NavBar />
-    <router-view />
+    <div style="height: 100vh">
+      <router-view />
+    </div>
   </div>
 </template>
 
