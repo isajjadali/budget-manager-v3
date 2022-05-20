@@ -32,6 +32,7 @@ module.exports = (router) => {
         return res.http200(projects);
       })
     )
+
     .post(
       asyncMiddleware(async (req, res) => {
         delete req.body.id;
@@ -98,21 +99,7 @@ module.exports = (router) => {
         }))
       );
       res.http200({ ...task.toJSON(), descriptions: descriptions });
-      await Promise.all([
-        Tasks.findOrCreate({
-          where: {
-            name: task.name,
-          },
-        }),
-        ...descriptions.map((item) => {
-          Descriptions.findOrCreate({
-            where: {
-              description: item.description,
-            },
-          });
-        }),
-      ]);
-      // await insertTaskDescription(task.name, descriptions);
+      await Tasks.insertTaskDescription(task.name, descriptions);
       return;
     })
   );
