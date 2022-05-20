@@ -53,7 +53,19 @@ module.exports = (router) => {
     .route("/:projectId")
     .get(
       asyncMiddleware(async (req, res) => {
-        res.http200(req.project);
+        const projectTask = await ProjectTasks.findAll({
+          where:{
+            projectId: req.project.id
+          },
+          include: [
+            {
+                model: ProjectTaskDescriptions,
+                as: ProjectTaskDescriptions.$$name
+            }
+          ]
+        })
+        const activities = await req.project.getActivities();
+        res.http200({...req.project.toJSON(),projectTask});
       })
     )
     .put(
