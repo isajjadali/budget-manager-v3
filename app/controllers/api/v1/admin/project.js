@@ -75,10 +75,10 @@ module.exports = (router) => {
           flatMap(map(tasks, p => p.ProjectTaskDescriptions)),
           'laborCost'
         );
-        const allPayins = filter(activities, {isPayin: true});
-        const allPayout = filter(activities, {isPayin: false});
-        const projectLabourSpending = sumBy(allPayout,'isPayin');
-        const projectAmountRecieved = sumBy(allPayins,'isPayin');
+        const allPayins = filter(activities, {amount: true});
+        const allPayout = filter(activities, {amount: false});
+        const projectLabourSpending = sumBy(allPayout,'amount');
+        const projectAmountRecieved = sumBy(allPayins,'amount');
 
         res.http200({
           ...req.project.toJSON(),
