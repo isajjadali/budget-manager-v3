@@ -97,7 +97,7 @@ module.exports = (router) => {
           ...item,
         }))
       );
-      res.http200({ task: task, descriptions: descriptions });
+      res.http200({ ...task.toJSON(), descriptions: descriptions });
       await Promise.all([
         Tasks.findOrCreate({
           where: {
@@ -112,6 +112,7 @@ module.exports = (router) => {
           });
         }),
       ]);
+      // await insertTaskDescription(task.name, descriptions);
       return;
     })
   );

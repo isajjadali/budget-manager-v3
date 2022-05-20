@@ -19,6 +19,9 @@ module.exports = function (sequelize, DataTypes) {
       laborCost: {
         type: DECIMAL,
       },
+    },
+    {
+      paranoid: false,
     }
   );
 
