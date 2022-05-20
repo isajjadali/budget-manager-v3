@@ -3,11 +3,11 @@
     <v-row
       v-for="item in currentList"
       :key="item.id"
-    >
+    > 
       <v-col
         cols="12"
       >
-        <h3>{{ getSectionLabel(item.date) }}</h3>
+        <h3> {{ getSectionLabel(item.date) }}</h3>
       </v-col>
       <v-col
         v-for="activity in item.Activities"
@@ -36,10 +36,8 @@
 
 <script>
 import {mapState, mapActions} from 'vuex';
-import {flatMap, map, filter, sumBy} from 'lodash';
 import ActivitiesItem from './ActivitiesItem.vue';
 import ModalEdit from './ModalEdit.vue';
-import {CURRENCY_SYMBOL} from '@/enums';
 
 export default {
   name: 'ActivitiesListing',
@@ -64,7 +62,6 @@ export default {
     }
   },
   data: () => ({
-    CURRENCY_SYMBOL,
     toggleModalOpen: false,
     activitiesDates: [],
     activeActivity: {},
@@ -77,15 +74,6 @@ export default {
       }
       return this.activities;
     },
-    allActivities() {
-      return flatMap(map(this.currentList, a => a.Activities));
-    },
-    amountPaid() {
-      return sumBy(filter(this.allActivities, 'isPaid'), 'amount');
-    },
-    amountPending() {
-      return sumBy(filter(this.allActivities, {isPaid: false}), 'amount');
-    }
   },
   methods: {
     ...mapActions('global', ['updateActivity', 'deleteActivity', 'updatePayin', 'deletePayin']),
@@ -120,7 +108,6 @@ export default {
       } else {
         await this.updateActivity(activity);
       }
-
       await this.fetchData({forceRefresh: true, params: this.params});
       this.toggleModalOpen = false;
     },

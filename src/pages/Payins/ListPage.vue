@@ -10,6 +10,7 @@
         elevation="4"
         class="pa-5 filter-sidebar"
       >
+      <ActivitiesPayments :currentList="payins" :isPayin="true" />
         <div class="d-flex justify-center">
           <ModalActivitiesCreate
             :is-payin="true"
@@ -40,11 +41,12 @@
 </template>
 
 <script>
-import {mapActions} from 'vuex';
+import {mapActions, mapState} from 'vuex';
 import ModalActivitiesCreate from '../../components/ModalActivitiesCreate.vue';
 import ActivitiesList from '../../components/ActivitiesList.vue';
 import AvailableFilters from '@/components/AvailableFilters';
 import ActivitiesListHeader from '@/components/ActivitiesHeader';
+import ActivitiesPayments from '@/components/ActivitiesPayments.vue';
 
 export default {
   name: 'PayinsListPage',
@@ -53,6 +55,7 @@ export default {
     ActivitiesList,
     AvailableFilters,
     ActivitiesListHeader,
+    ActivitiesPayments,
   },
   data() {
     return {
@@ -60,6 +63,7 @@ export default {
     };
   },
   computed: {
+    ...mapState('global', ['payins']),
     filtersForAPI() {
       return Object.keys(this.availableFilters).reduce((acc, key) => {
         if (Array.isArray(this.availableFilters[key])) {

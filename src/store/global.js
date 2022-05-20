@@ -121,11 +121,6 @@ export const actions = {
     commit('UPDATE_EMPLOYEE', updatedEmployee.data);
   },
 
-  async getEmployeeDetails({commit}, employee) {
-    const employeeDetail = await axios.get(`/admin/activities/${employee.id}`);
-    return employeeDetail;
-  },
-
   //==================================== Activities Actions
   async fetchAllActivities({commit, state}, {forceRefresh = false, params = {}} = {}) {
     if (!forceRefresh && state.activities.length) {

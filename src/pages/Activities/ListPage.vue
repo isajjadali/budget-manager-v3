@@ -8,15 +8,16 @@
     >
       <v-card
         elevation="4"
-        class="pa-5 filter-sidebar"
+        class="pa-0 filter-sidebar"
       >
-        <div class="d-flex justify-center">
+        <ActivitiesPayments :currentList="activities" :isPayin="false"/>
+        <div class="px-5 pt-5 d-flex justify-center">
           <ModalActivitiesCreate
             :is-payin="false"
             @save="onActivityCreate"
           />
         </div>
-        <v-row class="pt-5">
+        <v-row class="pa-5 ">
           <AvailableFilters
             :active-filters-values="availableFilters"
             @change="onFilterChange"
@@ -40,17 +41,19 @@
 </template>
 
 <script>
-import {mapActions} from 'vuex';
+import {mapActions, mapState} from 'vuex';
 import ModalActivitiesCreate from '../../components/ModalActivitiesCreate.vue';
 import ActivitiesList from '../../components/ActivitiesList.vue';
 import AvailableFilters from '@/components/AvailableFilters';
 import ActivitiesListHeader from '@/components/ActivitiesHeader';
+import ActivitiesPayments from '@/components/ActivitiesPayments.vue';
 
 export default {
   name: 'ActivitesListPage',
   components: {
     ModalActivitiesCreate,
     ActivitiesList,
+    ActivitiesPayments,
     AvailableFilters,
     ActivitiesListHeader,
   },
@@ -60,6 +63,7 @@ export default {
     };
   },
   computed: {
+    ...mapState('global', ['activities']),
     filtersForAPI() {
       return Object.keys(this.availableFilters).reduce((acc, key) => {
         if (Array.isArray(this.availableFilters[key])) {
@@ -71,7 +75,7 @@ export default {
         }
         return acc;
       }, {});
-    }
+    },
   },
   mounted() {
     const {employeeIds, projectIds} = this.$route.query;
@@ -96,10 +100,11 @@ export default {
     },
     onActivityCreate() {
       this.fetchAllActivities({forceRefresh: true, params: this.filtersForAPI});
-    }
+    },
   },
 };
 </script>
+
 <style lang="scss" scoped>
 .filter-sidebar {
   height: calc(100vh - (64px + 24px + 20px));
