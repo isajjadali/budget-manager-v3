@@ -1,7 +1,10 @@
 <template>
-  <div style="background-color: #eff0f2">
+  <div>
     <NavBar />
-    <v-container fluid class="px-16">
+    <v-container
+      fluid
+      class="px-16"
+    >
       <router-view />
     </v-container>
   </div>

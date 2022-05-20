@@ -1,43 +1,42 @@
 <template>
   <v-row>
-      <v-col
-        cols="12"
-        sm="0"
-        md="3"
-        class="pt-0"
+    <v-col
+      cols="12"
+      sm="0"
+      md="3"
+      class="pt-0"
+    >
+      <v-card
+        elevation="4"
+        class="pa-5 filter-sidebar"
       >
-        <v-card
-          max-width="100%"
-          elevation="4"
-          min-height="75vh"
-          class="pa-5"
-        >
-          <div class="d-flex justify-center">
-            <ModalActivitiesCreate
-              :is-payin="false"
-              @save="onActivityCreate"
-            />
-          </div>
-          <v-row class="pt-5">
-            <AvailableFilters
-              :active-filters-values="availableFilters"
-              @change="onFilterChange"
-            />
-          </v-row>
-        </v-card>
-      </v-col>
-      <v-col
-        cols="12"
-        sm="12"
-        md="9"
-      >
-        <ActivitiesList
-          :is-payin="false"
-          :fetch-data="fetchAllActivities"
-          :params="filtersForAPI"
-        />
-      </v-col>
-    </v-row>
+        <div class="d-flex justify-center">
+          <ModalActivitiesCreate
+            :is-payin="false"
+            @save="onActivityCreate"
+          />
+        </div>
+        <v-row class="pt-5">
+          <AvailableFilters
+            :active-filters-values="availableFilters"
+            @change="onFilterChange"
+          />
+        </v-row>
+      </v-card>
+    </v-col>
+    <v-col
+      cols="12"
+      sm="12"
+      md="9"
+    >
+      <ActivitiesListHeader :is-payin="false" />
+      <ActivitiesList
+        :is-payin="false"
+        :fetch-data="fetchAllActivities"
+        :params="filtersForAPI"
+      />
+    </v-col>
+  </v-row>
 </template>
 
 <script>
@@ -45,6 +44,7 @@ import {mapActions} from 'vuex';
 import ModalActivitiesCreate from '../../components/ModalActivitiesCreate.vue';
 import ActivitiesList from '../../components/ActivitiesList.vue';
 import AvailableFilters from '@/components/AvailableFilters';
+import ActivitiesListHeader from '@/components/ActivitiesHeader';
 
 export default {
   name: 'ActivitesListPage',
@@ -52,6 +52,7 @@ export default {
     ModalActivitiesCreate,
     ActivitiesList,
     AvailableFilters,
+    ActivitiesListHeader,
   },
   data() {
     return {
@@ -99,3 +100,11 @@ export default {
   },
 };
 </script>
+<style lang="scss" scoped>
+.filter-sidebar {
+  height: calc(100vh - (64px + 24px + 20px));
+  position: sticky;
+  top: calc(64px + 24px);
+  max-width: 100%;
+}
+</style>
