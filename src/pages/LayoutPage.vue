@@ -1,7 +1,12 @@
 <template>
   <div>
     <NavBar />
-    <router-view />
+    <v-container
+      fluid
+      class="px-16"
+    >
+      <router-view />
+    </v-container>
   </div>
 </template>
 
