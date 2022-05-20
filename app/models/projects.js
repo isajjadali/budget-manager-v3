@@ -10,8 +10,8 @@ module.exports = function (sequelize, DataTypes) {
       defaultValue: "Unnamed Project",
       ...getSetMethods.call(this, "name", "startCase"),
     },
-    amount: {
-      type: DECIMAL,
+    clientAddress: {
+      type: STRING,
     },
 
     clientEmail: {
