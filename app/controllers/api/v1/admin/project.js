@@ -77,13 +77,17 @@ module.exports = (router) => {
         );
         const allPayins = filter(activities, {isPayin: true});
         const allPayout = filter(activities, {isPayin: false});
+        const projectLabourSpending = sumBy(allPayout,'isPayin');
+        const projectAmountRecieved = sumBy(allPayins,'isPayin');
 
         res.http200({
           ...req.project.toJSON(),
           tasks,
           totalMaterialCost: materialCost,
           totalLaborCost: laborCost,
-          projectCost: materialCost + laborCost
+          projectCost: materialCost + laborCost,
+          projectLabourSpending,
+          projectAmountRecieved
         });
       })
     )
