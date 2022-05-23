@@ -3,27 +3,35 @@ const {Dates, Activities, Projects, Sequelize} = global.db;
 const findCreateDate = require(`${global.paths.middlewares}/find-create-date`);
 
 module.exports = (router) => {
-  async function getProjectById(req, res, next) {
-    req.project = await Projects.$$findByPk({id: req.body.projectId});
-    next();
+  function getProjectById(require = true) {
+    return async (req, res, next) => {
+      if (!require && !req.body.projectId) {
+        next();
+        return;
+      }
+      req.project = await Projects.$$findByPk({id: req.body.projectId});
+      next();
+    };
   }
 
   router.get(
     '/',
     asyncMiddleware(async (req, res) => {
-      const {projectId, ...rest} = req.query;
+      const {projectIds, ...rest} = req.query;
       const filters = {
         ...rest,
         limit: req.limit,
         offset: req.offset,
       };
       const where = {
-        projectId: {
-          [Sequelize.Op.ne]: null
+        isPayin: {
+          [Sequelize.Op.eq]: true
         }
       };
-      if (projectId) {
-        where.projectId = +projectId;
+      if (projectIds) {
+        where.projectId = {
+          [Sequelize.Op.in]: projectIds.split(',').map(id => Number(id))
+        };
       }
       const include = [
         {
@@ -51,15 +59,50 @@ module.exports = (router) => {
     '/',
     [
       asyncMiddleware(findCreateDate()),
-      asyncMiddleware(getProjectById),
+      asyncMiddleware(getProjectById(true)),
     ],
     asyncMiddleware(async (req, res,) => {
       const activity = await Activities.create({
         ...req.body,
         dateId: req.date.id,
-        isPaid: true
+        isPaid: true,
+        isPayin: true,
       });
       return res.http200(activity);
     })
   );
+  router.param(
+    'activityId',
+    asyncMiddleware(async (req, res, next, activityId) => {
+      const activity = await Activities.$$findOne({
+        query: {
+          where: {
+            id: +activityId,
+          },
+          include: [
+            {
+              model: Dates,
+              as: Dates.$$singularName,
+            },
+          ],
+        },
+      });
+      req.activity = activity;
+      next();
+    })
+  );
+  router
+    .route('/:activityId')
+    .put(
+      asyncMiddleware(findCreateDate(false)),
+      asyncMiddleware(getProjectById(false)),
+      asyncMiddleware(async (req, res) => {
+        const payinUpdate = {
+          ...req.body,
+          dateId: req.date ? req.date.id : req.activity.dateId,
+        };
+        const updated = await req.activity.update(payinUpdate);
+        res.http200(updated);
+      })
+    );
 };

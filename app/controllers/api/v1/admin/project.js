@@ -1,3 +1,4 @@
+const { sumBy, flatMap, map, filter } = require("lodash");
 const { asyncMiddleware } = global;
 const findCreateDate = require(`${global.paths.middlewares}/find-create-date`);
 const { sequelizeConfig } = require(`${global.paths.lib}/sequelize`);
@@ -54,7 +55,36 @@ module.exports = (router) => {
     .route("/:projectId")
     .get(
       asyncMiddleware(async (req, res) => {
-        res.http200(req.project);
+        const [activities, tasks] = await Promise.all([
+          req.project.getActivities(),
+          req.project.getProjectTasks({
+            include: [
+              {
+                model: ProjectTaskDescriptions,
+                as: ProjectTaskDescriptions.$$name,
+              },
+            ],
+          }),
+        ]);
+        const materialCost = sumBy(tasks, "materialCost");
+        const laborCost = sumBy(
+          flatMap(map(tasks, (p) => p.ProjectTaskDescriptions)),
+          "laborCost"
+        );
+        const allPayins = filter(activities, { amount: true });
+        const allPayout = filter(activities, { amount: false });
+        const projectLabourSpending = sumBy(allPayout, "amount");
+        const projectAmountRecieved = sumBy(allPayins, "amount");
+
+        res.http200({
+          ...req.project.toJSON(),
+          tasks,
+          totalMaterialCost: materialCost,
+          totalLaborCost: laborCost,
+          projectCost: materialCost + laborCost,
+          projectLabourSpending,
+          projectAmountRecieved,
+        });
       })
     )
     .put(

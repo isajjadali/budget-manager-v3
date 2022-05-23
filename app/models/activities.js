@@ -6,6 +6,9 @@ module.exports = function (sequelize, DataTypes) {
       amount: {
         defaultValue: 0,
         type: DECIMAL,
+        get() {
+          return Number(this.getDataValue('amount'));
+        }
       },
       dateId: {
         references: {
@@ -22,6 +25,10 @@ module.exports = function (sequelize, DataTypes) {
         type: INTEGER,
       },
       isPaid: {
+        defaultValue: false,
+        type: BOOLEAN,
+      },
+      isPayin: {
         defaultValue: false,
         type: BOOLEAN,
       },
