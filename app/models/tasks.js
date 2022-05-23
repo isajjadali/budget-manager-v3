@@ -19,21 +19,21 @@ module.exports = function (sequelize, DataTypes) {
   /* ================== Model Associations ================== */
   Tasks.associate = (models) => {};
 
-  // Tasks.prototype.insertTaskDescription = (name, descriptions) => {
-  //   return Promise.all([
-  //     Tasks.findOrCreate({
-  //       where: {
-  //         name: name,
-  //       },
-  //     }),
-  //     ...descriptions.map((item) => {
-  //       global.db.Descriptions.findOrCreate({
-  //         where: {
-  //           description: item.description,
-  //         },
-  //       });
-  //     }),
-  //   ]);
-  // };
+  Tasks.insertTaskDescription = async (name, descriptions) => {
+    return Promise.all([
+      Tasks.findOrCreate({
+        where: {
+          name: name,
+        },
+      }),
+      ...descriptions.map((item) => {
+        global.db.Descriptions.findOrCreate({
+          where: {
+            description: item.description,
+          },
+        });
+      }),
+    ]);
+  };
   return Tasks;
 };
