@@ -71,7 +71,10 @@ export const actions = {
     commit('SET_USER', response.data);
   },
 
-  async fetchLoggedInUser({commit}) {
+  async fetchLoggedInUser({commit}, forceRefresh = false) {
+    if (!forceRefresh && state.user) {
+      return;
+    }
     const response = await axios.get('/me');
     commit('SET_LOGGED_IN_USER', response.data);
   },
