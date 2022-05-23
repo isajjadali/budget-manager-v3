@@ -1,3 +1,4 @@
+const {sumBy, flatMap, map, filter} = require('lodash');
 const {asyncMiddleware} = global;
 const findCreateDate = require(`${global.paths.middlewares}/find-create-date`);
 const {sequelizeConfig} = require(`${global.paths.lib}/sequelize`);
@@ -8,6 +9,10 @@ const {
   Projects,
   Sequelize,
   UserProjectPayouts,
+  Tasks,
+  Descriptions,
+  ProjectTasks,
+  ProjectTaskDescriptions,
 } = global.db;
 
 module.exports = (router) => {
@@ -49,7 +54,41 @@ module.exports = (router) => {
     .route('/:projectId')
     .get(
       asyncMiddleware(async (req, res) => {
-        res.http200(req.project);
+        const [
+          activities,
+          tasks
+        ] = await Promise.all(
+          [
+            req.project.getActivities(),
+            req.project.getProjectTasks({
+              include: [
+                {
+                  model: ProjectTaskDescriptions,
+                  as: ProjectTaskDescriptions.$$name
+                }
+              ]
+            }),
+          ]
+        );
+        const materialCost = sumBy(tasks, 'materialCost');
+        const laborCost = sumBy(
+          flatMap(map(tasks, p => p.ProjectTaskDescriptions)),
+          'laborCost'
+        );
+        const allPayins = filter(activities, {amount: true});
+        const allPayout = filter(activities, {amount: false});
+        const projectLabourSpending = sumBy(allPayout,'amount');
+        const projectAmountRecieved = sumBy(allPayins,'amount');
+
+        res.http200({
+          ...req.project.toJSON(),
+          tasks,
+          totalMaterialCost: materialCost,
+          totalLaborCost: laborCost,
+          projectCost: materialCost + laborCost,
+          projectLabourSpending,
+          projectAmountRecieved
+        });
       })
     )
     .put(
@@ -79,6 +118,37 @@ module.exports = (router) => {
         dateId: req.date.id,
       });
       res.status(200).send(newPayIn);
+    })
+  );
+  router.route('/:projectId/task').post(
+    asyncMiddleware(async (req, res, next) => {
+      const task = await ProjectTasks.create({
+        ...req.body,
+        projectId: req.project.id,
+      });
+      const descriptions = await ProjectTaskDescriptions.$$bulkCreate(
+        req.body.descriptions.map((item) => ({
+          projectTaskId: task.id,
+          ...item,
+        }))
+      );
+      res.http200({...task.toJSON(), descriptions: descriptions});
+      await Promise.all([
+        Tasks.findOrCreate({
+          where: {
+            name: task.name,
+          },
+        }),
+        ...descriptions.map((item) => {
+          Descriptions.findOrCreate({
+            where: {
+              description: item.description,
+            },
+          });
+        }),
+      ]);
+      // await insertTaskDescription(task.name, descriptions);
+      return;
     })
   );
 };

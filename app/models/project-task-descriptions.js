@@ -2,7 +2,7 @@ const {getSetMethods} = global.sequelizeFunctions;
 const moment = require('moment');
 
 module.exports = function (sequelize, DataTypes) {
-  const {STRING, INTEGER} = DataTypes;
+  const {STRING, INTEGER, DECIMAL} = DataTypes;
   const ProjectTaskDescriptions = sequelize.$$defineModel(
     'ProjectTaskDescriptions',
     {
@@ -16,6 +16,15 @@ module.exports = function (sequelize, DataTypes) {
       description: {
         type: STRING,
       },
+      laborCost: {
+        type: DECIMAL,
+        get() {
+          return Number(this.getDataValue('laborCost'));
+        }
+      },
+    },
+    {
+      paranoid: false,
     }
   );
 

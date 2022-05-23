@@ -1,39 +1,36 @@
-const {getSetMethods} = global.sequelizeFunctions;
-const moment = require('moment');
+const { getSetMethods } = global.sequelizeFunctions;
+const moment = require("moment");
+const { ProjectStatus } = require("../enums");
 
 module.exports = function (sequelize, DataTypes) {
-  const {STRING, DECIMAL, DATEONLY, TEXT} = DataTypes;
-  const Projects = sequelize.$$defineModel('Projects', {
+  const { STRING, DECIMAL, DATEONLY, TEXT } = DataTypes;
+  const Projects = sequelize.$$defineModel("Projects", {
     name: {
       type: STRING,
-      defaultValue: 'Unnamed Project',
-      ...getSetMethods.call(this, 'name', 'startCase'),
+      defaultValue: "Unnamed Project",
+      ...getSetMethods.call(this, "name", "startCase"),
     },
-    startDate: {
-      type: DATEONLY,
-      defaultValue: moment().format('YYYY-MM-DD'),
+    clientAddress: {
+      type: STRING,
     },
-    endDate: {
-      type: DATEONLY,
-      defaultValue: null,
+
+    clientEmail: {
+      type: STRING,
     },
-    amount: {
-      type: DECIMAL,
-    },
-    notes: {
-      type: TEXT,
-      defaultValue: '',
+    status: {
+      type: STRING,
+      defaultValue: ProjectStatus.Draft,
     },
   });
 
   /* ================== Model Associations ================== */
   Projects.associate = (models) => {
     Projects.hasMany(models.Activities, {
-      foreignKey: 'projectId',
+      foreignKey: "projectId",
       as: models.Activities.$$name,
     });
     Projects.hasMany(models.ProjectTasks, {
-      foreignKey: 'projectId',
+      foreignKey: "projectId",
       as: models.ProjectTasks.$$name,
     });
   };
