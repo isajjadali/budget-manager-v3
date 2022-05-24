@@ -128,9 +128,8 @@ module.exports = (router) => {
           ...item,
         }))
       );
-      res.http200({ ...task.toJSON(), descriptions: descriptions });
-      await Tasks.insertTaskDescription(task.name, descriptions);
-      return;
+      Tasks.insertTaskDescription(task.name, descriptions);
+      return res.http200({ ...task.toJSON(), descriptions: descriptions });
     })
   );
 };
