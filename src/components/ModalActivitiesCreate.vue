@@ -18,9 +18,11 @@
     </template>
     <v-col cols="12">
       <ActivitiesCreate
+        ref="activityCreateForm"
         :is-payin="isPayin"
         :employees="employees"
         :projects="projects"
+        :newActivity="newActivity"
         @cancel="onClose"
         @save="onSave"
       />
@@ -41,6 +43,11 @@ export default {
   },
   data: () => ({
     dialog: false,
+    newActivity: {
+      date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+        .toISOString()
+        .substr(0, 10),
+    },
   }),
   computed: {
     ...mapState('global', ['isCreatingActivity', 'employees', 'projects']),
@@ -51,17 +58,26 @@ export default {
   methods: {
     ...mapActions('global', ['createActivity', 'fetchAllEmployees', 'fetchAllProjects', 'createPayin',]),
     onClose() {
-      this.dialog = false;
       this.$emit('close');
+      this.cleanUpModal();
     },
-    async onSave(newActivity) {
-      this.dialog = false;
+    async onSave(activity) {
       if (this.isPayin) {
-        await this.createPayin(newActivity);
+        await this.createPayin(activity);
       } else {
-        await this.createActivity(newActivity);
+        await this.createActivity(activity);
       }
-      this.$emit('save', newActivity.data);
+      this.$emit('save', activity.data);
+      this.cleanUpModal();
+    },
+    cleanUpModal() {
+      this.dialog = false;
+      this.$refs.activityCreateForm.$refs.createForm.resetValidation();
+      this.newActivity = {
+        date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+        .toISOString()
+        .substr(0, 10),
+      };
     },
   },
   mounted() {

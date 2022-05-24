@@ -16,6 +16,8 @@
     </template>
     <v-col cols="12">
       <EmployeeCreate
+        ref="employeeCreateForm"
+        :employee="newEmployee"
         @cancel="onClose"
         @save="onSave"
       />
@@ -33,21 +35,30 @@ export default {
   },
   data: () => ({
     dialog: false,
+    newEmployee: {
+      type: Object
+    },
   }),
   computed: {
     ...mapState('global', ['isCreatingEmployee']),
   },
   methods: {
     ...mapActions('global', ['createEmployee']),
+
     onClose() {
-      this.dialog = false;
       this.$emit('close');
+      this.cleanUpForm();
     },
     async onSave(newEmployee) {
       await this.createEmployee(newEmployee);
       this.$emit('save', newEmployee);
-      this.dialog = false;
+      this.cleanUpForm();
     },
+    cleanUpForm() {
+      this.dialog = false;
+      this.$refs.employeeCreateForm.$refs.createForm.resetValidation();
+      this.$refs.employeeCreateForm.$refs.createForm.reset();
+    }
   },
 };
 </script>

@@ -1,5 +1,5 @@
 <template>
-  <v-form v-model="invalid">
+  <v-form v-model="invalid" ref="createForm">
     <div>
       <v-row>
         <v-card width="100%">
@@ -11,7 +11,7 @@
               <v-row>
                 <v-col cols="12" sm="6" md="4" class="ma-3">
                   <v-text-field
-                    v-model.number="activity.amount"
+                    v-model.number="newActivity.amount"
                     label="Amount"
                     :prefix="CURRENCY_SYMBOL"
                     type="number"
@@ -28,7 +28,7 @@
                   >
                     <template #activator="{ on, attrs }">
                       <v-text-field
-                        v-model="activity.date"
+                        v-model="newActivity.date"
                         label="Enter Date"
                         prepend-icon="mdi-calendar"
                         readonly
@@ -37,7 +37,7 @@
                       />
                     </template>
                     <v-date-picker
-                      v-model="activity.date"
+                      v-model="newActivity.date"
                       @input="menu2 = false"
                     />
                   </v-menu>
@@ -46,7 +46,7 @@
               <v-row>
                 <v-col v-if="!isPayin">
                   <v-select
-                    v-model="activity.employeeId"
+                    v-model="newActivity.employeeId"
                     :items="employees"
                     item-text="fullName"
                     item-value="id"
@@ -58,7 +58,7 @@
               <v-row>
                 <v-col>
                   <v-select
-                    v-model="activity.projectId"
+                    v-model="newActivity.projectId"
                     :items="projects"
                     item-text="name"
                     :rules="[requiredProject]"
@@ -93,13 +93,13 @@ import { CURRENCY_SYMBOL } from '@/enums';
 
 export default {
   name: "ActivityCreate",
-  props: ["isPayin", "employees", "projects"],
+  props: {
+    isPayin: [], 
+    employees: [], 
+    projects: [],
+    newActivity: Object,
+  },
   data: () => ({
-    activity: {
-      date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
-        .toISOString()
-        .substr(0, 10),
-    },
     requiredProject: (p) => !!p || "Project is required",
     requiredEmployee: (e) => !!e || "Employee is required",
     dateMenu: false,
@@ -109,22 +109,16 @@ export default {
   }),
   methods: {
     onSave() {
-      this.$emit("save", this.activity);
-      this.activity = {};
+      this.$emit("save", this.newActivity);
     },
     onCancel() {
-      this.activity = {
-        date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
-          .toISOString()
-          .substr(0, 10),
-      };
       this.$emit("cancel");
     },
   },
   computed: {
   },
   mounted() {
-    (this.invalid = false), this.activity;
+    this.invalid = false;
     if (this.isPayin) {
       this.headerTitle = "Create Payin";
     }
