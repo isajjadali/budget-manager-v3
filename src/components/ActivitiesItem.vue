@@ -1,22 +1,51 @@
 <template>
   <div class="text--primary">
     <v-hover>
-      <template v-slot:default="{ hover }">
-        <v-card :elevation="hover ? 18 : 3" class="pa-5" @click="onItemClick">
+      <template #default="{ hover }">
+        <v-card
+          :elevation="hover ? 18 : 3"
+          class="px-5 py-1 lighten-4"
+          :class="activity.isPaid ? 'green' : 'red'"
+          @click="onItemClick"
+        >
           <v-row>
-            <v-col cols="12" sm="6" :md="isPayin ? '5' : '4'" class="d-flex align-center">
+            <v-col
+              cols="12"
+              sm="6"
+              :md="isPayin ? '5' : '4'"
+              class="d-flex align-center"
+            >
               {{ projectName }}
             </v-col>
-            <v-col v-if="!isPayin" cols="12" sm="6" md="3" class="d-flex align-center">
-              {{ activity.employee.fullName }}            
+            <v-col
+              v-if="!isPayin"
+              cols="12"
+              sm="6"
+              md="3"
+              class="d-flex align-center"
+            >
+              {{ activity.employee.fullName }}
             </v-col>
-            <v-col cols="12" sm="6" :md="isPayin ? '5' : '4'" class="d-flex justify-end align-center">
-              <b>{{ CURRENCY_SYMBOL }}</b> {{ activity.amount }}
+            <v-col
+              cols="12"
+              sm="6"
+              :md="isPayin ? '5' : '4'"
+              class="d-flex justify-end align-center"
+            >
+              <span><b>{{ CURRENCY_SYMBOL }}</b> {{ activity.amount }}</span>
             </v-col>
-            <v-col cols="12" :md="isPayin ? '2' : '1'" class="d-flex justify-end align-center">
+            <v-col
+              cols="12"
+              :md="isPayin ? '2' : '1'"
+              class="d-flex justify-end align-center"
+            >
               <DropDownMenu @onActionSelected="onActionSelected" />
             </v-col>
-            <ConfirmationModal :toggleDialog="toggleConfirmationModal" @cancel="onCancel" @delete="onDelete"/>
+            <ConfirmationModal
+              :toggle-dialog="toggleConfirmationModal"
+              @cancel="onCancel"
+              @delete="onDelete"
+            />
           </v-row>
         </v-card>
       </template>
@@ -25,11 +54,15 @@
 </template>
 
 <script>
-import { CURRENCY_SYMBOL } from "@/enums";
+import {CURRENCY_SYMBOL} from '@/enums';
 import ConfirmationModal from './ConfirmationModal.vue';
 import DropDownMenu from './DropDownMenu.vue';
 
 export default {
+  components: {
+    ConfirmationModal,
+    DropDownMenu,
+  },
   props: {
     activity: {
       type: Object,
@@ -48,32 +81,27 @@ export default {
   },
   computed: {
     projectName() {
-      return this.activity.project?.name || "No Project";
+      return this.activity.project?.name || 'No Project';
     },
   },
   methods: {
     onItemClick() {
-      this.$emit("itemClicked", this.activity);
+      this.$emit('itemClicked', this.activity);
     },
     onActionSelected(Action) {
-      if(Action == "Edit") {
-        this.$emit("itemClicked", this.activity);
-      }
-      else {
+      if (Action == 'Edit') {
+        this.$emit('itemClicked', this.activity);
+      } else {
         this.toggleConfirmationModal = true;
       }
     },
-    onCancel(){
+    onCancel() {
       this.toggleConfirmationModal = false;
     },
-    onDelete(){
+    onDelete() {
       this.toggleConfirmationModal = false;
       this.$emit('delete', this.activity);
     },
-  },
-  components: {
-    ConfirmationModal,
-    DropDownMenu,
   }
 };
 </script>

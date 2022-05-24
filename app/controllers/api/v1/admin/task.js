@@ -50,20 +50,8 @@ module.exports = (router) => {
         );
 
         res.http200({ ...projectTask.toJSON(), descriptions: descriptions });
-        await Promise.all([
-          Tasks.findOrCreate({
-            where: {
-              name: projectTask.name,
-            },
-          }),
-          ...descriptions.map((item) => {
-            Descriptions.findOrCreate({
-              where: {
-                description: item.description,
-              },
-            });
-          }),
-        ]);
+
+        await Tasks.insertTaskDescription(projectTask.name, descriptions);
         return;
       })
     )

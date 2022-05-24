@@ -20,6 +20,9 @@
               {{ tab.title }}
             </v-tab>
           </v-tabs>
+          <v-col class="px-5">
+            <AccountMenu :user="user" @logout="onLogout"/>
+          </v-col>
         </v-app-bar>
       </v-col>
     </v-row>
@@ -27,6 +30,9 @@
 </template>
 
 <script>
+import AccountMenu from './AccountMenu.vue';
+import {mapState, mapActions} from 'vuex';
+
 export default {
   name: 'NavBar',
   data() {
@@ -40,5 +46,21 @@ export default {
       ],
     };
   },
+  components: {
+    AccountMenu,
+  },
+  methods: {
+    ...mapActions('global', ['fetchLoggedInUser']),
+    onLogout() {
+      localStorage.removeItem('token');
+      this.$router.push('login');
+    }
+  },
+  computed: {
+    ...mapState('global', ['user']),
+  },
+  async mounted() {
+    await this.fetchLoggedInUser();
+  }
 };
 </script>

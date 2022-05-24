@@ -1,3 +1,4 @@
+const { sumBy, flatMap, map, filter } = require("lodash");
 const { asyncMiddleware } = global;
 const findCreateDate = require(`${global.paths.middlewares}/find-create-date`);
 const { sequelizeConfig } = require(`${global.paths.lib}/sequelize`);
@@ -32,6 +33,7 @@ module.exports = (router) => {
         return res.http200(projects);
       })
     )
+
     .post(
       asyncMiddleware(async (req, res) => {
         delete req.body.id;
@@ -53,7 +55,36 @@ module.exports = (router) => {
     .route("/:projectId")
     .get(
       asyncMiddleware(async (req, res) => {
-        res.http200(req.project);
+        const [activities, tasks] = await Promise.all([
+          req.project.getActivities(),
+          req.project.getProjectTasks({
+            include: [
+              {
+                model: ProjectTaskDescriptions,
+                as: ProjectTaskDescriptions.$$name,
+              },
+            ],
+          }),
+        ]);
+        const materialCost = sumBy(tasks, "materialCost");
+        const laborCost = sumBy(
+          flatMap(map(tasks, (p) => p.ProjectTaskDescriptions)),
+          "laborCost"
+        );
+        const allPayins = filter(activities, { amount: true });
+        const allPayout = filter(activities, { amount: false });
+        const projectLabourSpending = sumBy(allPayout, "amount");
+        const projectAmountRecieved = sumBy(allPayins, "amount");
+
+        res.http200({
+          ...req.project.toJSON(),
+          tasks,
+          totalMaterialCost: materialCost,
+          totalLaborCost: laborCost,
+          projectCost: materialCost + laborCost,
+          projectLabourSpending,
+          projectAmountRecieved,
+        });
       })
     )
     .put(
@@ -98,21 +129,7 @@ module.exports = (router) => {
         }))
       );
       res.http200({ ...task.toJSON(), descriptions: descriptions });
-      await Promise.all([
-        Tasks.findOrCreate({
-          where: {
-            name: task.name,
-          },
-        }),
-        ...descriptions.map((item) => {
-          Descriptions.findOrCreate({
-            where: {
-              description: item.description,
-            },
-          });
-        }),
-      ]);
-      // await insertTaskDescription(task.name, descriptions);
+      await Tasks.insertTaskDescription(task.name, descriptions);
       return;
     })
   );
