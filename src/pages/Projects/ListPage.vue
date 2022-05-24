@@ -1,6 +1,5 @@
 <template>
   <v-container>
-    <ModalProjectCreate />
     <v-row>
       <v-col cols="12">
         <ProjectList />
@@ -10,13 +9,11 @@
 </template>
 
 <script>
-import ModalProjectCreate from '../../components/ModalProjectCreate.vue';
-import ProjectList from '../../components/ProjectList.vue';
+import ProjectList from "../../components/ProjectList.vue";
 
 export default {
-  name: 'ProjectsListPage',
+  name: "ProjectsListPage",
   components: {
-    ModalProjectCreate,
     ProjectList,
   },
 };
