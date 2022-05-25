@@ -21,7 +21,7 @@
             </v-tab>
           </v-tabs>
           <v-col class="px-5">
-            <AccountMenu :user="user" @logout="onLogout"/>
+            <AccountMenu v-if="user" :user="user" @logout="onLogout"/>
           </v-col>
         </v-app-bar>
       </v-col>

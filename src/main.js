@@ -1,5 +1,7 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
+import VueIziToast from 'vue-izitoast';
+import 'izitoast/dist/css/iziToast.min.css';
 
 import App from './App.vue';
 import vuetify from './plugins/vuetify';
@@ -26,6 +28,22 @@ router.beforeEach((to, from, next) => {
   }
   next();
 });
+
+Vue.config.errorHandler = (err, vm, info) => {
+  // err: error trace
+  // vm: component in which error occured
+  // info: Vue specific error information such as lifecycle hooks, events etc.
+
+
+  console.error(err, '<=== Main.js Error Tracking');
+  if(err) vm.$toast.error(err.data.error.body);
+};
+
+
+const options = {
+  position: 'topRight',
+};
+Vue.use(VueIziToast,options);
 
 Vue.use(VueRouter);
 new Vue({
