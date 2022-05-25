@@ -14,7 +14,7 @@
       <v-col cols="12" sm="12" md="3">
         <v-text-field
           outlined
-          v-model="project.name"
+          v-model="comingProject.name"
           label="Project Name"
           name="projectName"
           type="text"
@@ -35,36 +35,10 @@
       /></v-col>
     </v-row>
     <v-row>
-      <v-col cols="12" sm="12" md="3" class="">
-        <v-card width="100%">
-          <v-card-title class="displayblock">
-            <span class="text-h5 pa-3"><b> Tasks: </b></span>
-          </v-card-title>
-          <v-card-text>
-            <v-container>
-              <v-row>
-                <v-col cols="12" sm="12" md="12">
-                  <v-text-field
-                    outlined
-                    v-model="search"
-                    label="Search ..."
-                    name="search"
-                /></v-col>
-                <v-col
-                  cols="12"
-                  sm="12"
-                  md="12"
-                  class="mb-2 border-line"
-                  v-for="task in tasks"
-                  :key="task.name"
-                >
-                  {{ task.name }}
-                </v-col>
-              </v-row>
-            </v-container>
-          </v-card-text>
-        </v-card>
-      </v-col>
+      <ProjectTasks
+        :isProjectTask="true" 
+        :projectTasks="tasks" 
+      />
       <v-col cols="12" sm="12" md="6" class="">
         <v-card width="100%">
           <v-card-title class="displayblock">
@@ -130,42 +104,15 @@
           </v-card-actions>
         </v-card>
       </v-col>
-      <v-col cols="12" sm="12" md="3" class="">
-        <v-card width="100%">
-          <v-card-title class="displayblock">
-            <span class="text-h5 pa-3"><b> Descriptions: </b></span>
-          </v-card-title>
-          <v-card-text>
-            <v-container>
-              <v-row>
-                <v-col cols="12" sm="12" md="12">
-                  <v-text-field
-                    outlined
-                    v-model="search"
-                    label="Search ..."
-                    name="search"
-                /></v-col>
-                <v-col
-                  cols="12"
-                  sm="12"
-                  md="12"
-                  class="mb-2 border-line"
-                  v-for="description in descriptions"
-                  :key="description.name"
-                >
-                  {{ description.name }}
-                </v-col>
-              </v-row>
-            </v-container>
-          </v-card-text>
-        </v-card>
-      </v-col>
+      <ProjectTasks :isProjectTask="false" :projectTasks="descriptions" />
     </v-row>
   </v-row>
 </template>
 
 <script>
 import { mapState, mapActions } from "vuex";
+import ProjectTasks from './ProjectTasks.vue';
+
 export default {
   name: "ProjectTaskCreate",
   data: () => ({
@@ -396,13 +343,16 @@ export default {
   computed: {
     ...mapState("global", ["comingProject"]),
   },
-  mounted() {
+  async mounted() {
     let id = this.$route.params.id;
-    this.getProject(id);
-    this.fetchAllTasksAndDescriptions();
+    await this.getProject(id);
+    await this.fetchAllTasksAndDescriptions();
 
-    console.log(this.comingProject);
+    console.log(this.comingProject.id);
   },
+  components: {
+    ProjectTasks,
+  }
 };
 </script>
 <style>
