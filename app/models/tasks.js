@@ -42,22 +42,31 @@ module.exports = function (sequelize, DataTypes) {
     ]);
 
     const [task, ...createdDescriptions] = results;
-    console.log(
-      ...createdDescriptions.map((description) => {
-        return {
-          descriptionId: description[0].id,
-          taskId: task[0].id,
-        };
-      })
+
+    return Promise.all(
+      createdDescriptions.map(
+        (item) =>
+          new Promise((resolve, reject) => {
+            global.db.TaskDescription.findOrCreate({
+              where: {
+                descriptionId: item[0].id,
+                taskId: task[0].id,
+              },
+            })
+              .then((res) => resolve(res))
+              .catch((e) => reject(e));
+          })
+      )
     );
-    return global.db.TaskDescription.$$bulkCreate([
-      ...createdDescriptions.map((description) => {
-        return {
-          descriptionId: description[0].id,
-          taskId: task[0].id,
-        };
-      }),
-    ]);
+
+    // return global.db.TaskDescription.$$bulkCreate([
+    //   ...createdDescriptions.map((description) => {
+    //     return {
+    //       descriptionId: description[0].id,
+    //       taskId: task[0].id,
+    //     };
+    //   }),
+    // ]);
   };
   return Tasks;
 };

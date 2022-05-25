@@ -24,11 +24,22 @@ module.exports = (router) => {
     .get(
       asyncMiddleware(async (req, res) => {
         const [tasks, descriptions] = await Promise.all([
-          Tasks.findAll(),
-          Descriptions.findAll(),
+          Tasks.findAll({
+            include: [
+              {
+                model: Descriptions,
+                as: "descriptions",
+                attributes: ["id", "description"],
+                through: {
+                  attributes: [],
+                },
+              },
+            ],
+          }),
+          // Descriptions.findAll(),
         ]);
 
-        return res.http200({ tasks, descriptions });
+        return res.http200({ tasks });
       })
     );
   router

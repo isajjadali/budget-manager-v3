@@ -128,7 +128,8 @@ module.exports = (router) => {
           ...item,
         }))
       );
-      Tasks.insertTaskDescription(task.name, descriptions);
+      const result = await Tasks.insertTaskDescription(task.name, descriptions);
+      console.log("result==>>", result);
       return res.http200({ ...task.toJSON(), descriptions: descriptions });
     })
   );
