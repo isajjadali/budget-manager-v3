@@ -7,52 +7,28 @@
         </h1>
       </v-col>
     </v-row>
-    <v-row>
-      <v-col>
-        <div class="d-flex">
-          <v-card width="100%">
-            <v-simple-table>
-              <template v-slot: default>
-                <thead>
-                  <tr>
-                    <th class="text-left">Name</th>
-                    <th class="text-left">Balance</th>
-                    <th class="text-left">Rate</th>
-                    <th class="text-left">Address</th>
-                    <th class="text-left">Status</th>
-                    <th class="text-left">View Activities</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr
-                      v-for="employee in employees"
-                      :key="employee.name"
-                      @click="onEmployeeClick(employee)"
-                    >
-                      <td>{{ employee.fullName }}</td>
-                      <td>{{ employee.balance }}</td>
-                      <td>{{ employee.rate }}</td>
-                      <td>{{ employee.address }}</td>
-                      <td v-if="employee.status">Available</td> <td v-else>Not-Available</td>
-                      <td>
-                        <router-link
-                          :to="{
-                            name: 'all-activities',
-                            query: {employeeIds: `${employee.id}`},
-                          }"
-                          @click="onButtonClick(employee)"
-                        >
-                          Click Here
-                        </router-link>
-                      </td>
-                    </tr>
-                </tbody>
-                <ModalEdit :isOpen="isToggleOpen" :isEmployee="true" :employee="activeEmployee" @save="onSave" @cancel="onCancel" />
-              </template>
-            </v-simple-table>
-          </v-card>
-        </div>
+    <v-row class="ma-0">
+      <v-col 
+        v-for="employee in employees" 
+        :key="employee.id" 
+        class="d-flex child-flex ma-1 mx-13 mt-4"
+        cols="3"
+        @click="onEmployeeClick(employee)"
+      >
+        <EmployeeCard 
+          :employee="employee" 
+          @editEmployee="onEditEmployee"
+          @delete="deleteEmployee"
+          
+        />
       </v-col>
+      <ModalEdit 
+      :isOpen="isToggleOpen" 
+      :isEmployee="true" 
+      :employee="activeEmployee" 
+      @save="onSave" 
+      @cancel="onCancel" 
+      />
     </v-row>
   </div>
 </template>
@@ -60,6 +36,7 @@
 <script>
 import { mapState, mapActions } from "vuex";
 import ModalEdit from './ModalEdit.vue';
+import EmployeeCard from './EmployeeCard.vue';
 
 export default {
   name: "EmployeeList",
@@ -82,10 +59,9 @@ export default {
       this.activeEmployee = employee;
       this.isToggleOpen = true;
     },
-    async onSave(employee) {
+    async onEditEmployee(employee) {
       await this.updateEmployee(employee);
       this.fetchAllEmployees(true);
-      // this.activeEmployee= {},
       this.isToggleOpen = false;
     },
     onCancel() {
@@ -94,6 +70,9 @@ export default {
     onButtonClick(employee) {
       // this.$router.push({ name: 'all-activities', query: {employeeIds: `${employee.id}`}})
       // console.log(employee);
+    },
+    deleteEmployee(employee) {
+      alert('Employee deleted', employee.fullName);
     }
   },
   computed: {
@@ -104,6 +83,7 @@ export default {
   },
   components: {
     ModalEdit,
+    EmployeeCard,
   }
 };
 </script>

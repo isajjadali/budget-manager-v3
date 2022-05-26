@@ -10,6 +10,7 @@
         dark
         v-bind="attrs"
         v-on="on"
+        rounded
       >
         Create Employee
       </v-btn>
