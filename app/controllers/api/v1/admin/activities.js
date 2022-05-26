@@ -78,7 +78,7 @@ module.exports = (router) => {
     )
     .get(
       asyncMiddleware(async (req, res) => {
-        const {projectIds, employeeIds, ...rest} = req.query;
+        const { projectIds, employeeIds, ...rest } = req.query;
         const filters = {
           ...rest,
           limit: req.limit,
@@ -91,12 +91,12 @@ module.exports = (router) => {
         };
         if (projectIds) {
           where.projectId = {
-            [Sequelize.Op.in]: projectIds.split(',').map((id) => Number(id)),
+            [Sequelize.Op.in]: projectIds.split(",").map((id) => Number(id)),
           };
         }
         if (employeeIds) {
           where.employeeId = {
-            [Sequelize.Op.in]: employeeIds.split(',').map((id) => Number(id)),
+            [Sequelize.Op.in]: employeeIds.split(",").map((id) => Number(id)),
           };
         }
         const include = [
@@ -107,10 +107,10 @@ module.exports = (router) => {
             include: [
               {
                 model: Users,
-                as: 'employee',
+                as: "employee",
                 where: {
                   roles: Roles.Employee,
-                }
+                },
               },
               {
                 model: Projects,
@@ -155,6 +155,11 @@ module.exports = (router) => {
         await req.activityOwnedByEmployee.update({
           balance: +req.activityOwnedByEmployee.balance + activityAmount,
         });
+
+        if(req.employee.id === req.activityOwnedByEmployee.id) {
+          req.employee.balance = req.activityOwnedByEmployee.balance;
+        }
+
         await req.activity.destroy({ paranoid: false });
         const activity = await req.employee.logActivity(newActivity);
 
