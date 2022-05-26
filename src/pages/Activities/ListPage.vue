@@ -2,6 +2,20 @@
   <v-row>
     <v-col
       cols="12"
+      md="12"
+    >
+      <v-row class="justify-center">
+        <v-col
+          cols="12"
+          md="4"
+          class="pt-0"
+        >
+          <CustomDatePicker :range="['2012-01-01', '2012-12-31']" />
+        </v-col>
+      </v-row>
+    </v-col>
+    <v-col
+      cols="12"
       sm="0"
       md="3"
       class="pt-0"
@@ -10,7 +24,10 @@
         elevation="4"
         class="pa-0 filter-sidebar"
       >
-        <ActivitiesPayments :currentList="activities" :isPayin="false"/>
+        <ActivitiesPayments
+          :current-list="activities"
+          :is-payin="false"
+        />
         <div class="px-5 pt-5 d-flex justify-center">
           <ModalActivitiesCreate
             :is-payin="false"
@@ -47,6 +64,7 @@ import ActivitiesList from '../../components/ActivitiesList.vue';
 import AvailableFilters from '@/components/AvailableFilters';
 import ActivitiesListHeader from '@/components/ActivitiesHeader';
 import ActivitiesPayments from '@/components/ActivitiesPayments.vue';
+import CustomDatePicker from '@/components/CustomDatePicker/CustomDatePicker';
 
 export default {
   name: 'ActivitesListPage',
@@ -56,6 +74,7 @@ export default {
     ActivitiesPayments,
     AvailableFilters,
     ActivitiesListHeader,
+    CustomDatePicker,
   },
   data() {
     return {
