@@ -58,15 +58,6 @@ module.exports = function (sequelize, DataTypes) {
           })
       )
     );
-
-    // return global.db.TaskDescription.$$bulkCreate([
-    //   ...createdDescriptions.map((description) => {
-    //     return {
-    //       descriptionId: description[0].id,
-    //       taskId: task[0].id,
-    //     };
-    //   }),
-    // ]);
   };
   return Tasks;
 };
