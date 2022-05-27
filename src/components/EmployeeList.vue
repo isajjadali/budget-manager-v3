@@ -1,53 +1,46 @@
 <template>
-  <div>
-    <v-row no-gutters>
-      <v-col>
-        <h1 class="text-center">
-          {{ header }}
-        </h1>
-      </v-col>
-    </v-row>
-    <v-row class="ma-0">
+  <v-row>
       <v-col 
         v-for="employee in employees" 
         :key="employee.id" 
-        class="d-flex child-flex ma-1 mx-13 mt-4"
-        cols="3"
-        @click="onEmployeeClick(employee)"
+        class=""
+        cols="12"
+        md="3"
       >
         <EmployeeCard 
           :employee="employee" 
-          @editEmployee="onEditEmployee"
+          @editEmployee="onEmployeeClick"
           @delete="deleteEmployee"
-          
+          @activityLink="onActivityButtonClick"
         />
       </v-col>
       <ModalEdit 
       :isOpen="isToggleOpen" 
       :isEmployee="true" 
       :employee="activeEmployee" 
-      @save="onSave" 
+      @save="onSaveEditEmployee" 
       @cancel="onCancel" 
       />
     </v-row>
-  </div>
 </template>
 
 <script>
-import { mapState, mapActions } from "vuex";
+import { mapActions } from "vuex";
 import ModalEdit from './ModalEdit.vue';
 import EmployeeCard from './EmployeeCard.vue';
 
 export default {
   name: "EmployeeList",
+  props: {
+    employees: [],
+  },
   data() {
     return {
-      header: "All Employees ",
+      header: "All Employees",
       activeEmployee: {
         type: Object,
       },
       isToggleOpen: false,
-      activityQuery: "employeeIds=",
     };
   },
   methods: {
@@ -59,7 +52,7 @@ export default {
       this.activeEmployee = employee;
       this.isToggleOpen = true;
     },
-    async onEditEmployee(employee) {
+    async onSaveEditEmployee(employee) {
       await this.updateEmployee(employee);
       this.fetchAllEmployees(true);
       this.isToggleOpen = false;
@@ -67,16 +60,12 @@ export default {
     onCancel() {
       this.isToggleOpen = false;
     },
-    onButtonClick(employee) {
-      // this.$router.push({ name: 'all-activities', query: {employeeIds: `${employee.id}`}})
-      // console.log(employee);
+    onActivityButtonClick(employee) {
+      this.$router.push({ name: 'all-activities', query: {employeeIds: `${employee.id}`}});
     },
     deleteEmployee(employee) {
       alert('Employee deleted', employee.fullName);
     }
-  },
-  computed: {
-    ...mapState("global", ["employees"]),
   },
   mounted() {
     this.fetchAllEmployees();

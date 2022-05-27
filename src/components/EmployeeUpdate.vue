@@ -11,7 +11,7 @@
               <v-col
                 cols="12"
                 sm="6"
-                md="4"
+                md="5"
                 class="ma-3"
               >
                 <v-text-field
@@ -26,7 +26,7 @@
               <v-col
                 cols="12"
                 sm="6"
-                md="4"
+                md="5"
                 class="ma-3"
               >
                 <v-text-field
@@ -43,7 +43,7 @@
               <v-col
                 cols="12"
                 sm="6"
-                md="4"
+                md="5"
                 class="ma-3"
               >
                 <v-text-field
@@ -58,7 +58,7 @@
               <v-col
                 cols="12"
                 sm="6"
-                md="4"
+                md="5"
                 class="ma-3"
               >
                 <v-text-field
@@ -74,7 +74,7 @@
               <v-col
                 cols="12"
                 sm="6"
-                md="4"
+                md="5"
                 class="ma-3"
               >
                 <v-text-field

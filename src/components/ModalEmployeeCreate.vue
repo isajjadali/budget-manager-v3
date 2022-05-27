@@ -2,7 +2,7 @@
   <v-dialog 
     v-model="dialog" 
     persistent 
-    max-width="600px"
+    max-width="700px"
   >
     <template #activator="{ on, attrs }">
       <v-btn 
@@ -11,6 +11,7 @@
         v-bind="attrs"
         v-on="on"
         rounded
+        width="100%"
       >
         Create Employee
       </v-btn>
