@@ -7,12 +7,12 @@
             <span class="text-h5 ma-3 pa-3"><b> Add Employee </b></span>
           </v-card-title>
           <v-card-text>
-            <v-container>
+            <v-container class="my-0">
               <v-row>
                 <v-col
                   cols="12"
                   sm="6"
-                  md="4"
+                  md="5"
                   class="ma-3"
                 >
                   <v-text-field
@@ -21,12 +21,13 @@
                     value=""
                     label="Enter First Name"
                     required
+                    :prepend-icon="mdiAccount"
                   />
                 </v-col>
                 <v-col
                   cols="12"
                   sm="6"
-                  md="4"
+                  md="5"
                   class="ma-3"
                 >
                   <v-text-field
@@ -35,6 +36,7 @@
                     value=""
                     label="Enter Last Name"
                     required
+                    :prepend-icon="mdiAccount"
                   />
                 </v-col>
               </v-row>
@@ -42,7 +44,7 @@
                 <v-col
                   cols="12"
                   sm="6"
-                  md="4"
+                  md="5"
                   class="ma-3"
                 >
                   <v-text-field
@@ -51,12 +53,13 @@
                     value=""
                     label="Enter Email"
                     required
+                    prepend-icon="mdi-email"
                   />
                 </v-col>
                 <v-col
                   cols="12"
                   sm="6"
-                  md="4"
+                  md="5"
                   class="ma-3"
                 >
                   <v-text-field
@@ -77,7 +80,7 @@
                 <v-col
                   cols="12"
                   sm="6"
-                  md="4"
+                  md="5"
                   class="ma-3"
                 >
                   <v-text-field
@@ -91,13 +94,14 @@
                 <v-col
                   cols="12"
                   sm="6"
-                  md="4"
+                  md="5"
                   class="ma-3"
                 >
                   <v-text-field
                     v-model="employee.address"
                     value=""
                     label="Enter Address"
+                    prepend-icon="mdi-map-marker"
                   />
                 </v-col>
               </v-row>
@@ -130,6 +134,7 @@
 
 <script>
 import { CURRENCY_SYMBOL } from '@/enums';
+import { mdiAccount } from '@mdi/js';
 
 export default {
   name: 'EmployeeCreate',
@@ -144,6 +149,7 @@ export default {
     invalid: true,
     show: false,
     CURRENCY_SYMBOL,
+    mdiAccount,
   }),
   methods: {
     onSave() {
