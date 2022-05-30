@@ -23,12 +23,22 @@ module.exports = (router) => {
     // This API is for suggestion.
     .get(
       asyncMiddleware(async (req, res) => {
-        const [tasks, descriptions] = await Promise.all([
-          Tasks.findAll(),
-          Descriptions.findAll(),
+        const [tasks] = await Promise.all([
+          Tasks.findAll({
+            include: [
+              {
+                model: Descriptions,
+                as: "descriptions",
+                attributes: ["id", "description"],
+                through: {
+                  attributes: [],
+                },
+              },
+            ],
+          }),
         ]);
 
-        return res.http200({ tasks, descriptions });
+        return res.http200({ tasks });
       })
     );
   router

@@ -33,12 +33,32 @@ module.exports = (router) => {
         return res.http200(projects);
       })
     )
-
     .post(
       asyncMiddleware(async (req, res) => {
         delete req.body.id;
         const project = await Projects.create(req.body);
-        return res.http200(project);
+        let tasks = [];
+        if (req.body.tasks) {
+          tasks = await Promise.all(
+            req.body.tasks &&
+              req.body.tasks.map(async (item) => {
+                const task = await ProjectTasks.create({
+                  ...item,
+                  projectId: project.id,
+                });
+                const descriptions = await ProjectTaskDescriptions.$$bulkCreate(
+                  item.descriptions &&
+                    item.descriptions.map((item) => ({
+                      projectTaskId: task.id,
+                      ...item,
+                    }))
+                );
+                await Tasks.insertTaskDescription(task.name, descriptions);
+                return { ...task.toJSON(), descriptions };
+              })
+          );
+        }
+        return res.http200({ ...project.toJSON(), tasks });
       })
     );
 
@@ -116,21 +136,20 @@ module.exports = (router) => {
       res.status(200).send(newPayIn);
     })
   );
-  router.route("/:projectId/task").post(
-    asyncMiddleware(async (req, res, next) => {
-      const task = await ProjectTasks.create({
-        ...req.body,
-        projectId: req.project.id,
-      });
-      const descriptions = await ProjectTaskDescriptions.$$bulkCreate(
-        req.body.descriptions.map((item) => ({
-          projectTaskId: task.id,
-          ...item,
-        }))
-      );
-      res.http200({ ...task.toJSON(), descriptions: descriptions });
-      await Tasks.insertTaskDescription(task.name, descriptions);
-      return;
-    })
-  );
+  // router.route("/:projectId/task").post(
+  //   asyncMiddleware(async (req, res, next) => {
+  //     const task = await ProjectTasks.create({
+  //       ...req.body,
+  //       projectId: req.project.id,
+  //     });
+  //     const descriptions = await ProjectTaskDescriptions.$$bulkCreate(
+  //       req.body.descriptions.map((item) => ({
+  //         projectTaskId: task.id,
+  //         ...item,
+  //       }))
+  //     );
+  //     const result = await Tasks.insertTaskDescription(task.name, descriptions);
+  //     return res.http200({ ...task.toJSON(), descriptions: descriptions });
+  //   })
+  // );
 };
