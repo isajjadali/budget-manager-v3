@@ -3,18 +3,12 @@ const moment = require("moment");
 
 module.exports = function (sequelize, DataTypes) {
   const { STRING, DECIMAL, INTEGER } = DataTypes;
-  const Tasks = sequelize.$$defineModel(
-    "tasks",
-    {
-      name: {
-        type: STRING,
-        // primaryKey: true,
-        // unique: true,
-        allowNull: false,
-      },
-    }
-    // { timestamps: false, createdAt: false, updatedAt: false, paranoid: false }
-  );
+  const Tasks = sequelize.$$defineModel("tasks", {
+    name: {
+      type: STRING,
+      allowNull: false,
+    },
+  });
 
   /* ================== Model Associations ================== */
   Tasks.associate = (models) => {
@@ -42,7 +36,6 @@ module.exports = function (sequelize, DataTypes) {
     ]);
 
     const [task, ...createdDescriptions] = results;
-
     return Promise.all(
       createdDescriptions.map(
         (item) =>
@@ -57,6 +50,28 @@ module.exports = function (sequelize, DataTypes) {
               .catch((e) => reject(e));
           })
       )
+    );
+  };
+
+  Tasks.inserProjectTaskDescription = async = (tasks, projectId) => {
+    return Promise.all(
+      tasks &&
+        tasks.map(async (item) => {
+          const task = await global.db.ProjectTasks.create({
+            ...item,
+            projectId: projectId,
+          });
+          const descriptions =
+            await global.db.ProjectTaskDescriptions.$$bulkCreate(
+              item.descriptions &&
+                item.descriptions.map((item) => ({
+                  projectTaskId: task.id,
+                  ...item,
+                }))
+            );
+          Tasks.insertTaskDescription(task.name, descriptions);
+          return { ...task.toJSON(), descriptions };
+        })
     );
   };
   return Tasks;

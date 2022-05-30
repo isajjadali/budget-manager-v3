@@ -38,23 +38,9 @@ module.exports = (router) => {
         const project = await Projects.create(req.body);
         let tasks = [];
         if (req.body.tasks) {
-          tasks = await Promise.all(
-            req.body.tasks &&
-              req.body.tasks.map(async (item) => {
-                const task = await ProjectTasks.create({
-                  ...item,
-                  projectId: project.id,
-                });
-                const descriptions = await ProjectTaskDescriptions.$$bulkCreate(
-                  item.descriptions &&
-                    item.descriptions.map((item) => ({
-                      projectTaskId: task.id,
-                      ...item,
-                    }))
-                );
-                Tasks.insertTaskDescription(task.name, descriptions);
-                return { ...task.toJSON(), descriptions };
-              })
+          tasks = await Tasks.inserProjectTaskDescription(
+            req.body.tasks,
+            project.id
           );
         }
         return res.http200({ ...project.toJSON(), tasks });
@@ -117,23 +103,9 @@ module.exports = (router) => {
         });
         let tasks = [];
         if (req.body.tasks) {
-          tasks = await Promise.all(
-            req.body.tasks &&
-              req.body.tasks.map(async (item) => {
-                const task = await ProjectTasks.create({
-                  ...item,
-                  projectId: updatedProject.id,
-                });
-                const descriptions = await ProjectTaskDescriptions.$$bulkCreate(
-                  item.descriptions &&
-                    item.descriptions.map((item) => ({
-                      projectTaskId: task.id,
-                      ...item,
-                    }))
-                );
-                Tasks.insertTaskDescription(task.name, descriptions);
-                return { ...task.toJSON(), descriptions };
-              })
+          tasks = await Tasks.inserProjectTaskDescription(
+            req.body.tasks,
+            updatedProject.id
           );
         }
 
@@ -160,22 +132,6 @@ module.exports = (router) => {
         dateId: req.date.id,
       });
       res.status(200).send(newPayIn);
-    })
-  );
-  router.route("/:projectId/task").post(
-    asyncMiddleware(async (req, res, next) => {
-      const task = await ProjectTasks.create({
-        ...req.body,
-        projectId: req.project.id,
-      });
-      const descriptions = await ProjectTaskDescriptions.$$bulkCreate(
-        req.body.descriptions.map((item) => ({
-          projectTaskId: task.id,
-          ...item,
-        }))
-      );
-      Tasks.insertTaskDescription(task.name, descriptions);
-      return res.http200({ ...task.toJSON(), descriptions: descriptions });
     })
   );
 };
