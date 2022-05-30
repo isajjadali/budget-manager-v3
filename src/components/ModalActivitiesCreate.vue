@@ -1,7 +1,7 @@
 <template>
-  <v-dialog 
-    v-model="dialog" 
-    persistent 
+  <v-dialog
+    v-model="dialog"
+    persistent
     max-width="600px"
   >
     <template #activator="{ on, attrs }">
@@ -10,14 +10,15 @@
         color="primary"
         dark
         v-bind="attrs"
+        width="100%"
         v-on="on"
       >
-        Create Activity
+        Create {{ modalTitle }}
       </v-btn>
     </template>
     <v-col cols="12">
       <ActivitiesCreate
-        :isPayin="isPayin"
+        :is-payin="isPayin"
         :employees="employees"
         :projects="projects"
         @cancel="onClose"
@@ -28,37 +29,37 @@
 </template>
 
 <script>
-import { mapActions, mapState } from 'vuex';
+import {mapActions, mapState} from 'vuex';
 import ActivitiesCreate from './ActivitiesCreate.vue';
 
 export default {
-  props: {
-    isPayin: Boolean,
-  },
   components: {
     ActivitiesCreate,
+  },
+  props: {
+    isPayin: Boolean,
   },
   data: () => ({
     dialog: false,
   }),
   computed: {
     ...mapState('global', ['isCreatingActivity', 'employees', 'projects']),
+    modalTitle() {
+      return this.isPayin ? 'Payin' : 'Activity';
+    }
   },
   methods: {
-    ...mapActions('global', ['createActivity', 'fetchAllEmployees', 'fetchAllProjects', 'fetchAllActivities', 'createPayin', 'fetchAllPayins']),
+    ...mapActions('global', ['createActivity', 'fetchAllEmployees', 'fetchAllProjects', 'createPayin',]),
     onClose() {
       this.dialog = false;
       this.$emit('close');
     },
     async onSave(newActivity) {
       this.dialog = false;
-      if(this.isPayin) {
+      if (this.isPayin) {
         await this.createPayin(newActivity);
-        await this.fetchAllPayins(true);
-      }
-      else {
+      } else {
         await this.createActivity(newActivity);
-        await this.fetchAllActivities(true);
       }
       this.$emit('save', newActivity.data);
     },

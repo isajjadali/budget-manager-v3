@@ -78,8 +78,7 @@ module.exports = (router) => {
     )
     .get(
       asyncMiddleware(async (req, res) => {
-        console.log("In Activity Gets");
-        const { projectId, employeeId, ...rest } = req.query;
+        const {projectIds, employeeIds, ...rest} = req.query;
         const filters = {
           ...rest,
           limit: req.limit,
@@ -90,11 +89,15 @@ module.exports = (router) => {
             [Sequelize.Op.ne]: null,
           },
         };
-        if (projectId) {
-          where.projectId = +projectId;
+        if (projectIds) {
+          where.projectId = {
+            [Sequelize.Op.in]: projectIds.split(',').map((id) => Number(id)),
+          };
         }
-        if (employeeId) {
-          where.employeeId = +employeeId;
+        if (employeeIds) {
+          where.employeeId = {
+            [Sequelize.Op.in]: employeeIds.split(',').map((id) => Number(id)),
+          };
         }
         const include = [
           {

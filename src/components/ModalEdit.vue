@@ -2,43 +2,58 @@
     <v-dialog 
       v-model="isOpen"
       persistent
-      width="600px"
+      width="680px"
       transition="dialog-bottom-transition"
     >
-    <v-col cols="12">
-      <ActivitiesUpdate
-        :isPayin="isPayin"
-        :currentData="activity" 
-        :projects="projects"
-        :employees="employees"
-        @cancel="onCancel"
-        @save="onSave"
-    />
-    </v-col>
+      <v-col v-if="isEmployee" cols="12">
+        <EmployeeUpdate 
+          :employee="employee"
+          @save="onSave"
+          @cancel="onCancel"
+        />
+      </v-col>
+      <v-col v-else cols="12">
+        <ActivitiesUpdate
+          :isPayin="isPayin"
+          :currentData="activity" 
+          :projects="projects"
+          :employees="employees"
+          @cancel="onCancel"
+          @save="onSave"
+      />
+      </v-col>
     </v-dialog>
   
 </template>
 
 <script>
 import ActivitiesUpdate from './ActivitiesUpdate.vue';
+import EmployeeUpdate from './EmployeeUpdate.vue';
+
 export default {
   components: {
     ActivitiesUpdate,
+    EmployeeUpdate,
   },
   data: () => ({
     disableSaveBtn: false
   }),
   props: {
-    isOpen: {
-      type: Boolean,
-    },
     activity: {
       type: Object,
     },
+    employee: {
+      type: Object,
+    },
+    isOpen: Boolean,
     projects: [],
     employees: [],
-    isPayin: {
+    isPayin: Boolean,
+    isEmployee: {
       type: Boolean,
+      default() {
+        false
+      }
     },
   },
   methods: {
@@ -46,7 +61,11 @@ export default {
       this.$emit('cancel');
     },
     onSave() {
-      this.$emit('save', this.activity);
+      if(!this.isEmployee) {
+        this.$emit('save', this.activity);
+      } else {
+        this.$emit('save', this.employee);
+      }
     }
   },
 }
