@@ -1,33 +1,43 @@
 <template>
   <v-row>
-      <v-col 
-        v-for="employee in employees" 
-        :key="employee.id" 
-        class=""
-        cols="12"
-        md="3"
-      >
-        <EmployeeCard 
-          :employee="employee" 
-          @editEmployee="onEmployeeClick"
-          @delete="deleteEmployee"
-          @activityLink="onActivityButtonClick"
-        />
-      </v-col>
-      <ModalEdit 
+    <v-col v-if="isLoading" cols="12" md="12">
+      <LoadingModal :isLoading="true" :message="'Getting Employees Please Wait !!'" />
+    </v-col>
+    <v-col
+      v-else
+      v-for="employee in employees" 
+      :key="employee.id" 
+      class=""
+      cols="12"
+      md="3"
+    >
+      <EmployeeCard 
+        :employee="employee" 
+        @editEmployee="onEmployeeClick"
+        @delete="deleteEmployee"
+        @activityLink="onActivityButtonClick"
+      />
+    </v-col>
+    <LoadingModal 
+      v-if="employees.length === 0 && !isLoading" 
+      :message="'Employee Not Found...'" 
+      :isLoading="false"
+    />
+    <ModalEdit 
       :isOpen="isToggleOpen" 
       :isEmployee="true" 
       :employee="activeEmployee" 
       @save="onSaveEditEmployee" 
       @cancel="onCancel" 
-      />
-    </v-row>
+    />
+  </v-row>
 </template>
 
 <script>
-import { mapActions } from "vuex";
+import { mapActions, mapState } from "vuex";
 import ModalEdit from './ModalEdit.vue';
 import EmployeeCard from './EmployeeCard.vue';
+import LoadingModal from './LoadingModal.vue';
 
 export default {
   name: "EmployeeList",
@@ -42,6 +52,14 @@ export default {
       },
       isToggleOpen: false,
     };
+  },
+  computed: {
+    ...mapState ('global', ['isLoadingData']),
+
+    isLoading() {
+      console.log(this.employees.length);
+      return this.isLoadingData.employees;
+    }
   },
   methods: {
     ...mapActions("global", ['fetchAllEmployees', 'updateEmployee']),
@@ -73,6 +91,7 @@ export default {
   components: {
     ModalEdit,
     EmployeeCard,
+    LoadingModal,
   }
 };
 </script>

@@ -1,6 +1,10 @@
 <template>
   <div>
+    <v-col v-if="isLoading">
+      <LoadingModal :isLoading="true" :message="loadingMessage" />
+    </v-col>
     <v-row
+      v-else
       v-for="item in currentList"
       :key="item.id"
     > 
@@ -22,6 +26,12 @@
         />
       </v-col>
     </v-row>
+    <v-col v-if="currentList.length === 0 && !isLoading" cols="12" md="12">
+      <LoadingModal
+        :isLoading="false" 
+        :message="notFoundMessage"
+      />
+    </v-col>
     <ModalEdit
       :is-payin="activeActivity.isPayin"
       :activity="activeActivity"
@@ -38,17 +48,18 @@
 import {mapState, mapActions} from 'vuex';
 import ActivitiesItem from './ActivitiesItem.vue';
 import ModalEdit from './ModalEdit.vue';
+import LoadingModal from './LoadingModal.vue';
 
 export default {
   name: 'ActivitiesListing',
   components: {
     ActivitiesItem,
     ModalEdit,
+    LoadingModal,
   },
   props: {
-    isPayin: {
-      type: Boolean,
-    },
+    isPayin: Boolean,
+    isLoading: Boolean,
     fetchData: {
       type: Function,
       default: () => {
@@ -65,6 +76,8 @@ export default {
     toggleModalOpen: false,
     activitiesDates: [],
     activeActivity: {},
+    loadingMessage: '',
+    notFoundMessage: '',
   }),
   computed: {
     ...mapState('global', ['activities', 'payins', 'projects', 'employees']),
@@ -123,5 +136,14 @@ export default {
       await this.fetchData({forceRefresh: true, params: this.params});
     },
   },
+  mounted() {
+    if (this.isPayin) {
+      this.loadingMessage = 'Getting Payins Please Wait !!';
+      this.notFoundMessage = 'Payins Not Found !!';
+    } else {
+      this.loadingMessage = 'Getting Activities Please Wait !!';
+      this.notFoundMessage = 'Activities Not Found !!';
+    }
+  }
 };
 </script>
