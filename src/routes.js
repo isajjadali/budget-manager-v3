@@ -31,7 +31,7 @@ export default [
         name: 'all-project',
       },
       {
-        path: 'create-project/:id',
+        path: 'create-project',
         component: ProjectCreatePage,
         name: 'create-project',
       },

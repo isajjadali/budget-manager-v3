@@ -1,11 +1,9 @@
 <template>
-  <v-container>
-    <v-row>
-      <v-col cols="12">
-        <ProjectTaskCreate @cancel="onClose" @save="onSave" />
-      </v-col>
-    </v-row>
-  </v-container>
+  <v-row>
+    <v-col cols="12">
+      <ProjectTaskCreate @cancel="onClose" @save="onSave" />
+    </v-col>
+  </v-row>
 </template>
 
 <script>

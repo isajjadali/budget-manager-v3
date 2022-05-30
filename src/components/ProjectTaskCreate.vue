@@ -1,117 +1,19 @@
 <template>
   <v-row>
-    <v-col cols="12" sm="12" md="12" width="100%" class="displayblock">
-      <span class="text-h4 pa-3"><b> Create Project </b></span>
-      <v-select
-        :items="statuses"
-        v-model="project.status"
-        filled
-        label="Status"
-        class="float-right"
-      ></v-select>
-    </v-col>
-    <v-row class="mt-5">
-      <v-col cols="12" sm="12" md="3">
-        <v-text-field
-          outlined
-          v-model="comingProject.name"
-          label="Project Name"
-          name="projectName"
-          type="text"
-      /></v-col>
-      <v-col cols="12" sm="12" md="3">
-        <v-text-field
-          outlined
-          v-model="project.clientEmail"
-          label="Client Email"
-          name="clientEmail"
-      /></v-col>
-      <v-col cols="12" sm="12" md="6">
-        <v-text-field
-          outlined
-          v-model="project.clientAddress"
-          label="Client Address"
-          name="clientAddress"
-      /></v-col>
-    </v-row>
+    <ProjectForm :project="project" />
     <v-row>
-      <ProjectTasks
-        :isProjectTask="true" 
-        :projectTasks="tasks" 
-      />
-      <v-col cols="12" sm="12" md="6" class="">
-        <v-card width="100%">
-          <v-card-title class="displayblock">
-            <v-btn
-              color="primary"
-              class="ma-3 expand-btn"
-              @click="all"
-              elevation="9"
-              rounded
-            >
-              {{
-                this.panel.length &&
-                this.panel.length === this.project.tasks.length
-                  ? "Unexpand All"
-                  : "Expand All"
-              }}
-            </v-btn>
-            <v-btn
-              color="primary"
-              class="ma-3 expand-btn float-right"
-              elevation="9"
-              rounded
-            >
-              Preview
-            </v-btn>
-          </v-card-title>
-          <v-card-text>
-            <v-container>
-              <v-row>
-                <v-col>
-                  <v-expansion-panels focusable v-model="panel" multiple>
-                    <v-expansion-panel
-                      v-for="task in project.tasks"
-                      :key="task.name"
-                    >
-                      <v-expansion-panel-header>{{
-                        task.name
-                      }}</v-expansion-panel-header>
-                      <v-expansion-panel-content
-                        v-for="description in task.descriptions"
-                        :key="description.name"
-                        >{{ description.name }}
-                      </v-expansion-panel-content>
-                    </v-expansion-panel>
-                  </v-expansion-panels>
-                </v-col>
-              </v-row>
-            </v-container>
-          </v-card-text>
-          <v-divider></v-divider>
-
-          <v-card-actions>
-            <div class="displayblock">
-              <v-btn
-                color="primary"
-                class="ma-3 save-btn float-right"
-                elevation="9"
-                rounded
-              >
-                Save
-              </v-btn>
-            </div>
-          </v-card-actions>
-        </v-card>
-      </v-col>
-      <ProjectTasks :isProjectTask="false" :projectTasks="descriptions" />
+      <Tasks :isProjectTask="true" :projectTasks="tasks" />
+      <ProjectTasks :projectTasks="project.tasks" />
+      <Tasks :isProjectTask="false" :projectTasks="descriptions" />
     </v-row>
   </v-row>
 </template>
 
 <script>
 import { mapState, mapActions } from "vuex";
-import ProjectTasks from './ProjectTasks.vue';
+import Tasks from "./Tasks.vue";
+import ProjectTasks from "./ProjectTasks.vue";
+import ProjectForm from "./ProjectForm.vue";
 
 export default {
   name: "ProjectTaskCreate",
@@ -313,7 +215,6 @@ export default {
       name: "",
       amount: 0,
     },
-    panel: [],
   }),
   methods: {
     ...mapActions("global", [
@@ -351,8 +252,10 @@ export default {
     console.log(this.comingProject.id);
   },
   components: {
+    Tasks,
     ProjectTasks,
-  }
+    ProjectForm,
+  },
 };
 </script>
 <style>
@@ -365,8 +268,14 @@ export default {
   border-radius: 10px;
   cursor: pointer;
 }
-.save-btn{
+.save-btn {
   width: 120px;
   height: 50px !important;
+}
+
+.v-expansion-panel-content__wrap {
+  padding: 8px 24px 0px !important;
+  flex: 1 1 auto;
+  max-width: 100%;
 }
 </style>
