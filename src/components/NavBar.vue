@@ -20,9 +20,9 @@
               {{ tab.title }}
             </v-tab>
           </v-tabs>
-          <v-col class="px-5">
+          <div class="mr-11">
             <AccountMenu v-if="user" :user="user" @logout="onLogout"/>
-          </v-col>
+          </div>
         </v-app-bar>
       </v-col>
     </v-row>
