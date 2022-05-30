@@ -2,15 +2,19 @@
   <v-row>
     <ProjectForm :project="project" />
     <v-row>
-      <Tasks :isProjectTask="true" :projectTasks="tasks" />
-      <ProjectTasks :projectTasks="project.tasks" />
-      <Tasks :isProjectTask="false" :projectTasks="descriptions" />
+      <Tasks is-project-task key-to-map="name" :project-tasks="tasks" />
+      <ProjectTasks :project-tasks="project.tasks" />
+      <Tasks
+        :is-project-task="false"
+        key-to-map="description"
+        :project-tasks="descriptions"
+      />
     </v-row>
   </v-row>
 </template>
 
 <script>
-import { mapState, mapActions } from "vuex";
+import { mapState, mapActions, mapGetters } from "vuex";
 import Tasks from "./Tasks.vue";
 import ProjectTasks from "./ProjectTasks.vue";
 import ProjectForm from "./ProjectForm.vue";
@@ -167,50 +171,50 @@ export default {
         },
       ],
     },
-    tasks: [
-      {
-        id: 1,
-        name: "Drawing Room",
-      },
-      {
-        id: 2,
-        name: "Room 1",
-      },
-      {
-        id: 3,
-        name: "Room 2",
-      },
-      {
-        id: 4,
-        name: "Room 3",
-      },
-      {
-        id: 5,
-        name: "Room 4",
-      },
-    ],
-    descriptions: [
-      {
-        id: 1,
-        name: "Paint",
-      },
-      {
-        id: 2,
-        name: "Roof Cieling",
-      },
-      {
-        id: 3,
-        name: "Wallpaper",
-      },
-      {
-        id: 4,
-        name: "Cleaning",
-      },
-      {
-        id: 5,
-        name: "Carpanting",
-      },
-    ],
+    // tasks: [
+    //   {
+    //     id: 1,
+    //     name: "Drawing Room",
+    //   },
+    //   {
+    //     id: 2,
+    //     name: "Room 1",
+    //   },
+    //   {
+    //     id: 3,
+    //     name: "Room 2",
+    //   },
+    //   {
+    //     id: 4,
+    //     name: "Room 3",
+    //   },
+    //   {
+    //     id: 5,
+    //     name: "Room 4",
+    //   },
+    // ],
+    // descriptions: [
+    //   {
+    //     id: 1,
+    //     name: "Paint",
+    //   },
+    //   {
+    //     id: 2,
+    //     name: "Roof Cieling",
+    //   },
+    //   {
+    //     id: 3,
+    //     name: "Wallpaper",
+    //   },
+    //   {
+    //     id: 4,
+    //     name: "Cleaning",
+    //   },
+    //   {
+    //     id: 5,
+    //     name: "Carpanting",
+    //   },
+    // ],
     task: {
       name: "",
       amount: 0,
@@ -242,14 +246,15 @@ export default {
     },
   },
   computed: {
-    ...mapState("global", ["comingProject"]),
+    ...mapState("global", ["tasks"]),
+    ...mapGetters("global", ['descriptions'])
   },
   async mounted() {
     let id = this.$route.params.id;
-    await this.getProject(id);
+    if (id) {
+      this.project = await this.getProject(id);
+    }
     await this.fetchAllTasksAndDescriptions();
-
-    console.log(this.comingProject.id);
   },
   components: {
     Tasks,

@@ -20,9 +20,9 @@
               md="12"
               class="mb-2 border-line"
               v-for="task in filteredTasks"
-              :key="task.name"
+              :key="task[keyToMap]"
             >
-              {{ task.name }}
+              {{ task[keyToMap] }}
             </v-col>
           </v-row>
         </v-container>
@@ -37,6 +37,10 @@ export default {
   props: {
     projectTasks: [],
     isProjectTask: Boolean,
+    keyToMap: {
+      type: String,
+      default: 'name'
+    }
   },
   data: () => {
     return {
@@ -48,7 +52,7 @@ export default {
     filteredTasks() {
       if (this.searchQuery) {
         const matchingRegex = new RegExp(`^${this.searchQuery}`, 'i');
-        const list =  this.projectTasks.filter((task) => matchingRegex.test(task.name));
+        const list =  this.projectTasks.filter((task) => matchingRegex.test(task[this.keyToMap]));
         return list;
       }
       return this.projectTasks;
