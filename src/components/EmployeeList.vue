@@ -1,7 +1,7 @@
 <template>
   <v-row>
-    <v-col v-if="isLoading" cols="12" md="12">
-      <LoadingModal :isLoading="true" :message="'Getting Employees Please Wait !!'" />
+    <v-col v-if="isLoadingData.employees" cols="12" md="12" class="d-flex justify-center">
+      <LoaderView />
     </v-col>
     <v-col
       v-else
@@ -18,10 +18,10 @@
         @activityLink="onActivityButtonClick"
       />
     </v-col>
-    <LoadingModal 
-      v-if="employees.length === 0 && !isLoading" 
-      :message="'Employee Not Found...'" 
-      :isLoading="false"
+    <MessageComponent 
+      v-if="employees.length === 0 && !isLoadingData.employees" 
+      :message="'Employee Not Found...'"
+      style="height: calc(100vh - (64px + 72px + 24px))"
     />
     <ModalEdit 
       :isOpen="isToggleOpen" 
@@ -37,7 +37,8 @@
 import { mapActions, mapState } from "vuex";
 import ModalEdit from './ModalEdit.vue';
 import EmployeeCard from './EmployeeCard.vue';
-import LoadingModal from './LoadingModal.vue';
+import LoaderView from './LoaderView.vue';
+import MessageComponent from './MessageComponent.vue';
 
 export default {
   name: "EmployeeList",
@@ -55,11 +56,6 @@ export default {
   },
   computed: {
     ...mapState ('global', ['isLoadingData']),
-
-    isLoading() {
-      console.log(this.employees.length);
-      return this.isLoadingData.employees;
-    }
   },
   methods: {
     ...mapActions("global", ['fetchAllEmployees', 'updateEmployee']),
@@ -83,7 +79,7 @@ export default {
     },
     deleteEmployee(employee) {
       alert('Employee deleted', employee.fullName);
-    }
+    },
   },
   mounted() {
     this.fetchAllEmployees();
@@ -91,7 +87,8 @@ export default {
   components: {
     ModalEdit,
     EmployeeCard,
-    LoadingModal,
+    LoaderView,
+    MessageComponent,
   }
 };
 </script>

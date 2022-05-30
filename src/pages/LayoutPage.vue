@@ -4,6 +4,7 @@
     <v-container
       fluid
       class="px-16"
+      ref="nav-bar"
     >
       <router-view />
     </v-container>

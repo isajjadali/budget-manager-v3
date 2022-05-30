@@ -1,7 +1,7 @@
 <template>
   <div>
-    <v-col v-if="isLoading">
-      <LoadingModal :isLoading="true" :message="loadingMessage" />
+    <v-col v-if="isLoading" cols="12" md="12" class="d-flex justify-center">
+      <LoaderView />
     </v-col>
     <v-row
       v-else
@@ -26,12 +26,11 @@
         />
       </v-col>
     </v-row>
-    <v-col v-if="currentList.length === 0 && !isLoading" cols="12" md="12">
-      <LoadingModal
-        :isLoading="false" 
-        :message="notFoundMessage"
-      />
-    </v-col>
+    <MessageComponent 
+      v-if="!currentList.length && !isLoading"
+      :message="notFoundMessage"
+      style="height: calc(100vh - (64px + 72px + 24px))"
+    />
     <ModalEdit
       :is-payin="activeActivity.isPayin"
       :activity="activeActivity"
@@ -48,14 +47,16 @@
 import {mapState, mapActions} from 'vuex';
 import ActivitiesItem from './ActivitiesItem.vue';
 import ModalEdit from './ModalEdit.vue';
-import LoadingModal from './LoadingModal.vue';
+import LoaderView from './LoaderView.vue';
+import MessageComponent from './MessageComponent.vue';
 
 export default {
   name: 'ActivitiesListing',
   components: {
     ActivitiesItem,
     ModalEdit,
-    LoadingModal,
+    LoaderView,
+    MessageComponent,
   },
   props: {
     isPayin: Boolean,
