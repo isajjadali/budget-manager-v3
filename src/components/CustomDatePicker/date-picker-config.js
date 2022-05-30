@@ -22,7 +22,7 @@ export const TAB_NAMES = {
   year: 'year',
   month: 'month',
 };
-export const DEFAULT_ACTIVE_TAB = TAB_NAMES.customRange;
+export const DEFAULT_ACTIVE_TAB = TAB_NAMES.year;
 export const AVAILABLE_TABS = [
   {
     id: TAB_NAMES.customRange,
@@ -46,6 +46,7 @@ export const RANGE_VALUE_MAP = {
   thirtyOneDays: 31,
   ninetyDays: 90,
   aYear: 365,
+  all: 'all',
   customRange: 'custom-range'
 };
 export const DEFAULT_SELECTED_RANGE_OPTION = RANGE_VALUE_MAP.sevenDays;
@@ -54,6 +55,7 @@ export const RANGE_LABEL_MAP = {
   [RANGE_VALUE_MAP.sevenDays]: 'Last 7 days',
   [RANGE_VALUE_MAP.ninetyDays]: 'Last 90 days',
   [RANGE_VALUE_MAP.aYear]: '12 months',
+  [RANGE_VALUE_MAP.all]: 'All',
 };
 export const RANGE_OPTIONS = [
   {
@@ -77,11 +79,19 @@ export const RANGE_OPTIONS = [
     label: RANGE_LABEL_MAP[RANGE_VALUE_MAP.aYear],
   },
   {
+    id: RANGE_VALUE_MAP.all,
+    value: RANGE_VALUE_MAP.all,
+    label: RANGE_LABEL_MAP[RANGE_VALUE_MAP.all],
+  },
+  {
     id: RANGE_VALUE_MAP.customRange,
     value: RANGE_VALUE_MAP.customRange,
     label: 'Custom Range',
   },
 ];
+
+export const PERSIST_DATA_PREFIX_KEY = 'custom_date_picker:';
+export const KEYS_TO_PERSIST = ['selectedRangeOption', 'activeTab'];
 
 function calculateMonthRange(date) {
   const monthDate = startOfMonth(new Date(date));
@@ -127,9 +137,15 @@ function calculateCustomRange(date = new Date(), days) {
   ];
 }
 
-function calculateCurrentCustomRange(date = new Date(), days) {
-  const startCustomDate = subDays(new Date(date), days);
-  return calculateCustomRange(startCustomDate, days);
+function calculateCurrentCustomRange(date = new Date(), daysOrType) {
+  if (daysOrType === RANGE_VALUE_MAP.all) {
+    return [
+      format(startOfYear(subYears(new Date(), 10)), 'yyyy-MM-dd'),
+      format(endOfYear(addYears(new Date(), 100)), 'yyyy-MM-dd')
+    ];
+  }
+  const startCustomDate = subDays(new Date(date), daysOrType);
+  return calculateCustomRange(startCustomDate, daysOrType);
 }
 
 function calculateNextCustomRange(date = new Date(), days) {

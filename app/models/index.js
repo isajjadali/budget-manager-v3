@@ -1,52 +1,52 @@
-'use strict';
+"use strict";
 
-const fs = require('fs');
-const path = require('path');
-const Sequelize = require('sequelize');
-const {singular} = require('pluralize');
-const {startCase, snakeCase, camelCase} = require('lodash');
+const fs = require("fs");
+const path = require("path");
+const Sequelize = require("sequelize");
+const { singular } = require("pluralize");
+const { startCase, snakeCase, camelCase } = require("lodash");
 
 const config = require(`${global.paths.config}/database.js`);
-const {getFields} = require(`${global.paths.lib}/sequelize`);
+const { getFields } = require(`${global.paths.lib}/sequelize`);
 
-const {database, username, password} = config;
-const {$translate, Errors} = global.appTranslations;
+const { database, username, password } = config;
+const { $translate, Errors } = global.appTranslations;
 const basename = path.basename(__filename);
 
 Sequelize.prototype.$$defineModel = function (
-  modelName = '',
+  modelName = "",
   fields = {},
   config = {}
 ) {
   const model = this.define(
     snakeCase(modelName),
-    {...getFields(Sequelize.DataTypes, fields)},
+    { ...getFields(Sequelize.DataTypes, fields) },
     {
-      createdAt: 'createdAt',
-      updatedAt: 'updatedAt',
-      ...(config.paranoid ? {deletedAt: 'deletedAt'} : {}),
+      createdAt: "createdAt",
+      updatedAt: "updatedAt",
+      ...(config.paranoid ? { deletedAt: "deletedAt" } : {}),
       ...config,
     }
   );
 
   model.$$singularName = singular(model.name);
-  model.$$name = startCase(camelCase(model.name)).replace(/ /g, '');
+  model.$$name = startCase(camelCase(model.name)).replace(/ /g, "");
   model.$$singularNameInStartCase = startCase(model.$$singularName);
 
   model.__proto__.$$findOne = function ({
     query = {},
     options = {},
     throwError = true,
-    error = '',
+    error = "",
   }) {
     return this.findOne(query, options).then((res) => {
       if (!res && throwError) {
         return Promise.reject({
           error:
-                        error ||
-                        $translate(Errors.Models.NotFound, {
-                          modelName: this.$$singularNameInStartCase,
-                        }),
+            error ||
+            $translate(Errors.Models.NotFound, {
+              modelName: this.$$singularNameInStartCase,
+            }),
         });
       }
       return res;
@@ -56,16 +56,16 @@ Sequelize.prototype.$$defineModel = function (
   model.__proto__.$$findByPk = function ({
     id,
     throwError = true,
-    error = '',
+    error = "",
   }) {
     return this.findByPk(id).then((res) => {
       if (!res && throwError) {
         return Promise.reject({
           error:
-                        error ||
-                        $translate(Errors.Models.InvalidId, {
-                          modelName: this.$$singularNameInStartCase,
-                        }),
+            error ||
+            $translate(Errors.Models.InvalidId, {
+              modelName: this.$$singularNameInStartCase,
+            }),
         });
       }
       return res;
@@ -100,24 +100,24 @@ const sequelize = new Sequelize(database, username, password, config);
 sequelize
   .authenticate()
   .then(() =>
-    global.log.info('Database connection has been established successfully.')
+    global.log.info("Database connection has been established successfully.")
   )
   .done();
-sequelize.sync({alter: true});
+sequelize.sync({ alter: true });
 
 function getNormalizedNameOfModel(modelName) {
-  return startCase(modelName).replace(/\s/g, '');
+  return startCase(modelName).replace(/\s/g, "");
 }
 
 let db = {};
 fs.readdirSync(__dirname)
   .filter((file) => {
     return (
-      file.indexOf('.') !== 0 && file !== basename && file.slice(-3) === '.js'
+      file.indexOf(".") !== 0 && file !== basename && file.slice(-3) === ".js"
     );
   })
   .forEach((file) => {
-    const model = sequelize['import'](path.join(__dirname, file));
+    const model = sequelize["import"](path.join(__dirname, file));
     const normalizedName = getNormalizedNameOfModel(model.name);
     db[normalizedName] = model;
   });

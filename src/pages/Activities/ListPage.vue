@@ -7,10 +7,15 @@
       <v-row class="justify-center">
         <v-col
           cols="12"
-          md="4"
+          md="3"
           class="pt-0"
         >
-          <CustomDatePicker :range="['2012-01-01', '2012-12-31']" />
+          <CustomDatePicker
+            :persist-data="false"
+            :range="availableFilters.range"
+            persist-data-key="activities"
+            @change="onRangeChange"
+          />
         </v-col>
       </v-row>
     </v-col>
@@ -65,6 +70,7 @@ import AvailableFilters from '@/components/AvailableFilters';
 import ActivitiesListHeader from '@/components/ActivitiesHeader';
 import ActivitiesPayments from '@/components/ActivitiesPayments.vue';
 import CustomDatePicker from '@/components/CustomDatePicker/CustomDatePicker';
+import {RANGE_VALUE_MAP} from '@/components/CustomDatePicker/date-picker-config';
 
 export default {
   name: 'ActivitesListPage',
@@ -78,7 +84,7 @@ export default {
   },
   data() {
     return {
-      availableFilters: {employeeIds: [], projectIds: []},
+      availableFilters: {employeeIds: [], projectIds: [], range: []},
     };
   },
   computed: {
@@ -96,22 +102,25 @@ export default {
       }, {});
     },
   },
-  mounted() {
-    const {employeeIds, projectIds} = this.$route.query;
+  created() {
+    const {employeeIds, projectIds, range} = this.$route.query;
     if (employeeIds) {
       this.availableFilters.employeeIds = employeeIds.split(',');
     }
     if (projectIds) {
       this.availableFilters.projectIds = projectIds.split(',');
     }
-    this.$nextTick(() => {
-      this.fetchAllActivities({params: this.filtersForAPI, forceRefresh: true});
-    });
+    if (range) {
+      this.availableFilters.range = range.split(',');
+    }
+  },
+  mounted() {
+    this.fetchAllActivities({params: this.filtersForAPI, forceRefresh: true});
   },
   methods: {
     ...mapActions('global', ['fetchAllActivities']),
     onFilterChange(filters) {
-      this.availableFilters = filters;
+      this.availableFilters = Object.assign({}, this.availableFilters, filters);
       this.$nextTick(() => {
         this.fetchAllActivities({forceRefresh: true, params: this.filtersForAPI});
         this.$router.replace({name: 'all-activities', query: this.filtersForAPI});
@@ -120,6 +129,28 @@ export default {
     onActivityCreate() {
       this.fetchAllActivities({forceRefresh: true, params: this.filtersForAPI});
     },
+    onRangeChange({type, range}) {
+      this.fetchAllActivities({
+        forceRefresh: true,
+        params: {
+          ...this.filtersForAPI,
+          range: range.join(',')
+        }
+      });
+
+      if (type === RANGE_VALUE_MAP.customRange) {
+        this.availableFilters = Object.assign(this.availableFilters, {range});
+      } else {
+        this.availableFilters = Object.assign(this.availableFilters, {range: []});
+      }
+
+      this.$router.replace({
+        name: 'all-activities',
+        query: {
+          ...this.filtersForAPI,
+        }
+      }).catch((e) => e);
+    }
   },
 };
 </script>
