@@ -17,7 +17,7 @@ module.exports = (router) => {
   router.get(
     '/',
     asyncMiddleware(async (req, res) => {
-      const {projectIds, ...rest} = req.query;
+      const {projectIds, range, ...rest} = req.query;
       const filters = {
         ...rest,
         limit: req.limit,
@@ -32,6 +32,11 @@ module.exports = (router) => {
         where.projectId = {
           [Sequelize.Op.in]: projectIds.split(',').map(id => Number(id))
         };
+      }
+      if (range) {
+        const [from, to] = range.split(',');
+        filters.from = from;
+        filters.to = to;
       }
       const include = [
         {
