@@ -11,7 +11,7 @@
           class="pt-0"
         >
           <CustomDatePicker
-            :persist-data="false"
+            :persist-data="true"
             :range="availableFilters.range"
             persist-data-key="activities"
             @change="onRangeChange"

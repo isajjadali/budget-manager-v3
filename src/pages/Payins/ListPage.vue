@@ -2,6 +2,25 @@
   <v-row>
     <v-col
       cols="12"
+      md="12"
+    >
+      <v-row class="justify-center">
+        <v-col
+          cols="12"
+          md="3"
+          class="pt-0"
+        >
+          <CustomDatePicker
+            :persist-data="true"
+            :range="availableFilters.range"
+            persist-data-key="payins"
+            @change="onRangeChange"
+          />
+        </v-col>
+      </v-row>
+    </v-col>
+    <v-col
+      cols="12"
       sm="0"
       md="3"
       class="pt-0"
@@ -48,6 +67,8 @@ import ActivitiesList from '../../components/ActivitiesList.vue';
 import AvailableFilters from '@/components/AvailableFilters';
 import ActivitiesListHeader from '@/components/ActivitiesHeader';
 import ActivitiesPayments from '@/components/ActivitiesPayments.vue';
+import CustomDatePicker from '@/components/CustomDatePicker/CustomDatePicker';
+import {RANGE_VALUE_MAP} from '@/components/CustomDatePicker/date-picker-config';
 
 export default {
   name: 'PayinsListPage',
@@ -57,6 +78,7 @@ export default {
     AvailableFilters,
     ActivitiesListHeader,
     ActivitiesPayments,
+    CustomDatePicker,
   },
   data() {
     return {
@@ -78,14 +100,17 @@ export default {
       }, {});
     }
   },
-  mounted() {
-    const {projectIds} = this.$route.query;
+  created() {
+    const {projectIds, range} = this.$route.query;
     if (projectIds) {
       this.availableFilters.projectIds = projectIds.split(',');
     }
-    this.$nextTick(() => {
-      this.fetchAllPayins({params: this.filtersForAPI, forceRefresh: true});
-    });
+    if (range) {
+      this.availableFilters.range = range.split(',');
+    }
+  },
+  mounted() {
+    this.fetchAllPayins({params: this.filtersForAPI, forceRefresh: true});
   },
   methods: {
     ...mapActions('global', ['fetchAllPayins']),
@@ -98,12 +123,33 @@ export default {
     },
     onPayinCreate() {
       this.fetchAllPayins({forceRefresh: true, params: this.filtersForAPI});
-    }
+    },
+    onRangeChange({type, range}) {
+      this.fetchAllPayins({
+        forceRefresh: true,
+        params: {
+          ...this.filtersForAPI,
+          range: range.join(',')
+        }
+      });
+
+      if (type === RANGE_VALUE_MAP.customRange) {
+        this.availableFilters = Object.assign(this.availableFilters, {range});
+      } else {
+        this.availableFilters = Object.assign(this.availableFilters, {range: []});
+      }
+
+      this.$router.replace({
+        name: 'all-payins',
+        query: {
+          ...this.filtersForAPI,
+        }
+      }).catch((e) => e);
+    },
   },
-
-
 };
 </script>
+
 <style lang="scss" scoped>
 .filter-sidebar {
   height: calc(100vh - (64px + 24px + 20px));
