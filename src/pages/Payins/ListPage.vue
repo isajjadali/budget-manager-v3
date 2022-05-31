@@ -33,6 +33,7 @@
       <ActivitiesListHeader :is-payin="true" />
       <ActivitiesList
         :is-payin="true"
+        :isLoading="isLoadingData.payins"
         :fetch-data="fetchAllPayins"
         :params="filtersForAPI"
       />
@@ -63,7 +64,7 @@ export default {
     };
   },
   computed: {
-    ...mapState('global', ['payins']),
+    ...mapState('global', ['payins', 'isLoadingData']),
     filtersForAPI() {
       return Object.keys(this.availableFilters).reduce((acc, key) => {
         if (Array.isArray(this.availableFilters[key])) {

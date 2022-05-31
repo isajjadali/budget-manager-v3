@@ -5,13 +5,13 @@
       md="10"
     >
     <v-text-field
-          v-model="searchEmployeeQuery"
-          label="Search Employee..."
-          clearable
-          solo
-          placeholder="Name"
-          hide-details
-        ></v-text-field>
+      v-model="searchEmployeeQuery"
+      label="Search Employee..."
+      clearable
+      solo
+      placeholder="Name"
+      hide-details
+    ></v-text-field>
     </v-col>
     <v-col 
       cols="12"

@@ -6,8 +6,11 @@ export const state = () => ({
   employees: [],
   activities: [],
   payins: [],
-  isCreatingProject: false,
-  isCreatingEmployee: false,
+  isLoadingData: {
+    employees: true,
+    activities: false,
+    payins: false,
+  },
 });
 
 export const mutations = {
@@ -19,6 +22,10 @@ export const mutations = {
   SET_LOGGED_IN_USER(state, payload) {
     state.user = payload.user;
   },
+  
+  SET_IS_LOADING_DATA(state, loading) {
+    state.isLoadingData[loading.key] = loading.value;
+  },
   //==================================== Projects Mutations
   SET_PROJECTS_LIST(state, projects) {
     state.projects = projects;
@@ -27,10 +34,6 @@ export const mutations = {
   UPDATE_PROJECT(state, project) {
     const allProjects = state.projects.filter((p) => p.id !== project.id);
     state.projects = [project, ...allProjects];
-  },
-
-  SET_IS_CREATING_PROJECT(state, isCreatingProject) {
-    state.isCreatingProject = isCreatingProject;
   },
   //==================================== Employees Mutations
   SET_EMPLOYEES_LIST(state, employees) {
@@ -44,9 +47,6 @@ export const mutations = {
     state.employees = [updatedEmployee, ...allEmployees];
   },
 
-  SET_IS_CREATING_EMPLOYEE(state, isCreatingEmployee) {
-    state.isCreatingEmployee = isCreatingEmployee;
-  },
   //==================================== Activities Mutations
   SET_ACTIVITIES_LIST(state, activities) {
     state.activities = activities;
@@ -104,8 +104,13 @@ export const actions = {
     if (!forceRefresh && state.employees.length) {
       return;
     }
+    const loading = { key: 'employees', value: true };
+    commit ('SET_IS_LOADING_DATA' , loading);
+
     const response = await axios.get('/admin/employee');
     commit('SET_EMPLOYEES_LIST', response.dataItems);
+    loading.value = false;
+    commit ('SET_IS_LOADING_DATA', loading);
   },
 
   async createEmployee({commit, state}, newEmployee) {
@@ -129,10 +134,15 @@ export const actions = {
     if (!forceRefresh && state.activities.length) {
       return;
     }
+    const loading = { key: 'activities', value: true };
+    commit ('SET_IS_LOADING_DATA' , loading);
+
     const response = await axios.get('/admin/activities', {
       params,
     });
     commit('SET_ACTIVITIES_LIST', response.dataItems);
+    loading.value = false;
+    commit ('SET_IS_LOADING_DATA' , loading);
   },
 
   async createActivity({commit, state}, newActivity) {
@@ -152,10 +162,15 @@ export const actions = {
     if (!forceRefresh && state.payins.length) {
       return;
     }
+    const loading = { key: 'payins', value: true };
+    commit ('SET_IS_LOADING_DATA' , loading);
+    
     const response = await axios.get('/admin/payins', {
       params
     });
     commit('SET_PAYINS_LIST', response.dataItems);
+    loading.value = false;
+    commit ('SET_IS_LOADING_DATA' , loading);
   },
 
   async createPayin({commit, state}, newPayin) {
