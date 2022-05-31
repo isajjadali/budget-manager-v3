@@ -22,7 +22,11 @@
       v-if="employees.length === 0 && !isLoadingData.employees" 
       :message="'Employee Not Found...'"
       style="height: calc(100vh - (64px + 72px + 24px))"
-    />
+    >
+      <template #createButton>
+        <ModalEmployeeCreate />
+      </template>
+    </MessageComponent>
     <ModalEdit 
       :isOpen="isToggleOpen" 
       :isEmployee="true" 
@@ -39,6 +43,7 @@ import ModalEdit from './ModalEdit.vue';
 import EmployeeCard from './EmployeeCard.vue';
 import LoaderView from './LoaderView.vue';
 import MessageComponent from './MessageComponent.vue';
+import ModalEmployeeCreate from './ModalEmployeeCreate.vue';
 
 export default {
   name: "EmployeeList",
@@ -89,6 +94,7 @@ export default {
     EmployeeCard,
     LoaderView,
     MessageComponent,
+    ModalEmployeeCreate,
   }
 };
 </script>

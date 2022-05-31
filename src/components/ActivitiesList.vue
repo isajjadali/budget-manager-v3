@@ -15,7 +15,7 @@
       </v-col>
       <v-col
         v-for="activity in item.Activities"
-        :key="activity.id"
+        :key="activity.id" 
         cols="12"
       >
         <ActivitiesItem
@@ -30,7 +30,14 @@
       v-if="!currentList.length && !isLoading"
       :message="notFoundMessage"
       style="height: calc(100vh - (64px + 72px + 24px))"
-    />
+    >
+      <template #createButton>
+        <ModalActivitiesCreate 
+          :isPayin="isPayin" 
+          @save="onActivityCreate" 
+        />
+      </template>
+    </MessageComponent>
     <ModalEdit
       :is-payin="activeActivity.isPayin"
       :activity="activeActivity"
@@ -49,6 +56,7 @@ import ActivitiesItem from './ActivitiesItem.vue';
 import ModalEdit from './ModalEdit.vue';
 import LoaderView from './LoaderView.vue';
 import MessageComponent from './MessageComponent.vue';
+import ModalActivitiesCreate from './ModalActivitiesCreate.vue';
 
 export default {
   name: 'ActivitiesListing',
@@ -57,6 +65,7 @@ export default {
     ModalEdit,
     LoaderView,
     MessageComponent,
+    ModalActivitiesCreate,
   },
   props: {
     isPayin: Boolean,
@@ -135,6 +144,9 @@ export default {
         await this.deleteActivity(activity);
       }
       await this.fetchData({forceRefresh: true, params: this.params});
+    },
+    onActivityCreate() {
+      this.fetchAllActivities({forceRefresh: true, params: this.filtersForAPI});
     },
   },
   mounted() {
