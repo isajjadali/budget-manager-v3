@@ -111,12 +111,6 @@ export default {
   },
   mounted() {
     this.fetchAllPayins({params: this.filtersForAPI, forceRefresh: true});
-    // const {projectIds} = this.$route.query;
-    // if (projectIds) {
-    //   this.availableFilters.projectIds = projectIds.split(',');
-    // }
-    // this.$nextTick(() => {
-    // });
   },
   methods: {
     ...mapActions('global', ['fetchAllPayins']),

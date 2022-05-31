@@ -22,7 +22,7 @@ export const TAB_NAMES = {
   year: 'year',
   month: 'month',
 };
-export const DEFAULT_ACTIVE_TAB = TAB_NAMES.year;
+export const DEFAULT_ACTIVE_TAB = TAB_NAMES.customRange;
 export const AVAILABLE_TABS = [
   {
     id: TAB_NAMES.customRange,
