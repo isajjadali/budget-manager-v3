@@ -53,7 +53,7 @@ module.exports = function (sequelize, DataTypes) {
     );
   };
 
-  Tasks.inserProjectTaskDescription = async = (tasks, projectId) => {
+  Tasks.inserProjectTaskDescription = async (tasks, projectId) => {
     return Promise.all(
       tasks &&
         tasks.map(async (item) => {
