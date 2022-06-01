@@ -15,6 +15,7 @@
             :range="availableFilters.range"
             persist-data-key="payins"
             @change="onRangeChange"
+            @init="onRangeChange"
           />
         </v-col>
       </v-row>
@@ -27,16 +28,19 @@
     >
       <v-card
         elevation="4"
-        class="pa-5 filter-sidebar"
+        class="pa-0 filter-sidebar"
       >
-      <ActivitiesPayments :currentList="payins" :isPayin="true" />
-        <div class="d-flex justify-center">
+        <ActivitiesPayments
+          :current-list="payins"
+          :is-payin="true"
+        />
+        <div class="px-5 pt-5 d-flex justify-center">
           <ModalActivitiesCreate
             :is-payin="true"
             @save="onPayinCreate"
           />
         </div>
-        <v-row class="pt-5">
+        <v-row class="pa-5">
           <AvailableFilters
             :active-filters-values="availableFilters"
             @change="onFilterChange"
@@ -52,7 +56,7 @@
       <ActivitiesListHeader :is-payin="true" />
       <ActivitiesList
         :is-payin="true"
-        :isLoading="isLoadingData.payins"
+        :is-loading="isLoadingData.payins"
         :fetch-data="fetchAllPayins"
         :params="filtersForAPI"
       />
@@ -82,7 +86,7 @@ export default {
   },
   data() {
     return {
-      availableFilters: {projectIds: []},
+      availableFilters: {projectIds: [], range: []},
     };
   },
   computed: {
@@ -108,9 +112,6 @@ export default {
     if (range) {
       this.availableFilters.range = range.split(',');
     }
-  },
-  mounted() {
-    this.fetchAllPayins({params: this.filtersForAPI, forceRefresh: true});
   },
   methods: {
     ...mapActions('global', ['fetchAllPayins']),
@@ -152,7 +153,7 @@ export default {
 
 <style lang="scss" scoped>
 .filter-sidebar {
-  height: calc(100vh - (64px + 24px + 20px));
+  height: calc(100vh - (64px + 24px + 20px + 60px));
   position: sticky;
   top: calc(64px + 24px);
   max-width: 100%;

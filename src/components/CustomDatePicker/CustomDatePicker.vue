@@ -166,6 +166,7 @@ export default {
   mounted() {
     this.initRanges();
     this.setLabelToShow();
+    this.$emit('init', {type: this.selectedRangeOption, range: this.selectedRange});
   },
   methods: {
     initRanges() {

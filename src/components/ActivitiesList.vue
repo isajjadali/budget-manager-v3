@@ -1,13 +1,18 @@
 <template>
   <div>
-    <v-col v-if="isLoading" cols="12" md="12" class="d-flex justify-center">
+    <v-col
+      v-if="isLoading"
+      cols="12"
+      md="12"
+      class="d-flex justify-center"
+    >
       <LoaderView />
     </v-col>
     <v-row
-      v-else
       v-for="item in currentList"
+      v-else
       :key="item.id"
-    > 
+    >
       <v-col
         cols="12"
       >
@@ -15,7 +20,7 @@
       </v-col>
       <v-col
         v-for="activity in item.Activities"
-        :key="activity.id" 
+        :key="activity.id"
         cols="12"
       >
         <ActivitiesItem
@@ -26,15 +31,15 @@
         />
       </v-col>
     </v-row>
-    <MessageComponent 
+    <MessageComponent
       v-if="!currentList.length && !isLoading"
       :message="notFoundMessage"
-      style="height: calc(100vh - (64px + 72px + 24px))"
+      style="height: calc(100vh - (64px + 72px + 24px + 60px))"
     >
       <template #createButton>
-        <ModalActivitiesCreate 
-          :isPayin="isPayin" 
-          @save="onActivityCreate" 
+        <ModalActivitiesCreate
+          :is-payin="isPayin"
+          @save="onActivityCreate"
         />
       </template>
     </MessageComponent>
