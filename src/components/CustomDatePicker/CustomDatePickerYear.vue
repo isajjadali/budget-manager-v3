@@ -8,7 +8,7 @@
       </div>
     </div>
     <div
-      class="d-flex justify-space-between py-2 align-center px-3"
+      class="d-flex justify-space-between pt-3 pb-5 align-center px-3"
       style="width: 100%"
     >
       <v-btn
@@ -25,7 +25,7 @@
           mdi-chevron-left
         </v-icon>
       </v-btn>
-      <div><b>{{ startRange }} - {{ startRange + 8 }}</b></div>
+      <div><b>{{ startRange + 1 }} - {{ startRange + numberOfYears }}</b></div>
       <v-btn
         dark
         small
@@ -43,8 +43,8 @@
     </div>
     <v-row class="pa-3 pt-0">
       <v-col
-        v-for="y in numberOfYears"
-        :key="startRange + y"
+        v-for="year in numberOfYears"
+        :key="startRange + year"
         cols="12"
         sm="4"
         md="4"
@@ -52,10 +52,10 @@
         <v-btn
           elevation="2"
           block
-          :color="startRange + y === selectedYearInNumber ? 'primary' : ''"
-          @click="onClick(startRange + y)"
+          :color="startRange + year === selectedYearInNumber ? 'primary' : ''"
+          @click="onClick(startRange + year)"
         >
-          {{ startRange + y }}
+          {{ startRange + year }}
         </v-btn>
       </v-col>
     </v-row>
@@ -69,10 +69,13 @@ export default {
     selectedYear: {
       type: String,
       required: true,
+    },
+    numberOfYears: {
+      type: Number,
+      default: 9,
     }
   },
   data: () => ({
-    numberOfYears: [0, 1, 2, 3, 4, 5, 6, 7, 8],
     startRange: 0,
   }),
   computed: {
@@ -81,17 +84,17 @@ export default {
     },
   },
   mounted() {
-    this.startRange = this.selectedYearInNumber - 4;
+    this.startRange = this.selectedYearInNumber - (Math.floor(this.numberOfYears / 2) + 1);
   },
   methods: {
     onClick(year) {
       this.$emit('yearSelect', `${year}-01`);
     },
     onNext() {
-      this.startRange += 9;
+      this.startRange += this.numberOfYears;
     },
     onPrevious() {
-      this.startRange -= 9;
+      this.startRange -= this.numberOfYears;
     }
   },
 };
