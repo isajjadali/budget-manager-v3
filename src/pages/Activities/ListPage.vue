@@ -15,6 +15,7 @@
             :range="availableFilters.range"
             persist-data-key="activities"
             @change="onRangeChange"
+            @init="onRangeChange"
           />
         </v-col>
       </v-row>
@@ -39,7 +40,7 @@
             @save="onActivityCreate"
           />
         </div>
-        <v-row class="pa-5 ">
+        <v-row class="pa-5">
           <AvailableFilters
             :active-filters-values="availableFilters"
             @change="onFilterChange"
@@ -55,7 +56,7 @@
       <ActivitiesListHeader :is-payin="false" />
       <ActivitiesList
         :is-payin="false"
-        :isLoading="isLoadingData.activities"
+        :is-loading="isLoadingData.activities"
         :fetch-data="fetchAllActivities"
         :params="filtersForAPI"
       />
@@ -115,9 +116,6 @@ export default {
       this.availableFilters.range = range.split(',');
     }
   },
-  mounted() {
-    this.fetchAllActivities({params: this.filtersForAPI, forceRefresh: true});
-  },
   methods: {
     ...mapActions('global', ['fetchAllActivities']),
     onFilterChange(filters) {
@@ -158,7 +156,7 @@ export default {
 
 <style lang="scss" scoped>
 .filter-sidebar {
-  height: calc(100vh - (64px + 24px + 20px));
+  height: calc(100vh - (64px + 24px + 20px + 60px));
   position: sticky;
   top: calc(64px + 24px);
   max-width: 100%;
