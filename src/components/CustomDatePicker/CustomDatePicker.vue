@@ -88,22 +88,22 @@
 </template>
 
 <script>
-import {format, getYear, getMonth, differenceInDays} from 'date-fns';
+import {differenceInDays} from 'date-fns';
 import CustomDatePickerMonth from './CustomDatePickerMonth';
 import CustomDatePickerYear from './CustomDatePickerYear';
 import CustomDatePickerRange from './CustomDatePickerRange';
 import CustomDatePickerTabs from './CustomDatePickerTabs';
 import {
-  RANGE_LABEL_MAP,
   DEFAULT_ACTIVE_TAB,
   DEFAULT_SELECTED_RANGE_OPTION,
   DEFAULT_RANGE,
   TAB_NAMES,
   RANGE_VALUE_MAP,
-  CALCULATE_RANGE_METHODS,
   PERSIST_DATA_PREFIX_KEY,
   KEYS_TO_PERSIST,
 } from './date-picker-config';
+
+import {CALCULATE_RANGE_METHODS, formatLabel} from './utils';
 
 export default {
   name: 'CustomDatePicker',
@@ -185,63 +185,11 @@ export default {
       this.selectedRange = CALCULATE_RANGE_METHODS[this.activeTab].current(new Date(), this.selectedRangeOption);
     },
     setLabelToShow() {
-      const currentDate = new Date();
-      const startRangeDate = new Date(this.selectedRange[0]);
-      if (this.activeTab === TAB_NAMES.year) {
-        this.labelToShow = format(startRangeDate, 'yyyy');
-        return;
-      }
-      if (this.activeTab === TAB_NAMES.month) {
-        let monthLabel = 'MMM';
-        if (getYear(currentDate) !== getYear(startRangeDate)) {
-          monthLabel = 'MMM, yyyy';
-        }
-        this.labelToShow = format(startRangeDate, monthLabel);
-        return;
-      }
-      if (RANGE_LABEL_MAP[this.selectedRangeOption]) {
-        this.labelToShow = RANGE_LABEL_MAP[this.selectedRangeOption];
-        return;
-      }
-
-      const endRangeDate = new Date(this.selectedRange[1]);
-      const isStartInCurrentYear = getYear(currentDate) === getYear(startRangeDate);
-      const isEndInCurrentYear = getYear(currentDate) === getYear(endRangeDate);
-      const isInSameYear = getYear(startRangeDate) === getYear(endRangeDate);
-      const isInSameMonth = getMonth(startRangeDate) === getMonth(endRangeDate);
-
-      if (isStartInCurrentYear && isEndInCurrentYear) {
-        if (isInSameMonth) {
-          this.labelToShow = `${format(startRangeDate, 'MMM dd')} - ${format(endRangeDate, 'dd')}`;
-          return;
-        }
-        this.labelToShow = `${format(startRangeDate, 'MMM dd')} ~ ${format(endRangeDate, 'MMM dd')}`;
-        return;
-      }
-
-      if (isStartInCurrentYear && !isEndInCurrentYear) {
-        this.labelToShow = `${format(startRangeDate, 'MMM dd')} ~ ${format(endRangeDate, 'MMM dd, yyyy')}`;
-        return;
-      }
-
-      if (!isStartInCurrentYear && isEndInCurrentYear) {
-        this.labelToShow = `${format(startRangeDate, 'MMM dd, yyyy')} ~ ${format(endRangeDate, 'MMM dd')}`;
-        return;
-      }
-
-      if (!isInSameYear) {
-        this.labelToShow = `${format(startRangeDate, 'MMM dd, yyyy')} ~ ${format(endRangeDate, 'MMM dd, yyyy')}`;
-        return;
-      }
-
-      if (isInSameYear) {
-        if (isInSameMonth) {
-          this.labelToShow = `${format(startRangeDate, 'MMM dd')} - ${format(endRangeDate, 'dd, yyyy')}`;
-        } else {
-          this.labelToShow = `${format(startRangeDate, 'MMM dd')} ~ ${format(endRangeDate, 'MMM dd, yyyy')}`;
-        }
-      }
-
+      this.labelToShow = formatLabel({
+        activeTab: this.activeTab,
+        selectedRange: this.selectedRange,
+        selectedRangeOption: this.selectedRangeOption
+      });
     },
 
     onTabChange(value) {
