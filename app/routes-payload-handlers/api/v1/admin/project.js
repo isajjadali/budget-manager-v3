@@ -1,20 +1,15 @@
 const projectCommonFields = {
-  name: {
-    type: "string",
-  },
-  clientEmail: {
-    type: "string",
-    isEmail: true,
-  },
-  clientAddress: {
-    type: "string",
-  },
-  allowableKeys: [
-    "name",
-    "startDate",
-    "endDate",
-    "clientEmail",
-    "clientAddress",
+  name: { type: "string" },
+  clientAddress: { type: "string" },
+  clientEmail: { type: "string" },
+  tasks: [
+    {
+      name: { type: "string" },
+      materialCost: { type: "number" },
+      descriptions: [
+        { description: { type: "string" }, laborCost: { type: "number" } },
+      ],
+    },
   ],
 };
 module.exports = {
@@ -25,16 +20,10 @@ module.exports = {
       },
     },
   },
-  "/:id": {
+  "/:projectId": {
     put: {
       body: {
-        clientAddress: {
-          ...projectCommonFields.clientAddress,
-          isOptional: true,
-        },
-        clientEmail: { ...projectCommonFields.clientEmail, isOptional: true },
-        name: { ...projectCommonFields.name, isOptional: true },
-        allowableKeys: projectCommonFields.allowableKeys
+        ...projectCommonFields,
       },
     },
   },
