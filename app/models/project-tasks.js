@@ -1,8 +1,8 @@
-const {getSetMethods} = global.sequelizeFunctions;
+const { getSetMethods } = global.sequelizeFunctions;
 const moment = require('moment');
 
 module.exports = function (sequelize, DataTypes) {
-  const {STRING, DECIMAL, INTEGER} = DataTypes;
+  const { STRING, DECIMAL, INTEGER } = DataTypes;
   const ProjectTasks = sequelize.$$defineModel(
     'ProjectTasks',
     {
@@ -37,7 +37,7 @@ module.exports = function (sequelize, DataTypes) {
     });
     ProjectTasks.hasMany(models.ProjectTaskDescriptions, {
       foreignKey: 'projectTaskId',
-      as: models.ProjectTaskDescriptions.$$name,
+      as: 'descriptions',
     });
   };
 

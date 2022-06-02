@@ -66,7 +66,7 @@ module.exports = (router) => {
             include: [
               {
                 model: ProjectTaskDescriptions,
-                as: ProjectTaskDescriptions.$$name,
+                as: 'descriptions',
               },
             ],
           }),
