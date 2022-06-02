@@ -1,23 +1,30 @@
 const projectCommonFields = {
-  amount: {
-    type: 'number'
-  },
+  name: { type: "string" },
+  clientAddress: { type: "string" },
+  clientEmail: { type: "string" },
+  tasks: [
+    {
+      name: { type: "string" },
+      materialCost: { type: "number" },
+      descriptions: [
+        { description: { type: "string" }, laborCost: { type: "number" } },
+      ],
+    },
+  ],
 };
 module.exports = {
-  '/': {
+  "/": {
     post: {
       body: {
         ...projectCommonFields,
-        allowableKeys: ['name', 'startDate', 'endDate', 'amount'],
       },
     },
   },
-  '/:id': {
+  "/:projectId": {
     put: {
       body: {
-        amount: {...projectCommonFields.amount, isOptional: true},
-        allowableKeys: ['name', 'startDate', 'endDate', 'amount'],
-      }
-    }
-  }
+        ...projectCommonFields,
+      },
+    },
+  },
 };
