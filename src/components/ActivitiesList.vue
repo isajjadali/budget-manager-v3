@@ -1,9 +1,18 @@
 <template>
   <div>
+    <v-col
+      v-if="isLoading"
+      cols="12"
+      md="12"
+      class="d-flex justify-center"
+    >
+      <LoaderView />
+    </v-col>
     <v-row
       v-for="item in currentList"
+      v-else
       :key="item.id"
-    > 
+    >
       <v-col
         cols="12"
       >
@@ -22,6 +31,18 @@
         />
       </v-col>
     </v-row>
+    <MessageComponent
+      v-if="!currentList.length && !isLoading"
+      :message="notFoundMessage"
+      style="height: calc(100vh - (64px + 72px + 24px + 60px))"
+    >
+      <template #createButton>
+        <ModalActivitiesCreate
+          :is-payin="isPayin"
+          @save="onActivityCreate"
+        />
+      </template>
+    </MessageComponent>
     <ModalEdit
       :is-payin="activeActivity.isPayin"
       :activity="activeActivity"
@@ -38,17 +59,22 @@
 import {mapState, mapActions} from 'vuex';
 import ActivitiesItem from './ActivitiesItem.vue';
 import ModalEdit from './ModalEdit.vue';
+import LoaderView from './LoaderView.vue';
+import MessageComponent from './MessageComponent.vue';
+import ModalActivitiesCreate from './ModalActivitiesCreate.vue';
 
 export default {
   name: 'ActivitiesListing',
   components: {
     ActivitiesItem,
     ModalEdit,
+    LoaderView,
+    MessageComponent,
+    ModalActivitiesCreate,
   },
   props: {
-    isPayin: {
-      type: Boolean,
-    },
+    isPayin: Boolean,
+    isLoading: Boolean,
     fetchData: {
       type: Function,
       default: () => {
@@ -65,6 +91,8 @@ export default {
     toggleModalOpen: false,
     activitiesDates: [],
     activeActivity: {},
+    loadingMessage: '',
+    notFoundMessage: '',
   }),
   computed: {
     ...mapState('global', ['activities', 'payins', 'projects', 'employees']),
@@ -122,6 +150,18 @@ export default {
       }
       await this.fetchData({forceRefresh: true, params: this.params});
     },
+    onActivityCreate() {
+      this.fetchAllActivities({forceRefresh: true, params: this.filtersForAPI});
+    },
   },
+  mounted() {
+    if (this.isPayin) {
+      this.loadingMessage = 'Getting Payins Please Wait !!';
+      this.notFoundMessage = 'Payins Not Found !!';
+    } else {
+      this.loadingMessage = 'Getting Activities Please Wait !!';
+      this.notFoundMessage = 'Activities Not Found !!';
+    }
+  }
 };
 </script>

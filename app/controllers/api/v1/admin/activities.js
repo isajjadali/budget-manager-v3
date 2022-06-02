@@ -1,7 +1,7 @@
-const { asyncMiddleware } = global;
+const {asyncMiddleware} = global;
 const findCreateDate = require(`${global.paths.middlewares}/find-create-date`);
-const { Roles } = global.appEnums;
-const { Users, Activities, Projects, Dates, Sequelize } = global.db;
+const {Roles} = global.appEnums;
+const {Users, Activities, Projects, Dates, Sequelize} = global.db;
 
 module.exports = (router) => {
   async function getEmployee(req, res, next) {
@@ -31,18 +31,18 @@ module.exports = (router) => {
 
   function projectByIdMiddleware(isRequired) {
     return async (req, res, next) => {
-      const { projectId } = req.body;
+      const {projectId} = req.body;
       if (!isRequired && !projectId) {
         next();
         return;
       }
-      req.project = await Projects.$$findByPk({ id: projectId });
+      req.project = await Projects.$$findByPk({id: projectId});
       next();
     };
   }
 
   router.param(
-    "activityId",
+    'activityId',
     asyncMiddleware(async (req, res, next, activityId) => {
       const activity = await Activities.$$findOne({
         query: {
@@ -62,12 +62,12 @@ module.exports = (router) => {
     })
   );
   router
-    .route("/")
+    .route('/')
     .post(
       asyncMiddleware(findCreateDate()),
       asyncMiddleware(getEmployee),
       asyncMiddleware(async (req, res) => {
-        const { amount, projectId } = req.body;
+        const {amount, projectId} = req.body;
         const activity = await req.employee.logActivity({
           amount,
           projectId,
@@ -78,7 +78,7 @@ module.exports = (router) => {
     )
     .get(
       asyncMiddleware(async (req, res) => {
-        const { projectIds, employeeIds, ...rest } = req.query;
+        const {projectIds, employeeIds, range, ...rest} = req.query;
         const filters = {
           ...rest,
           limit: req.limit,
@@ -98,6 +98,11 @@ module.exports = (router) => {
           where.employeeId = {
             [Sequelize.Op.in]: employeeIds.split(",").map((id) => Number(id)),
           };
+        }
+        if (range) {
+          const [from, to] = range.split(',');
+          filters.from = from;
+          filters.to = to;
         }
         const include = [
           {
@@ -129,7 +134,7 @@ module.exports = (router) => {
     );
 
   router
-    .route("/:activityId")
+    .route('/:activityId')
     .get(
       asyncMiddleware(async (req, res) => {
         res.http200(req.activity);
@@ -155,12 +160,7 @@ module.exports = (router) => {
         await req.activityOwnedByEmployee.update({
           balance: +req.activityOwnedByEmployee.balance + activityAmount,
         });
-
-        if(req.employee.id === req.activityOwnedByEmployee.id) {
-          req.employee.balance = req.activityOwnedByEmployee.balance;
-        }
-
-        await req.activity.destroy({ paranoid: false });
+        await req.activity.destroy({paranoid: false});
         const activity = await req.employee.logActivity(newActivity);
 
         return res.http200(activity);
@@ -185,8 +185,8 @@ module.exports = (router) => {
         await employee.update({
           balance: +employee.balance + activityAmount,
         });
-        await req.activity.destroy({ paranoid: false });
-        return res.http200({ message: "Deleted activity successfully." });
+        await req.activity.destroy({paranoid: false});
+        return res.http200({message: 'Deleted activity successfully.'});
       })
     );
 };

@@ -1,33 +1,49 @@
 <template>
   <v-row>
-      <v-col 
-        v-for="employee in employees" 
-        :key="employee.id" 
-        class=""
-        cols="12"
-        md="3"
-      >
-        <EmployeeCard 
-          :employee="employee" 
-          @editEmployee="onEmployeeClick"
-          @delete="deleteEmployee"
-          @activityLink="onActivityButtonClick"
-        />
-      </v-col>
-      <ModalEdit 
+    <v-col v-if="isLoadingData.employees" cols="12" md="12" class="d-flex justify-center">
+      <LoaderView />
+    </v-col>
+    <v-col
+      v-else
+      v-for="employee in employees" 
+      :key="employee.id" 
+      class=""
+      cols="12"
+      md="3"
+    >
+      <EmployeeCard 
+        :employee="employee" 
+        @editEmployee="onEmployeeClick"
+        @delete="deleteEmployee"
+        @activityLink="onActivityButtonClick"
+      />
+    </v-col>
+    <MessageComponent 
+      v-if="employees.length === 0 && !isLoadingData.employees" 
+      :message="'Employee Not Found...'"
+      style="height: calc(100vh - (64px + 72px + 24px))"
+    >
+      <template #createButton>
+        <ModalEmployeeCreate />
+      </template>
+    </MessageComponent>
+    <ModalEdit 
       :isOpen="isToggleOpen" 
       :isEmployee="true" 
       :employee="activeEmployee" 
       @save="onSaveEditEmployee" 
       @cancel="onCancel" 
-      />
-    </v-row>
+    />
+  </v-row>
 </template>
 
 <script>
-import { mapActions } from "vuex";
+import { mapActions, mapState } from "vuex";
 import ModalEdit from './ModalEdit.vue';
 import EmployeeCard from './EmployeeCard.vue';
+import LoaderView from './LoaderView.vue';
+import MessageComponent from './MessageComponent.vue';
+import ModalEmployeeCreate from './ModalEmployeeCreate.vue';
 
 export default {
   name: "EmployeeList",
@@ -42,6 +58,9 @@ export default {
       },
       isToggleOpen: false,
     };
+  },
+  computed: {
+    ...mapState ('global', ['isLoadingData']),
   },
   methods: {
     ...mapActions("global", ['fetchAllEmployees', 'updateEmployee']),
@@ -65,7 +84,7 @@ export default {
     },
     deleteEmployee(employee) {
       alert('Employee deleted', employee.fullName);
-    }
+    },
   },
   mounted() {
     this.fetchAllEmployees();
@@ -73,6 +92,9 @@ export default {
   components: {
     ModalEdit,
     EmployeeCard,
+    LoaderView,
+    MessageComponent,
+    ModalEmployeeCreate,
   }
 };
 </script>
