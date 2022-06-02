@@ -21,6 +21,7 @@
                   value=""
                   :prefix="CURRENCY_SYMBOL"
                   type="number"
+                  :disabled="isPayin ? false : !currentData.isPaid"
                 />
               </v-col>
               <v-col

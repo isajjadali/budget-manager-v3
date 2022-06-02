@@ -17,9 +17,9 @@
             </v-avatar>
           </v-col>
           <v-col class="pt-3" cols="12" sm="6" md="8">
-            <h2>
+            <h3>
               {{ employee.fullName }}
-            </h2>
+            </h3>
             <caption>
               {{ employee.email }}
             </caption>
@@ -67,10 +67,6 @@
             </v-row>
           </v-col>
         </v-row>
-
-
-
-
 
         <v-row class="mx-1" v-show="false">
           <v-col cols="12" sm="5" md="5">

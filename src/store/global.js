@@ -151,6 +151,12 @@ export const actions = {
   },
 
   async updateActivity({commit}, activity) {
+    if (!activity.isPaid) {
+      activity = {
+        ...activity,
+        amount: 0
+      };
+    }
     const updatedActivity = await axios.put(`/admin/activities/${activity.id}`, activity);
   },
 
