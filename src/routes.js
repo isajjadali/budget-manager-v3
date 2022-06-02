@@ -36,6 +36,11 @@ export default [
         name: 'create-project',
       },
       {
+        path: 'update-project/:id',
+        component: ProjectCreatePage,
+        name: 'update-project',
+      },
+      {
         path: 'employees',
         component: EmployeeListPage,
         name: 'all-employee',

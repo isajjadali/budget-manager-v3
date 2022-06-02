@@ -1,7 +1,7 @@
 <template>
   <v-row>
     <v-col cols="12">
-      <ProjectTaskCreate @cancel="onClose" @save="onSave" />
+      <ProjectTaskCreate :project="project" @cancel="onClose" @save="onSave" />
     </v-col>
   </v-row>
 </template>
@@ -17,6 +17,9 @@ export default {
   },
   data: () => ({
     dialog: false,
+    project: {
+      tasks: [],
+    },
   }),
   computed: {
     ...mapState("global", ["isCreatingProject"]),
@@ -28,10 +31,20 @@ export default {
       this.$emit("close");
     },
     async onSave(newProject) {
-      await this.createProject(newProject);
-      this.$emit("save", newProject);
-      this.dialog = false;
+      if(this.$route.params.id){
+        await this.updateProject(newProject)
+        this.$router.push("/projects");
+      } else {
+        await this.createProject(newProject)
+        this.$router.push("/projects");
+      }
     },
+  },
+  async mounted() {
+    // let id = this.$route.params.id;
+    // if (id) {
+    //   this.project = await this.getProject(id);
+    // }
   },
 };
 </script>

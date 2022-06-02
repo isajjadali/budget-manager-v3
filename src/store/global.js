@@ -11,6 +11,9 @@ export const state = () => ({
   comingProject: {},
   isCreatingProject: false,
   isCreatingEmployee: false,
+  project: {
+    tasks: [],
+  },
 });
 
 export const mutations = {
@@ -37,7 +40,7 @@ export const mutations = {
   },
 
   GET_PROJECT_ID(state, project) {
-    state.comingProject = project;
+    state.project = project;
   },
   //==================================== Employees Mutations
   SET_EMPLOYEES_LIST(state, employees) {

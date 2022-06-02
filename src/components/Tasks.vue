@@ -2,7 +2,9 @@
   <v-col cols="12" sm="12" md="3" class="">
     <v-card width="100%">
       <v-card-title class="displayblock">
-        <span class="text-h5 pa-3"><b> {{ headerTitle }} </b></span>
+        <span class="text-h5 pa-3"
+          ><b> {{ headerTitle }} </b></span
+        >
       </v-card-title>
       <v-card-text>
         <v-container>
@@ -21,6 +23,7 @@
               class="mb-2 border-line"
               v-for="task in filteredTasks"
               :key="task[keyToMap]"
+              @click="onAdd(task)"
             >
               {{ task[keyToMap] }}
             </v-col>
@@ -33,37 +36,44 @@
 
 <script>
 export default {
-  name: 'Tasks',
+  name: "Tasks",
   props: {
     projectTasks: [],
     isProjectTask: Boolean,
     keyToMap: {
       type: String,
-      default: 'name'
-    }
+      default: "name",
+    },
   },
   data: () => {
     return {
       headerTitle: { type: String },
       searchQuery: "",
-    }
+    };
+  },
+  methods: {
+    onAdd(task) {
+      this.$emit("add", task);
+    },
   },
   computed: {
     filteredTasks() {
       if (this.searchQuery) {
-        const matchingRegex = new RegExp(`^${this.searchQuery}`, 'i');
-        const list =  this.projectTasks.filter((task) => matchingRegex.test(task[this.keyToMap]));
+        const matchingRegex = new RegExp(`^${this.searchQuery}`, "i");
+        const list = this.projectTasks.filter((task) =>
+          matchingRegex.test(task[this.keyToMap])
+        );
         return list;
       }
       return this.projectTasks;
-    }
+    },
   },
   mounted() {
-    if(this.isProjectTask) {
+    if (this.isProjectTask) {
       this.headerTitle = "Tasks:";
     } else {
       this.headerTitle = "Descriptions:";
     }
-  }
-}
+  },
+};
 </script>

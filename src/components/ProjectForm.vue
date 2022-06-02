@@ -8,6 +8,8 @@
         filled
         label="Status"
         class="float-right"
+        :rules="[rules.required]"
+        @change="onChange"
       ></v-select>
     </v-col>
     <v-col cols="12" sm="12" md="3">
@@ -16,7 +18,9 @@
         v-model="project.name"
         label="Project Name"
         name="projectName"
+        :rules="[rules.required]"
         type="text"
+        @change="onChange"
     /></v-col>
     <v-col cols="12" sm="12" md="3">
       <v-text-field
@@ -24,6 +28,9 @@
         v-model="project.clientEmail"
         label="Client Email"
         name="clientEmail"
+        :rules="[rules.required]"
+        type="email"
+        @change="onChange"
     /></v-col>
     <v-col cols="12" sm="12" md="6">
       <v-text-field
@@ -31,6 +38,7 @@
         v-model="project.clientAddress"
         label="Client Address"
         name="clientAddress"
+        @change="onChange"
     /></v-col>
   </v-row>
 </template>
@@ -50,12 +58,8 @@ export default {
     statuses: ["DRAFT", "PENDINGREVIEW", "ONGOING", "COMPLETED"],
   }),
   methods: {
-    onSave() {
-      console.log(this.project);
-      this.$emit("save", this.project);
-    },
-    onCancel() {
-      this.$emit("cancel");
+    onChange() {
+      this.$emit("projectChange", this.project);
     },
   },
 };

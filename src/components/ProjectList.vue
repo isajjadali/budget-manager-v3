@@ -1,5 +1,14 @@
 <template>
   <div>
+    <v-row>
+      <router-link
+        :to="{
+          name: 'create-project',
+        }"
+      >
+        <v-btn color="primary" dark> Create Project </v-btn>
+      </router-link>
+    </v-row>
     <v-row no-gutters>
       <v-col>
         <h1 class="text-center">
@@ -32,7 +41,7 @@
                       <div class="text-center pa-1">
                         <router-link
                           :to="{
-                            name: 'edit-project',
+                            name: 'update-project',
                             params: { id: project.id },
                           }"
                         >
@@ -44,7 +53,7 @@
                             large
                             color="cyan"
                           >
-                            <v-icon dark @click="editProject(project)">
+                            <v-icon dark @click="onItemClick(project)">
                               mdi-pencil
                             </v-icon>
                           </v-btn>
@@ -86,12 +95,8 @@ export default {
       this.toggleModalOpen = false;
     },
     onItemClick(project) {
-      this.$router.push("/create-project/", project.id);
-    },
-
-    editProject(project) {
-      this.toggleModalOpen = true;
-      this.activeProject = project;
+      console.log(project);
+      this.$router.push("/update-project/", project.id);
     },
   },
   computed: {

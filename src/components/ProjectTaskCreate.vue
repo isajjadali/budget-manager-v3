@@ -1,13 +1,25 @@
 <template>
   <v-row>
-    <ProjectForm :project="project" />
+    <ProjectForm :project="project" @projectChange="onChangeInProject" />
     <v-row>
-      <Tasks is-project-task key-to-map="name" :project-tasks="tasks" />
-      <ProjectTasks :project-tasks="project.tasks" />
+      <Tasks
+        is-project-task
+        key-to-map="name"
+        @add="addProjectTask"
+        :project-tasks="tasks"
+      />
+      <ProjectTasks
+        @removeTask="removeProjectTask"
+        @removeDescription="removeProjectDescription"
+        @open="openTask"
+        @save="onSave"
+        :project-tasks="project.tasks"
+      />
       <Tasks
         :is-project-task="false"
         key-to-map="description"
         :project-tasks="descriptions"
+        @add="addProjectDescription"
       />
     </v-row>
   </v-row>
@@ -21,6 +33,11 @@ import ProjectForm from "./ProjectForm.vue";
 
 export default {
   name: "ProjectTaskCreate",
+  props: {
+    project: {
+      type: Object,
+    },
+  },
   data: () => ({
     rules: {
       required: (value) => !!value || "Required.",
@@ -28,232 +45,74 @@ export default {
     search: "",
     statuses: ["DRAFT", "PENDINGREVIEW", "ONGOING", "COMPLETED"],
     toggleModalOpen: false,
-    activeProject: {},
-    project: {
-      clientAddress: "afsdadfkjlaksjdf",
-      clientEmail: "iamnaqihaider@gmail.com",
-      createdAt: "2022-05-20T15:44:49.000Z",
-      deletedAt: null,
-      id: 6,
-      name: "Testing Project",
-      status: "DRAFT",
-      updatedAt: "2022-05-20T15:55:35.000Z",
-      tasks: [
-        {
-          id: 1,
-          name: "Drawing Room",
-          descriptions: [
-            {
-              id: 1,
-              name: "Paint",
-            },
-            {
-              id: 2,
-              name: "Roof Cieling",
-            },
-            {
-              id: 3,
-              name: "Wallpaper",
-            },
-            {
-              id: 4,
-              name: "Cleaning",
-            },
-            {
-              id: 5,
-              name: "Carpanting",
-            },
-          ],
-        },
-        {
-          id: 2,
-          name: "Room 1",
-          descriptions: [
-            {
-              id: 1,
-              name: "Paint",
-            },
-            {
-              id: 2,
-              name: "Roof Cieling",
-            },
-            {
-              id: 3,
-              name: "Wallpaper",
-            },
-            {
-              id: 4,
-              name: "Cleaning",
-            },
-            {
-              id: 5,
-              name: "Carpanting",
-            },
-          ],
-        },
-        {
-          id: 3,
-          name: "Room 2",
-          descriptions: [
-            {
-              id: 1,
-              name: "Paint",
-            },
-            {
-              id: 2,
-              name: "Roof Cieling",
-            },
-            {
-              id: 3,
-              name: "Wallpaper",
-            },
-            {
-              id: 4,
-              name: "Cleaning",
-            },
-            {
-              id: 5,
-              name: "Carpanting",
-            },
-          ],
-        },
-        {
-          id: 4,
-          name: "Room 3",
-          descriptions: [
-            {
-              id: 1,
-              name: "Paint",
-            },
-            {
-              id: 2,
-              name: "Roof Cieling",
-            },
-            {
-              id: 3,
-              name: "Wallpaper",
-            },
-            {
-              id: 4,
-              name: "Cleaning",
-            },
-            {
-              id: 5,
-              name: "Carpanting",
-            },
-          ],
-        },
-        {
-          id: 5,
-          name: "Room 4",
-          descriptions: [
-            {
-              id: 1,
-              name: "Paint",
-            },
-            {
-              id: 2,
-              name: "Roof Cieling",
-            },
-            {
-              id: 3,
-              name: "Wallpaper",
-            },
-            {
-              id: 4,
-              name: "Cleaning",
-            },
-            {
-              id: 5,
-              name: "Carpanting",
-            },
-          ],
-        },
-      ],
-    },
-    // tasks: [
-    //   {
-    //     id: 1,
-    //     name: "Drawing Room",
-    //   },
-    //   {
-    //     id: 2,
-    //     name: "Room 1",
-    //   },
-    //   {
-    //     id: 3,
-    //     name: "Room 2",
-    //   },
-    //   {
-    //     id: 4,
-    //     name: "Room 3",
-    //   },
-    //   {
-    //     id: 5,
-    //     name: "Room 4",
-    //   },
-    // ],
-    // descriptions: [
-    //   {
-    //     id: 1,
-    //     name: "Paint",
-    //   },
-    //   {
-    //     id: 2,
-    //     name: "Roof Cieling",
-    //   },
-    //   {
-    //     id: 3,
-    //     name: "Wallpaper",
-    //   },
-    //   {
-    //     id: 4,
-    //     name: "Cleaning",
-    //   },
-    //   {
-    //     id: 5,
-    //     name: "Carpanting",
-    //   },
-    // ],
-    task: {
-      name: "",
-      amount: 0,
-    },
+    // project: {
+    //   tasks: [],
+    // },
+    task: undefined,
   }),
   methods: {
     ...mapActions("global", [
+      "createProject",
       "updateProject",
       "getProject",
       "fetchAllTasksAndDescriptions",
     ]),
+
     editProject(project) {
       this.toggleModalOpen = true;
       this.activeProject = project;
     },
-    async onSave(project) {
-      await this.updateProject(project);
-      this.toggleModalOpen = false;
+
+    onChangeInProject(project) {
+      this.project.name = project.name;
+      this.project.status = project.status;
+      this.project.clientAddress = project.clientAddress;
+      this.project.clientEmail = project.clientEmail;
     },
-    onClose() {
-      this.toggleModalOpen = false;
+
+    openTask(task) {
+      this.task = task;
     },
-    all() {
-      if (this.panel.length) {
-        this.panel = [];
+
+    addProjectTask(task) {
+      let obj = JSON.parse(JSON.stringify(task));
+      delete obj.id;
+      obj.descriptions.forEach((description) => {
+        delete description.id;
+      });
+      this.project.tasks.push(obj);
+    },
+
+    addProjectDescription(description) {
+      if (this.task) {
+        let obj = JSON.parse(JSON.stringify(description));
+        delete obj.id;
+        this.project.tasks[this.task].descriptions = [
+          ...this.project.tasks[this.task].descriptions,
+          obj,
+        ];
       } else {
-        this.panel = this.project.tasks.map((k, i) => i);
+        alert("Please Select Task First")
       }
+    },
+
+    removeProjectTask(task) {
+      this.project.tasks.splice(task, 1);
+    },
+
+    removeProjectDescription(task, description) {
+      this.project.tasks[task].descriptions.splice(description, 1);
+    },
+
+    async onSave() {
+      this.$emit("save", this.project);
     },
   },
   computed: {
     ...mapState("global", ["tasks"]),
-    ...mapGetters("global", ['descriptions'])
+    ...mapGetters("global", ["descriptions"]),
   },
   async mounted() {
-    let id = this.$route.params.id;
-    if (id) {
-      this.project = await this.getProject(id);
-    }
     await this.fetchAllTasksAndDescriptions();
   },
   components: {
