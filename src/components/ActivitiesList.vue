@@ -124,7 +124,7 @@ export default {
       const diff = today.getTime() - compDate.getTime();
       if (compDate.getTime() == today.getTime()) {
         return 'Today';
-      } else if (diff <= (24 * 60 * 60 * 1000)) {
+      } else if (diff === (24 * 60 * 60 * 1000)) {
         return 'Yesterday';
       } else {
         return date; // or format it what ever way you want

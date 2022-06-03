@@ -187,11 +187,14 @@ export const actions = {
     commit("SET_ACTIVITIES_LIST", [response.data, ...state.activities]);
   },
 
-  async updateActivity({ commit }, activity) {
-    const updatedActivity = await axios.put(
-      `/admin/activities/${activity.id}`,
-      activity
-    );
+  async updateActivity({commit}, activity) {
+    if (!activity.isPaid) {
+      activity = {
+        ...activity,
+        amount: 0
+      };
+    }
+    const updatedActivity = await axios.put(`/admin/activities/${activity.id}`, activity);
   },
 
   async deleteActivity({ commit }, activity) {
