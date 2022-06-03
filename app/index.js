@@ -33,9 +33,9 @@ app.use(kraken(options));
 // For custom configuration you just have to pass false as a prameter and update config file accordingly
 
 // parse application/json
-app.use(bodyParser.json());
 
 app.use(cors(require(`${global.paths.config}/cors-options`)()));
+app.use(bodyParser.json());
 
 app.all('*', customResponseMethodAppender);
 

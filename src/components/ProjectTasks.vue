@@ -54,7 +54,8 @@
         <v-container>
           <v-row>
             <v-col>
-              <v-expansion-panels focusable v-model="panel" multiple>
+              <v-expansion-panels focusable :value="panel" multiple>
+                <v-form v-model="isValid" ref='projectTaskForm' style="width: 100%">
                 <v-expansion-panel
                   v-for="(task, taskIndex) in projectTasks"
                   :key="taskIndex"
@@ -66,7 +67,9 @@
                           v-model="task.name"
                           label="Task Name"
                           name="taskName"
+                          :rules="[rules.required]"
                           type="text"
+                          required
                       /></v-col>
                       <v-col cols="12" md="3" class="py-0">
                         <v-text-field
@@ -75,7 +78,9 @@
                           label="Material Cost"
                           name="MaterialCost"
                           type="number"
+                          :rules="[rules.numberRequired]"
                           @change="addCost"
+                          required
                       /></v-col>
                       <v-col cols="12" md="3" class="py-0">
                         <v-text-field
@@ -84,7 +89,9 @@
                           label="Labor Cost"
                           name="LaborCost"
                           type="number"
+                          :rules="[rules.numberRequired]"
                           @change="addCost"
+                          required
                       /></v-col>
                       <v-col cols="12" md="1" class="py-0"
                         ><v-btn
@@ -93,6 +100,8 @@
                           small
                           color="error"
                           @click="removeProjectTask(taskIndex)"
+                          required
+
                         >
                           <v-icon>mdi-delete</v-icon>
                         </v-btn>
@@ -108,8 +117,11 @@
                         <v-text-field
                           v-model="description.description"
                           label="Description"
+                          :rules="[rules.required]"
                           name="descriptionName"
                           type="text"
+                          required
+
                       /></v-col>
                       <v-col cols="12" sm="1" md="1" class="">
                         <v-btn
@@ -130,26 +142,12 @@
                     </v-row>
                   </v-expansion-panel-content>
                 </v-expansion-panel>
+                </v-form>
               </v-expansion-panels>
             </v-col>
           </v-row>
         </v-container>
       </v-card-text>
-      <v-divider></v-divider>
-
-      <v-card-actions>
-        <div class="displayblock">
-          <v-btn
-            color="primary"
-            class="ma-3 save-btn float-right"
-            elevation="9"
-            rounded
-            @click="onSave"
-          >
-            Save
-          </v-btn>
-        </div>
-      </v-card-actions>
     </v-card>
   </v-col>
 </template>
@@ -160,29 +158,43 @@ export default {
   name: "Tasks",
   props: {
     projectTasks: [],
+    panel: [],
   },
   data: () => {
     return {
-      panel: [],
+      isValid: true,
       headerTitle: { type: String },
       searchQuery: "",
       CURRENCY_SYMBOL,
-      totalLabourCost: 0,
-      totalMaterialCost: 0,
-      totalAmout: 0,
+      rules: {
+      required: (value) => !!value || 'Required.',
+      numberRequired: (value) => {
+        if (value !== 0 && !value) return 'Required';
+        return true
+      }
+    },
     };
+  },
+  computed: {
+    totalLabourCost() {
+      return this.projectTasks
+        .map((task) => (task.labourCost ? task.labourCost : 0))
+        .reduce((a, b) => +a + +b, 0);
+    },
+    totalMaterialCost() {
+      return this.projectTasks
+        .map((task) => (task.materialCost ? task.materialCost : 0))
+        .reduce((a, b) => +a + +b, 0);
+    },
+    totalAmout() {
+      return this.totalLabourCost + this.totalMaterialCost;
+    }
   },
   methods: {
     all() {
-      if (this.panel.length && this.panel.length != 1) {
-        this.panel = [];
-      } else {
-        this.panel = this.projectTasks.map((k, i) => i);
-        this.$emit("open", undefined);
-      }
+      this.$emit("open", undefined);
     },
     openTab(index) {
-      this.panel = [];
       this.$emit("open", index);
     },
     removeProjectTask(task) {
@@ -194,13 +206,13 @@ export default {
     },
 
     addCost() {
-      this.totalLabourCost = this.projectTasks
-        .map((task) => (task.labourCost ? task.labourCost : 0))
-        .reduce((a, b) => +a + +b, 0);
-      this.totalMaterialCost = this.projectTasks
-        .map((task) => (task.materialCost ? task.materialCost : 0))
-        .reduce((a, b) => +a + +b, 0);
-      this.totalAmout = +this.totalLabourCost + this.totalMaterialCost;
+      // this.totalLabourCost = this.projectTasks
+      //   .map((task) => (task.labourCost ? task.labourCost : 0))
+      //   .reduce((a, b) => +a + +b, 0);
+      // this.totalMaterialCost = this.projectTasks
+      //   .map((task) => (task.materialCost ? task.materialCost : 0))
+      //   .reduce((a, b) => +a + +b, 0);
+      // this.totalAmout = +this.totalLabourCost + this.totalMaterialCost;
     },
 
     onSave() {

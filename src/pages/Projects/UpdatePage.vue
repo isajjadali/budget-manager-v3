@@ -11,41 +11,41 @@ import { mapActions, mapState } from "vuex";
 import ProjectTaskCreate from "../../components/ProjectTaskCreate.vue";
 
 export default {
-  name: "ProjectCreatePage",
+  name: "ProjectUpdatePage",
   components: {
     ProjectTaskCreate,
   },
   data: () => ({
     dialog: false,
-    project: {
-      tasks: [],
-    },
+    // project: {
+    //   tasks: [],
+    // },
   }),
   computed: {
-    ...mapState("global", ["isCreatingProject"]),
+    ...mapState("global", ["isCreatingProject", "project"]),
   },
   methods: {
-    ...mapActions("global", ["createProject"]),
+    ...mapActions("global", ["getProject", "updateProject"]),
     onClose() {
       this.dialog = false;
       this.$emit("close");
     },
     async onSave(newProject) {
-      newProject.tasks.forEach(task => {
-        let desLabourCost = task.labourCost / task.descriptions.length
-        task.descriptions.forEach(description => {
-          description.labourCost = desLabourCost
-        })
+      newProject.tasks.forEach((task) => {
+        let desLabourCost = task.labourCost / task.descriptions.length;
+        task.descriptions.forEach((description) => {
+          description.labourCost = desLabourCost;
+        });
       });
-      await this.createProject(newProject);
+      await this.updateProject(newProject);
       this.$router.push("/projects");
     },
   },
   async mounted() {
-    // let id = this.$route.params.id;
-    // if (id) {
-    //   this.project = await this.getProject(id);
-    // }
+    let id = this.$route.params.id;
+    if (id) {
+      await this.getProject(id);
+    }
   },
 };
 </script>

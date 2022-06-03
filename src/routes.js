@@ -7,6 +7,7 @@ import ActivitiesListPage from './pages/Activities/ListPage';
 import PayinsListPage from './pages/Payins/ListPage';
 import LayoutPage from '@/pages/LayoutPage';
 import ProjectCreatePage from '@/pages/Projects/CreatePage';
+import ProjectUpdatePage from '@/pages/Projects/UpdatePage';
 
 export default [
   {
@@ -37,7 +38,7 @@ export default [
       },
       {
         path: 'update-project/:id',
-        component: ProjectCreatePage,
+        component: ProjectUpdatePage,
         name: 'update-project',
       },
       {

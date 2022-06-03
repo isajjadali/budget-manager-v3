@@ -1,6 +1,6 @@
 <template>
   <v-row>
-    <ProjectForm :project="project" @projectChange="onChangeInProject" />
+    <ProjectForm :project="project" @projectChange="onChangeInProject" ref="projectForm" />
     <v-row>
       <Tasks
         is-project-task
@@ -9,11 +9,13 @@
         :project-tasks="tasks"
       />
       <ProjectTasks
+        ref="projectTask"
         @removeTask="removeProjectTask"
         @removeDescription="removeProjectDescription"
         @open="openTask"
         @save="onSave"
         :project-tasks="project.tasks"
+        :panel="panel"
       />
       <Tasks
         :is-project-task="false"
@@ -42,6 +44,7 @@ export default {
     rules: {
       required: (value) => !!value || "Required.",
     },
+    panel: [],
     search: "",
     statuses: ["DRAFT", "PENDINGREVIEW", "ONGOING", "COMPLETED"],
     toggleModalOpen: false,
@@ -71,7 +74,18 @@ export default {
     },
 
     openTask(task) {
-      this.task = task;
+      console.log(task);
+      if (task === undefined) {
+        this.task = task
+        if (this.panel.length && this.panel.length != 1) {
+          this.panel = [];
+        } else {
+          this.panel = this.project.tasks.map((k, i) => i);
+        }
+      } else {
+        this.task = task;
+        // this.panel = []
+      }
     },
 
     addProjectTask(task) {
@@ -81,6 +95,7 @@ export default {
         delete description.id;
       });
       this.project.tasks.push(obj);
+      this.panel = [this.project.tasks.length - 1];
     },
 
     addProjectDescription(description) {
@@ -92,7 +107,7 @@ export default {
           obj,
         ];
       } else {
-        alert("Please Select Task First")
+        this.$toast.error("Please Select Task First");
       }
     },
 
@@ -133,7 +148,6 @@ export default {
   cursor: pointer;
 }
 .save-btn {
-  width: 120px;
   height: 50px !important;
 }
 

@@ -1,5 +1,5 @@
 import axios from "axios";
-import { uniqBy, map, flatMap } from "lodash";
+import { uniqBy, map, flatMap, sumBy } from "lodash";
 
 export const state = () => ({
   user: null,
@@ -49,6 +49,10 @@ export const mutations = {
   },
 
   GET_PROJECT_ID(state, project) {
+    console.log(project)
+    project.tasks.forEach(task => {
+      task.labourCost = sumBy(task.descriptions, "laborCost")
+    });
     state.project = project;
   },
   //==================================== Employees Mutations
