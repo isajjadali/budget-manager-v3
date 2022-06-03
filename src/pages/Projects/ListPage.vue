@@ -1,11 +1,5 @@
 <template>
-  <v-container>
-    <v-row>
-      <v-col cols="12">
-        <ProjectList />
-      </v-col>
-    </v-row>
-  </v-container>
+  <ProjectList />
 </template>
 
 <script>

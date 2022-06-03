@@ -87,7 +87,7 @@ export default {
     },
   },
   mounted() {
-    this.fetchAllEmployees();
+    this.fetchAllEmployees(true);
   },
   components: {
     ModalEdit,

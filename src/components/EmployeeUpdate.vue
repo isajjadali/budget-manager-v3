@@ -86,7 +86,7 @@
             </v-row>
           </v-container>
         </v-card-text>
-        <v-card-actions>
+        <v-card-actions class="pa-5">
           <v-spacer />
           <v-btn
             color="blue darken-1"
@@ -97,8 +97,8 @@
           </v-btn>
           <v-btn
             type="submit"
-            color="blue darken-1"
-            text
+            color="primary"
+            rounded
             @click="onSave"
           >
             Save

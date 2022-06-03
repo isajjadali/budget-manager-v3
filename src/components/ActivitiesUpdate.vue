@@ -6,6 +6,14 @@
           <span class="text-h5 pa-3"><b> {{ headerTitle }} </b></span>
         </v-card-title>
         <v-card-text>
+          <v-alert
+            v-if="!currentData.isPaid"
+            dense
+            text
+            type="info"
+          >
+            <strong>Amount</strong> can be changed by deleting this <strong>Activity</strong> and creating a <strong>New</strong>
+          </v-alert>
           <v-container>
             <v-row>
               <v-col
@@ -79,7 +87,7 @@
             </v-row>
           </v-container>
         </v-card-text>
-        <v-card-actions>
+        <v-card-actions class="py-5 px-5">
           <v-spacer />
           <v-btn
             color="blue darken-1"
@@ -89,8 +97,8 @@
             Close
           </v-btn>
           <v-btn
-            color="blue darken-1"
-            text
+            color="primary"
+            rounded
             @click="onSave"
           >
             Save

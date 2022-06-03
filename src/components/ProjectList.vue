@@ -1,74 +1,51 @@
 <template>
-  <div>
-    <v-row>
+  <v-row>
+    <v-col cols="12 d-flex justify-end">
       <router-link
-        :to="{
-          name: 'create-project',
-        }"
-      >
-        <v-btn color="primary" dark> Create Project </v-btn>
-      </router-link>
-    </v-row>
-    <v-row no-gutters>
-      <v-col>
-        <h1 class="text-center">
-          {{ header }}
-        </h1>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col>
-        <div class="d-flex">
-          <v-card width="100%">
-            <v-simple-table>
-              <template v-slot: default>
-                <thead>
-                  <tr>
-                    <th class="text-left">Name</th>
-                    <th class="text-left">Client Email</th>
-                    <th class="text-left">Status</th>
-                    <th class="text-left">Edit</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr v-for="project in projects" :key="project.id">
-                    <td @click="onItemClick(project)">{{ project.name }}</td>
-                    <td @click="onItemClick(project)">
-                      {{ project.clientEmail }}
-                    </td>
-                    <td @click="onItemClick(project)">{{ project.status }}</td>
-                    <td>
-                      <div class="text-center pa-1">
-                        <router-link
-                          :to="{
-                            name: 'update-project',
-                            params: { id: project.id },
-                          }"
-                        >
-                          <v-btn
-                            style="height: 43px; width: 50px"
-                            class="mx-1"
-                            fab
-                            dark
-                            large
-                            color="cyan"
-                          >
-                            <v-icon dark @click="onItemClick(project)">
-                              mdi-pencil
-                            </v-icon>
-                          </v-btn>
-                        </router-link>
-                      </div>
-                    </td>
-                  </tr>
-                </tbody>
-              </template>
-            </v-simple-table>
-          </v-card>
-        </div>
-      </v-col>
-    </v-row>
-  </div>
+          :to="{
+            name: 'create-project',
+          }"
+        >
+          <v-btn color="primary" dark rounded> Create Project </v-btn>
+        </router-link>
+    </v-col>
+    <v-col cols="12">
+      <div class="d-flex">
+        <v-card width="100%">
+          <v-simple-table>
+            <template v-slot: default>
+              <thead>
+                <tr>
+                  <th class="text-left">Name</th>
+                  <th class="text-left">Client Email</th>
+                  <th class="text-left">Status</th>
+                  <th class="text-center">Edit</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="project in projects" :key="project.id">
+                  <td @click="onItemClick(project)">{{ project.name }}</td>
+                  <td @click="onItemClick(project)">
+                    {{ project.clientEmail }}
+                  </td>
+                  <td @click="onItemClick(project)">{{ project.status }}</td>
+                  <td class="text-center">
+                    <v-btn
+                      text
+                      color="light-blue"
+                      @click="onItemClick(project); reveal = true;"
+                    >
+                      Edit
+                    </v-btn>
+                  </td>
+                </tr>
+              </tbody>
+            </template>
+          </v-simple-table>
+        </v-card>
+      </div>
+    </v-col>
+  </v-row>
 </template>
 
 <script>
@@ -95,8 +72,7 @@ export default {
       this.toggleModalOpen = false;
     },
     onItemClick(project) {
-      console.log(project);
-      this.$router.push("/update-project/", project.id);
+      this.$router.push(`update-project/${project.id}`);
     },
   },
   computed: {
