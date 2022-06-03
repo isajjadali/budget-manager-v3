@@ -1,6 +1,11 @@
 <template>
   <v-row>
-    <ProjectForm :project="project" @projectChange="onChangeInProject" ref="projectForm" />
+    <ProjectForm
+      :project="project"
+      @projectChange="onChangeInProject"
+      @save="onSave"
+      ref="projectForm"
+    />
     <v-row>
       <Tasks
         is-project-task
@@ -13,7 +18,6 @@
         @removeTask="removeProjectTask"
         @removeDescription="removeProjectDescription"
         @open="openTask"
-        @save="onSave"
         :project-tasks="project.tasks"
         :panel="panel"
       />
@@ -76,7 +80,7 @@ export default {
     openTask(task) {
       console.log(task);
       if (task === undefined) {
-        this.task = task
+        this.task = task;
         if (this.panel.length && this.panel.length != 1) {
           this.panel = [];
         } else {

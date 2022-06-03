@@ -34,7 +34,7 @@ export default {
       newProject.tasks.forEach((task) => {
         let desLabourCost = task.labourCost / task.descriptions.length;
         task.descriptions.forEach((description) => {
-          description.labourCost = desLabourCost;
+          description.laborCost = desLabourCost;
         });
       });
       await this.updateProject(newProject);

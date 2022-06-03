@@ -49,7 +49,6 @@ export const mutations = {
   },
 
   GET_PROJECT_ID(state, project) {
-    console.log(project)
     project.tasks.forEach(task => {
       task.labourCost = sumBy(task.descriptions, "laborCost")
     });

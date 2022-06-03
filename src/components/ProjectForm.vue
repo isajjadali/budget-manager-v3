@@ -79,6 +79,9 @@ export default {
     onChange() {
       this.$emit("projectChange", this.project);
     },
+    onSave() {
+      this.$emit("save", this.project);
+    },
   },
 };
 </script>
