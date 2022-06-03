@@ -14,7 +14,8 @@
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
     "lint:fix": "eslint --fix .",
-    "client-start": "vue-cli-service serve"
+    "client-start": "vue-cli-service serve",
+    "create-db": "sequelize db:create"
   },
   "dependencies": {
     "@mdi/js": "^6.6.96",

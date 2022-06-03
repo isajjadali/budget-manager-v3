@@ -91,12 +91,12 @@ module.exports = (router) => {
         };
         if (projectIds) {
           where.projectId = {
-            [Sequelize.Op.in]: projectIds.split(',').map((id) => Number(id)),
+            [Sequelize.Op.in]: projectIds.split(",").map((id) => Number(id)),
           };
         }
         if (employeeIds) {
           where.employeeId = {
-            [Sequelize.Op.in]: employeeIds.split(',').map((id) => Number(id)),
+            [Sequelize.Op.in]: employeeIds.split(",").map((id) => Number(id)),
           };
         }
         if (range) {
@@ -112,10 +112,10 @@ module.exports = (router) => {
             include: [
               {
                 model: Users,
-                as: 'employee',
+                as: "employee",
                 where: {
                   roles: Roles.Employee,
-                }
+                },
               },
               {
                 model: Projects,

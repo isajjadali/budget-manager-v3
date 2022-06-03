@@ -6,6 +6,8 @@ import EmployeeListPage from './pages/Employees/ListPage';
 import ActivitiesListPage from './pages/Activities/ListPage';
 import PayinsListPage from './pages/Payins/ListPage';
 import LayoutPage from '@/pages/LayoutPage';
+import ProjectCreatePage from '@/pages/Projects/CreatePage';
+import ProjectUpdatePage from '@/pages/Projects/UpdatePage';
 
 export default [
   {
@@ -28,6 +30,16 @@ export default [
         path: 'projects',
         component: ProjectListPage,
         name: 'all-project',
+      },
+      {
+        path: 'create-project',
+        component: ProjectCreatePage,
+        name: 'create-project',
+      },
+      {
+        path: 'update-project/:id',
+        component: ProjectUpdatePage,
+        name: 'update-project',
       },
       {
         path: 'employees',

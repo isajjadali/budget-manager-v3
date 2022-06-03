@@ -1,4 +1,5 @@
-import axios from 'axios';
+import axios from "axios";
+import { uniqBy, map, flatMap, sumBy } from "lodash";
 
 export const state = () => ({
   user: null,
@@ -6,6 +7,13 @@ export const state = () => ({
   employees: [],
   activities: [],
   payins: [],
+  tasks: [],
+  comingProject: {},
+  isCreatingProject: false,
+  isCreatingEmployee: false,
+  project: {
+    tasks: [],
+  },
   isLoadingData: {
     employees: true,
     activities: false,
@@ -16,7 +24,7 @@ export const state = () => ({
 export const mutations = {
   SET_USER(state, payload) {
     state.user = payload.user;
-    localStorage.setItem('token', payload.token);
+    localStorage.setItem("token", payload.token);
   },
 
   SET_LOGGED_IN_USER(state, payload) {
@@ -34,6 +42,17 @@ export const mutations = {
   UPDATE_PROJECT(state, project) {
     const allProjects = state.projects.filter((p) => p.id !== project.id);
     state.projects = [project, ...allProjects];
+  },
+
+  SET_IS_CREATING_PROJECT(state, isCreatingProject) {
+    state.isCreatingProject = isCreatingProject;
+  },
+
+  GET_PROJECT_ID(state, project) {
+    project.tasks.forEach(task => {
+      task.labourCost = sumBy(task.descriptions, "laborCost")
+    });
+    state.project = project;
   },
   //==================================== Employees Mutations
   SET_EMPLOYEES_LIST(state, employees) {
@@ -62,45 +81,59 @@ export const mutations = {
     );
     state.payins = [updatedPayin, ...allPayins];
   },
+  //==================================== Tasks and Description Mutations
+  SET_TASKS_LIST(state, data) {
+    state.tasks = data.tasks;
+  },
 };
 
 export const actions = {
-
-  async login({commit}, payload) {
-    const response = await axios.post('/login', payload);
-    commit('SET_USER', response.data);
+  async login({ commit }, payload) {
+    const response = await axios.post("/login", payload);
+    commit("SET_USER", response.data);
   },
 
-  async fetchLoggedInUser({commit}, forceRefresh = false) {
+  async fetchLoggedInUser({ commit }, forceRefresh = false) {
     if (!forceRefresh && state.user) {
       return;
     }
-    const response = await axios.get('/me');
-    commit('SET_LOGGED_IN_USER', response.data);
+    const response = await axios.get("/me");
+    commit("SET_LOGGED_IN_USER", response.data);
   },
   //==================================== Projects Actions
-  async fetchAllProjects({commit, state}, forceRefresh = false) {
+  async fetchAllProjects({ commit, state }, forceRefresh = false) {
     if (!forceRefresh && state.projects.length) {
       return;
     }
-    const response = await axios.get('/admin/project');
-    commit('SET_PROJECTS_LIST', response.dataItems);
+    const response = await axios.get("/admin/project");
+    commit("SET_PROJECTS_LIST", response.dataItems);
   },
 
-  async updateProject({commit}, project) {
+  async updateProject({ commit }, project) {
     const response = await axios.put(`/admin/project/${project.id}`, project);
-    commit('UPDATE_PROJECT', response.data);
+    commit("UPDATE_PROJECT", response.data);
   },
 
-  async createProject({commit, state}, project) {
-    commit('SET_IS_CREATING_PROJECT', true);
-    const response = await axios.post('/admin/project', project);
+  async getProject({ commit }, id) {
+    const response = await axios.get(`/admin/project/${id}`);
+    commit("GET_PROJECT_ID", response.data);
+  },
 
-    commit('SET_PROJECTS_LIST', [response.data, ...state.projects]);
-    commit('SET_IS_CREATING_PROJECT', false);
+  async createProject({ commit, state }, project) {
+    commit("SET_IS_CREATING_PROJECT", true);
+    const response = await axios.post("/admin/project", project);
+
+    commit("SET_PROJECTS_LIST", [response.data, ...state.projects]);
+    commit("SET_IS_CREATING_PROJECT", false);
+  },
+
+  async fetchAllTasksAndDescriptions({ commit, state }, project) {
+    const response = await axios.get("/admin/task", project);
+
+    commit("SET_TASKS_LIST", response.data);
   },
   //==================================== Employees Actions
-  async fetchAllEmployees({commit, state}, forceRefresh = false) {
+  async fetchAllEmployees({ commit, state }, forceRefresh = false) {
     if (!forceRefresh && state.employees.length) {
       return;
     }
@@ -113,24 +146,27 @@ export const actions = {
     commit ('SET_IS_LOADING_DATA', loading);
   },
 
-  async createEmployee({commit, state}, newEmployee) {
-    commit('SET_IS_CREATING_EMPLOYEE', true);
-    const response = await axios.post('/admin/employee', newEmployee);
+  async createEmployee({ commit, state }, newEmployee) {
+    commit("SET_IS_CREATING_EMPLOYEE", true);
+    const response = await axios.post("/admin/employee", newEmployee);
 
-    commit('SET_EMPLOYEES_LIST', [response.data, ...state.employees]);
-    commit('SET_IS_CREATING_EMPLOYEE', false);
+    commit("SET_EMPLOYEES_LIST", [response.data, ...state.employees]);
+    commit("SET_IS_CREATING_EMPLOYEE", false);
   },
 
-  async updateEmployee({commit}, employee) {
+  async updateEmployee({ commit }, employee) {
     const updatedEmployee = await axios.put(
       `/admin/employee/${employee.id}`,
       employee
     );
-    commit('UPDATE_EMPLOYEE', updatedEmployee.data);
+    commit("UPDATE_EMPLOYEE", updatedEmployee.data);
   },
 
   //==================================== Activities Actions
-  async fetchAllActivities({commit, state}, {forceRefresh = false, params = {}} = {}) {
+  async fetchAllActivities(
+    { commit, state },
+    { forceRefresh = false, params = {} } = {}
+  ) {
     if (!forceRefresh && state.activities.length) {
       return;
     }
@@ -145,9 +181,9 @@ export const actions = {
     commit ('SET_IS_LOADING_DATA' , loading);
   },
 
-  async createActivity({commit, state}, newActivity) {
-    const response = await axios.post('/admin/activities', newActivity);
-    commit('SET_ACTIVITIES_LIST', [response.data, ...state.activities]);
+  async createActivity({ commit, state }, newActivity) {
+    const response = await axios.post("/admin/activities", newActivity);
+    commit("SET_ACTIVITIES_LIST", [response.data, ...state.activities]);
   },
 
   async updateActivity({commit}, activity) {
@@ -160,11 +196,17 @@ export const actions = {
     const updatedActivity = await axios.put(`/admin/activities/${activity.id}`, activity);
   },
 
-  async deleteActivity({commit}, activity) {
-    const response = await axios.delete(`/admin/activities/${activity.id}`, activity);
+  async deleteActivity({ commit }, activity) {
+    const response = await axios.delete(
+      `/admin/activities/${activity.id}`,
+      activity
+    );
   },
   //==================================== Payins Actions
-  async fetchAllPayins({commit, state}, {forceRefresh = false, params = {}} = {}) {
+  async fetchAllPayins(
+    { commit, state },
+    { forceRefresh = false, params = {} } = {}
+  ) {
     if (!forceRefresh && state.payins.length) {
       return;
     }
@@ -179,24 +221,31 @@ export const actions = {
     commit ('SET_IS_LOADING_DATA' , loading);
   },
 
-  async createPayin({commit, state}, newPayin) {
-    const response = await axios.post('/admin/payins', newPayin);
-    commit('SET_PAYINS_LIST', [response.data, ...state.payins]);
+  async createPayin({ commit, state }, newPayin) {
+    const response = await axios.post("/admin/payins", newPayin);
+    commit("SET_PAYINS_LIST", [response.data, ...state.payins]);
   },
 
-  async updatePayin({commit}, payin) {
+  async updatePayin({ commit }, payin) {
     const response = await axios.put(`/admin/payins/${payin.id}`, payin);
   },
 
-  async deletePayin({commit, state}, payin) {
-    state.payins = state.payins.filter(
-      (p) => p.id !== payin.id
-    );
+  async deletePayin({ commit, state }, payin) {
+    state.payins = state.payins.filter((p) => p.id !== payin.id);
   },
 };
 
+export const getters = {
+  descriptions(state) {
+    return uniqBy(
+      flatMap(map(state.tasks, ({descriptions}) => descriptions)),
+      'description'
+    )
+  }
+}
 export default {
   state,
   mutations,
   actions,
+  getters,
 };
