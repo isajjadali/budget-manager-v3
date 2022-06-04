@@ -52,6 +52,9 @@ module.exports = function (sequelize, DataTypes) {
       balance: {
         type: DECIMAL,
         defaultValue: 0,
+        get() {
+          return Number(this.getDataValue('balance'));
+        }
       },
       rate: {
         type: INTEGER,
@@ -109,9 +112,20 @@ module.exports = function (sequelize, DataTypes) {
       where: {
         dateId,
       },
+      include: [
+        {
+          model: global.db.Dates,
+          as: global.db.Dates.$$singularName
+        }
+      ],
       limit: 1,
     });
-    if (activities.length) return activities[0];
+    if (activities.length) {
+      const error = new Error();
+      error.message = `${this.fullName} already have an activity on the date ${activities[0].date.date}`;
+      error.statusCode = 400;
+      throw error;
+    }
     const newActivity = {
       dateId,
       ...rest,
