@@ -107,7 +107,7 @@
               </v-row>
             </v-container>
           </v-card-text>
-          <v-card-actions>
+          <v-card-actions class="pa-5">
             <v-spacer />
             <v-btn
               color="blue darken-1"
@@ -118,8 +118,7 @@
             </v-btn>
             <v-btn
               :disabled="!invalid"
-              color="blue darken-1"
-              text
+              color="primary"
               @click="onSave"
               rounded
             >

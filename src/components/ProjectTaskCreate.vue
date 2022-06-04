@@ -78,7 +78,6 @@ export default {
     },
 
     openTask(task) {
-      console.log(task);
       if (task === undefined) {
         this.task = task;
         if (this.panel.length && this.panel.length != 1) {

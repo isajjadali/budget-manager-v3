@@ -160,6 +160,9 @@ module.exports = (router) => {
         await req.activityOwnedByEmployee.update({
           balance: +req.activityOwnedByEmployee.balance + activityAmount,
         });
+        if(req.activityOwnedByEmployee.id === req.employee.id) {
+          req.employee.balance = req.activityOwnedByEmployee.balance;
+        }
         await req.activity.destroy({paranoid: false});
         const activity = await req.employee.logActivity(newActivity);
 

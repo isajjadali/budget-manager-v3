@@ -69,13 +69,12 @@
               </v-row>
             </v-container>
           </v-card-text>
-          <v-card-actions>
+          <v-card-actions class="pa-5">
             <v-spacer />
             <v-btn color="blue darken-1" text @click="onCancel"> Close </v-btn>
             <v-btn
               :disabled="!invalid"
               color="primary"
-              text
               @click="onSave"
               rounded
             >
