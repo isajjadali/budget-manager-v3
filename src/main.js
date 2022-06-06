@@ -20,10 +20,10 @@ const router = new VueRouter({
 router.beforeEach((to, from, next) => {
   if (to.matched.some((rec) => !rec.meta.authNotRequired)) {
     if (localStorage.getItem('token')) return next();
-    return next({ name: 'login' });
+    return next({name: 'login'});
   } else if (to.matched.every((rec) => rec.meta.authNotRequired)) {
     if (localStorage.getItem('token'))
-      return next({ name: from.name || 'dashboard' });
+      return next({name: from.name || 'dashboard'});
     return next();
   }
   next();
@@ -36,14 +36,14 @@ Vue.config.errorHandler = (err, vm, info) => {
 
 
   console.error(err, '<=== Main.js Error Tracking');
-  if(err) vm.$toast.error(err.data.error.body);
+  if (err) vm.$toast.error(err.data.error?.body || err.data.error);
 };
 
 
 const options = {
   position: 'topRight',
 };
-Vue.use(VueIziToast,options);
+Vue.use(VueIziToast, options);
 
 Vue.use(VueRouter);
 new Vue({
