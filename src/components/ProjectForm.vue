@@ -42,7 +42,7 @@
           class="ma-1 save-btn float-right"
           elevation="9"
           rounded
-          :disabled="!isValid"
+          :disabled="!isFormValid"
           @click="onSave"
         >
           Save

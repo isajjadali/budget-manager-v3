@@ -102,7 +102,7 @@ export default {
     },
 
     addProjectDescription(description) {
-      if (this.task) {
+      if (this.task >= 0) {
         let obj = JSON.parse(JSON.stringify(description));
         delete obj.id;
         this.project.tasks[this.task].descriptions = [
@@ -123,8 +123,19 @@ export default {
     },
 
     async onSave() {
-      this.$emit("save", this.project);
+      let formIsInvalid = await this.$refs.projectTask.isFormValid();
+
+      if (formIsInvalid) {
+        this.$emit("save", this.project);
+      } else {
+        this.$toast.error("Descriptions Can not be empty");
+      }
     },
+
+    testing() {
+      console.log(formIsInvalid);
+      return formIsInvalid;
+    }
   },
   computed: {
     ...mapState("global", ["tasks"]),
