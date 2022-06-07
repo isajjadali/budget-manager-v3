@@ -67,12 +67,13 @@ export default {
       } else {
         await this.createActivity(activity);
       }
-      this.$emit('save', activity.data);
+      this.$emit('save', activity);
       this.cleanUpModal();
+      console.log("Created :", activity);
     },
     cleanUpModal() {
       this.dialog = false;
-      this.$refs.activityCreateForm.$refs.createForm.resetValidation();
+      // this.$refs.activityCreateForm.$refs.createForm.resetValidation();
       this.newActivity = {
         date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
         .toISOString()

@@ -79,7 +79,7 @@ export default {
     ...mapState("global", ["projects"]),
   },
   mounted() {
-    this.fetchAllProjects();
+    this.fetchAllProjects(true);
   },
 };
 </script>

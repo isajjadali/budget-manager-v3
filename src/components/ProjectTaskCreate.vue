@@ -127,15 +127,11 @@ export default {
 
       if (formIsInvalid) {
         this.$emit("save", this.project);
+        this.$toast.success ("Project Saved Successfully");
       } else {
-        this.$toast.error("Descriptions Can not be empty");
+        this.$toast.error ("Required* Fields are Empty");
       }
     },
-
-    testing() {
-      console.log(formIsInvalid);
-      return formIsInvalid;
-    }
   },
   computed: {
     ...mapState("global", ["tasks"]),
