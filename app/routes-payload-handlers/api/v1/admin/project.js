@@ -1,30 +1,47 @@
 const projectCommonFields = {
-  name: { type: "string" },
-  clientAddress: { type: "string" },
-  clientEmail: { type: "string" },
+  name: {
+    type: 'string'
+  },
+  clientAddress: {
+    type: 'string'
+  },
+  clientEmail: {
+    type: 'string'
+  },
   tasks: [
     {
-      name: { type: "string" },
-      materialCost: { type: "number" },
+      name: {
+        type: 'string'
+      },
+      materialCost: {
+        type: 'number'
+      },
       descriptions: [
-        { description: { type: "string" }, laborCost: { type: "number" } },
+        {
+          description: {
+            type: 'string'
+          },
+          laborCost: {
+            type: 'number'
+          }
+        },
       ],
     },
   ],
 
 };
 module.exports = {
-  "/": {
+  '/': {
     post: {
       body: {
-        // ...projectCommonFields,
+        ...projectCommonFields,
       },
     },
   },
-  "/:projectId": {
+  '/:projectId': {
     put: {
       body: {
-        // ...projectCommonFields,
+        ...projectCommonFields,
       },
     },
   },
