@@ -11,7 +11,7 @@
         md="8"
         width="100%"
       >
-        <span class="text-h4 pa-3"><b> Create Project </b></span>
+        <span class="text-h4 pa-3"><b> {{ pageHeader }} </b></span>
       </v-col>
       <v-col
         cols="12"
@@ -102,6 +102,7 @@ export default {
     project: {
       type: Object,
     },
+    isProjectCreate: Boolean,
   },
   data: () => ({
     rules: {
@@ -127,6 +128,7 @@ export default {
         value: 'COMPLETED'
       },
     ],
+    pageHeader: "",
   }),
   methods: {
     onChange() {
@@ -135,6 +137,13 @@ export default {
     onSave() {
       this.$emit('save', this.project);
     },
+  },
+  mounted() {
+    if (this.isProjectCreate) {
+      this.pageHeader = "Create Project";
+    } else {
+      this.pageHeader = "Update Project";
+    }
   },
 };
 </script>

@@ -73,7 +73,7 @@ export default {
     },
     cleanUpModal() {
       this.dialog = false;
-      // this.$refs.activityCreateForm.$refs.createForm.resetValidation();
+      this.$refs.activityCreateForm.$refs.createForm.resetValidation();
       this.newActivity = {
         date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
         .toISOString()

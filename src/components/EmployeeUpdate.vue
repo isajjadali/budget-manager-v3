@@ -47,7 +47,7 @@
                 class="ma-3"
               >
                 <v-text-field
-                  v-model="employee.email"
+                  v-model="employeeEmail"
                   :rules="[rules.required]"
                   value=""
                   label="Enter Email"
@@ -62,7 +62,7 @@
                 class="ma-3"
               >
                 <v-text-field
-                  v-model="employee.rate"
+                  v-model="employeeRate"
                   value=""
                   label="Enter Rate per-day"
                   type="number"
@@ -131,14 +131,24 @@ export default {
     },
     show: false,
     CURRENCY_SYMBOL,
+    employeeRate: Number,
+    employeeEmail: "",
   }),
   methods: {
     onSave() {
+      this.employee.rate = this.employeeRate;
+      this.employee.email = this.employeeEmail;
       this.$emit('save', this.employee);
     },
     onCancel() {
+      this.employeeRate = this.employee.rate;
+      this.employeeEmail = this.employee.email;
       this.$emit('cancel');
     },
   },
+  mounted() {
+    this.employeeRate = this.employee.rate;
+    this.employeeEmail = this.employee.email;
+  }
 };
 </script>

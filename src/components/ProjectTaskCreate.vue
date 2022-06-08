@@ -2,6 +2,7 @@
   <v-row>
     <ProjectForm
       :project="project"
+      :isProjectCreate="isProjectCreate"
       @projectChange="onChangeInProject"
       @save="onSave"
       ref="projectForm"
@@ -43,6 +44,7 @@ export default {
     project: {
       type: Object,
     },
+    isProjectCreate: Boolean,
   },
   data: () => ({
     rules: {
@@ -52,10 +54,10 @@ export default {
     search: "",
     statuses: ["DRAFT", "PENDINGREVIEW", "ONGOING", "COMPLETED"],
     toggleModalOpen: false,
+    task: undefined,
     // project: {
     //   tasks: [],
     // },
-    task: undefined,
   }),
   methods: {
     ...mapActions("global", [
