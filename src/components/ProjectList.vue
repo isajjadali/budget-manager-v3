@@ -72,7 +72,7 @@ export default {
       this.toggleModalOpen = false;
     },
     onItemClick(project) {
-      this.$router.push(`update-project/${project.id}`);
+      this.$router.push(`update/${project.id}`);
     },
   },
   computed: {

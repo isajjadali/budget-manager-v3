@@ -39,7 +39,7 @@ export default {
     return {
       tabs: [
         { title: 'Dashboard', path: '/dashboard' },
-        { title: 'Projects', path: '/projects' },
+        { title: 'Projects', path: '/project' },
         { title: 'Employees', path: '/employees' },
         { title: 'Activities', path: '/activities' },
         { title: 'Payins', path: '/payins' },
