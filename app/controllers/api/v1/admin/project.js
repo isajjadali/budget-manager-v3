@@ -3,14 +3,10 @@ const { asyncMiddleware } = global;
 const findCreateDate = require(`${global.paths.middlewares}/find-create-date`);
 const { sequelizeConfig } = require(`${global.paths.lib}/sequelize`);
 const {
-  ExpenseItems,
-  Expenses,
   ProjectPayins,
   Projects,
   Sequelize,
-  UserProjectPayouts,
   Tasks,
-  Descriptions,
   ProjectTasks,
   ProjectTaskDescriptions,
 } = global.db;

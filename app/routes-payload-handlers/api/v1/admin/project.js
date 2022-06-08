@@ -17,14 +17,14 @@ module.exports = {
   "/": {
     post: {
       body: {
-        // ...projectCommonFields,
+        ...projectCommonFields,
       },
     },
   },
   "/:projectId": {
     put: {
       body: {
-        // ...projectCommonFields,
+        ...projectCommonFields,
       },
     },
   },
