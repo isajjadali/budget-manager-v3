@@ -122,8 +122,8 @@ export default {
         this.$router.replace({name: 'all-payins', query: this.filtersForAPI});
       });
     },
-    onPayinCreate() {
-      this.fetchAllPayins({forceRefresh: true, params: this.filtersForAPI});
+    async onPayinCreate() {
+      await this.fetchAllPayins({forceRefresh: true, params: this.filtersForAPI});
     },
     onRangeChange({type, range}) {
       this.fetchAllPayins({

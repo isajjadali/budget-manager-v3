@@ -1,7 +1,12 @@
 <template>
   <v-row>
     <v-col cols="12">
-      <ProjectTaskCreate :project="project" @cancel="onClose" @save="onSave" />
+      <ProjectTaskCreate 
+        :isProjectCreate="false"
+        :project="project" 
+        @cancel="onClose" 
+        @save="onSave" 
+    />
     </v-col>
   </v-row>
 </template>
