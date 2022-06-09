@@ -95,7 +95,7 @@
                     :key="taskIndex"
                   >
                     <v-expansion-panel-header @click="openTab(taskIndex)">
-                      <v-row class="align-center">
+                      <v-row class="align-center" >
                         <v-col
                           cols="12"
                           md="5"
@@ -251,7 +251,7 @@ export default {
     },
     totalAmout() {
       return this.totalLabourCost + this.totalMaterialCost;
-    }
+    },
   },
   mounted() {
     if (this.isProjectTask) {
@@ -273,6 +273,9 @@ export default {
 
     removeProjectDescription(task, description) {
       this.$emit('removeDescription', task, description);
+    },
+    isFormValid() {
+      return this.isValid;
     },
 
     addCost() {

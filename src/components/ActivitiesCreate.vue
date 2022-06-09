@@ -14,6 +14,7 @@
                     v-model.number="newActivity.amount"
                     label="Amount"
                     :prefix="CURRENCY_SYMBOL"
+                    :rules="[positiveAmount]"
                     type="number"
                   />
                 </v-col>
@@ -101,6 +102,7 @@ export default {
   data: () => ({
     requiredProject: (p) => !!p || "Project is required",
     requiredEmployee: (e) => !!e || "Employee is required",
+    positiveAmount: (a) => a >= 0 || "Amount must be Positive",
     dateMenu: false,
     invalid: true,
     CURRENCY_SYMBOL,

@@ -5,7 +5,7 @@
   >
   <div class="d-flex flex-column">
     {{ message }}
-    <slot name="createButton"/>
+    <slot />
   </div>
   </v-col>
 </template>
