@@ -30,7 +30,7 @@
         </v-btn>
       </v-card-title>
       <v-card-text>
-        <v-row>
+        <v-row v-if="isEdit">
           <v-col
             cols="12"
             sm="12"
@@ -108,6 +108,7 @@
                             :rules="[rules.required]"
                             type="text"
                             required
+                            :readonly="isEdit? false : true"
                           />
                         </v-col>
                         <v-col
@@ -124,6 +125,7 @@
                             :rules="[rules.numberRequired]"
                             required
                             @change="addCost"
+                            :readonly="isEdit? false : true"
                           />
                         </v-col>
                         <v-col
@@ -140,6 +142,7 @@
                             :rules="[rules.numberRequired]"
                             required
                             @change="addCost"
+                            :readonly="isEdit? false : true"
                           />
                         </v-col>
                         <v-col
@@ -178,6 +181,7 @@
                             name="descriptionName"
                             type="text"
                             required
+                            :readonly="isEdit? false : true"
                           />
                         </v-col>
                         <v-col
@@ -222,6 +226,12 @@ export default {
   props: {
     projectTasks: [],
     panel: [],
+    isEdit: {
+      type: Boolean,
+      default() {
+        return true;
+      }
+    },
   },
   data: () => {
     return {

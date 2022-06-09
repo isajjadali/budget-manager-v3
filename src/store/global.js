@@ -117,6 +117,7 @@ export const actions = {
   async getProject({ commit }, id) {
     const response = await axios.get(`/admin/project/${id}`);
     commit("GET_PROJECT_ID", response.data);
+    return response.data;
   },
 
   async createProject({ commit, state }, project) {
