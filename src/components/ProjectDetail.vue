@@ -3,7 +3,12 @@
     <v-row>
       <v-card width="100%">
         <v-row class="ma-0">
-          <v-col cols="12" sm="6" md="6" class="px-5">
+          <v-col
+            cols="12"
+            sm="6"
+            md="6"
+            class="px-5"
+          >
             <h3>{{ project.name }}</h3>
           </v-col>
             <v-divider vertical></v-divider>
@@ -64,7 +69,7 @@
           </v-tab-item>
           <v-tab-item>
             <v-card flat>
-              <v-card-title> Analytics </v-card-title>
+              <v-card-title> Analytics</v-card-title>
             </v-card>
           </v-tab-item>
           <v-tab-item>
@@ -126,7 +131,7 @@ export default {
     this.project = await this.getProject(id);
     console.log(this.project);
   },
-}
+};
 </script>
 
 <style lang='scss'>
@@ -134,10 +139,12 @@ export default {
   font-size: 16px;
   font-weight: 450;
 }
+
 .amount-font {
   font-size: 19px;
   font-weight: 500;
 }
+
 .h-amount {
   border: 1px solid;
   // margin: 2%;

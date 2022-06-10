@@ -1,5 +1,5 @@
-import axios from "axios";
-import { uniqBy, map, flatMap, sumBy } from "lodash";
+import axios from 'axios';
+import {uniqBy, map, flatMap, sumBy} from 'lodash';
 
 export const state = () => ({
   user: null,
@@ -24,13 +24,13 @@ export const state = () => ({
 export const mutations = {
   SET_USER(state, payload) {
     state.user = payload.user;
-    localStorage.setItem("token", payload.token);
+    localStorage.setItem('token', payload.token);
   },
 
   SET_LOGGED_IN_USER(state, payload) {
     state.user = payload.user;
   },
-  
+
   SET_IS_LOADING_DATA(state, loading) {
     state.isLoadingData[loading.key] = loading.value;
   },
@@ -50,7 +50,7 @@ export const mutations = {
 
   GET_PROJECT_ID(state, project) {
     project.tasks.forEach(task => {
-      task.labourCost = sumBy(task.descriptions, "laborCost")
+      task.labourCost = sumBy(task.descriptions, 'laborCost');
     });
     state.project = project;
   },
@@ -88,102 +88,102 @@ export const mutations = {
 };
 
 export const actions = {
-  async login({ commit }, payload) {
-    const response = await axios.post("/login", payload);
-    commit("SET_USER", response.data);
+  async login({commit}, payload) {
+    const response = await axios.post('/login', payload);
+    commit('SET_USER', response.data);
   },
 
-  async fetchLoggedInUser({ commit }, forceRefresh = false) {
+  async fetchLoggedInUser({commit}, forceRefresh = false) {
     if (!forceRefresh && state.user) {
       return;
     }
-    const response = await axios.get("/me");
-    commit("SET_LOGGED_IN_USER", response.data);
+    const response = await axios.get('/me');
+    commit('SET_LOGGED_IN_USER', response.data);
   },
   //==================================== Projects Actions
-  async fetchAllProjects({ commit, state }, forceRefresh = false) {
+  async fetchAllProjects({commit, state}, forceRefresh = false) {
     if (!forceRefresh && state.projects.length) {
       return;
     }
-    const response = await axios.get("/admin/project");
-    commit("SET_PROJECTS_LIST", response.dataItems);
+    const response = await axios.get('/admin/project');
+    commit('SET_PROJECTS_LIST', response.dataItems);
   },
 
-  async updateProject({ commit }, project) {
+  async updateProject({commit}, project) {
     const response = await axios.put(`/admin/project/${project.id}`, project);
-    commit("UPDATE_PROJECT", response.data);
+    commit('UPDATE_PROJECT', response.data);
   },
 
-  async getProject({ commit }, id) {
+  async getProject({commit}, id) {
     const response = await axios.get(`/admin/project/${id}`);
-    commit("GET_PROJECT_ID", response.data);
+    commit('GET_PROJECT_ID', response.data);
     return response.data;
   },
 
-  async createProject({ commit, state }, project) {
-    commit("SET_IS_CREATING_PROJECT", true);
-    const response = await axios.post("/admin/project", project);
+  async createProject({commit, state}, project) {
+    commit('SET_IS_CREATING_PROJECT', true);
+    const response = await axios.post('/admin/project', project);
 
-    commit("SET_PROJECTS_LIST", [response.data, ...state.projects]);
-    commit("SET_IS_CREATING_PROJECT", false);
+    commit('SET_PROJECTS_LIST', [response.data, ...state.projects]);
+    commit('SET_IS_CREATING_PROJECT', false);
   },
 
-  async fetchAllTasksAndDescriptions({ commit, state }, project) {
-    const response = await axios.get("/admin/task", project);
+  async fetchAllTasksAndDescriptions({commit, state}, project) {
+    const response = await axios.get('/admin/task', project);
 
-    commit("SET_TASKS_LIST", response.data);
+    commit('SET_TASKS_LIST', response.data);
   },
   //==================================== Employees Actions
-  async fetchAllEmployees({ commit, state }, forceRefresh = false) {
+  async fetchAllEmployees({commit, state}, forceRefresh = false) {
     if (!forceRefresh && state.employees.length) {
       return;
     }
-    const loading = { key: 'employees', value: true };
-    commit ('SET_IS_LOADING_DATA' , loading);
+    const loading = {key: 'employees', value: true};
+    commit('SET_IS_LOADING_DATA', loading);
 
     const response = await axios.get('/admin/employee');
     commit('SET_EMPLOYEES_LIST', response.dataItems);
     loading.value = false;
-    commit ('SET_IS_LOADING_DATA', loading);
+    commit('SET_IS_LOADING_DATA', loading);
   },
 
-  async createEmployee({ commit, state }, newEmployee) {
-    commit("SET_IS_CREATING_EMPLOYEE", true);
-    const response = await axios.post("/admin/employee", newEmployee);
+  async createEmployee({commit, state}, newEmployee) {
+    commit('SET_IS_CREATING_EMPLOYEE', true);
+    const response = await axios.post('/admin/employee', newEmployee);
 
-    commit("SET_EMPLOYEES_LIST", [response.data, ...state.employees]);
-    commit("SET_IS_CREATING_EMPLOYEE", false);
+    commit('SET_EMPLOYEES_LIST', [response.data, ...state.employees]);
+    commit('SET_IS_CREATING_EMPLOYEE', false);
   },
 
-  async updateEmployee({ commit }, employee) {
+  async updateEmployee({commit}, employee) {
     const updatedEmployee = await axios.put(
       `/admin/employee/${employee.id}`,
       employee
     );
-    commit("UPDATE_EMPLOYEE", updatedEmployee.data);
+    commit('UPDATE_EMPLOYEE', updatedEmployee.data);
   },
 
   //==================================== Activities Actions
   async fetchAllActivities(
-    { commit, state },
-    { forceRefresh = false, params = {} } = {}
+    {commit, state},
+    {forceRefresh = false, params = {}} = {}
   ) {
     if (!forceRefresh && state.activities.length) {
       return;
     }
-    const loading = { key: 'activities', value: true };
-    commit ('SET_IS_LOADING_DATA' , loading);
+    const loading = {key: 'activities', value: true};
+    commit('SET_IS_LOADING_DATA', loading);
 
     const response = await axios.get('/admin/activities', {
       params,
     });
     commit('SET_ACTIVITIES_LIST', response.dataItems);
     loading.value = false;
-    commit ('SET_IS_LOADING_DATA' , loading);
+    commit('SET_IS_LOADING_DATA', loading);
   },
 
-  async createActivity({ commit, state }, newActivity) {
-    await axios.post("/admin/activities", newActivity);
+  async createActivity({commit, state}, newActivity) {
+    await axios.post('/admin/activities', newActivity);
   },
 
   async updateActivity({commit}, activity) {
@@ -196,7 +196,7 @@ export const actions = {
     const updatedActivity = await axios.put(`/admin/activities/${activity.id}`, activity);
   },
 
-  async deleteActivity({ commit }, activity) {
+  async deleteActivity({commit}, activity) {
     const response = await axios.delete(
       `/admin/activities/${activity.id}`,
       activity
@@ -204,34 +204,33 @@ export const actions = {
   },
   //==================================== Payins Actions
   async fetchAllPayins(
-    { commit, state },
-    { forceRefresh = false, params = {} } = {}
+    {commit, state},
+    {forceRefresh = false, params = {}} = {}
   ) {
-    debugger;
     if (!forceRefresh && state.payins.length) {
       return;
     }
-    const loading = { key: 'payins', value: true };
-    commit ('SET_IS_LOADING_DATA' , loading);
-    
+    const loading = {key: 'payins', value: true};
+    commit('SET_IS_LOADING_DATA', loading);
+
     const response = await axios.get('/admin/payins', {
       params
     });
     commit('SET_PAYINS_LIST', response.dataItems);
     loading.value = false;
-    commit ('SET_IS_LOADING_DATA' , loading);
+    commit('SET_IS_LOADING_DATA', loading);
   },
 
-  async createPayin({ commit, state }, newPayin) {
-    await axios.post("/admin/payins", newPayin);
+  async createPayin({commit, state}, newPayin) {
+    await axios.post('/admin/payins', newPayin);
     // commit("SET_PAYINS_LIST", [response.data, ...state.payins]);
   },
 
-  async updatePayin({ commit }, payin) {
+  async updatePayin({commit}, payin) {
     const response = await axios.put(`/admin/payins/${payin.id}`, payin);
   },
 
-  async deletePayin({ commit }, payin) {
+  async deletePayin({commit}, payin) {
     await axios.delete(`admin/payins/${payin.id}`, payin);
   },
 };
@@ -241,9 +240,9 @@ export const getters = {
     return uniqBy(
       flatMap(map(state.tasks, ({descriptions}) => descriptions)),
       'description'
-    )
+    );
   }
-}
+};
 export default {
   state,
   mutations,

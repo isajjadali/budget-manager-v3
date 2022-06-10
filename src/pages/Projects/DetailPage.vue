@@ -10,6 +10,6 @@ import ProjectDetail from '@/components/ProjectDetail.vue';
 export default {
   components: {
     ProjectDetail,
-  },
-}
+  }
+};
 </script>

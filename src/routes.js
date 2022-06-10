@@ -16,17 +16,26 @@ export default [
     path: '/login',
     component: LoginPage,
     name: 'login',
-    meta: { authNotRequired: true },
+    meta: {
+      authNotRequired: true,
+      pageTitle: 'Login'
+    },
   },
   {
     path: '/',
     component: LayoutPage,
     name: 'index',
+    meta: {
+      pageTitle: 'Budget manager',
+    },
     children: [
       {
         path: 'dashboard',
         component: DashBoardPage,
         name: 'dashboard',
+        meta: {
+          pageTitle: 'Dashboard'
+        },
       },
       {
         path: 'project',
@@ -41,21 +50,33 @@ export default [
             path: 'list',
             component: ProjectListPage,
             name: 'all-projects',
+            meta: {
+              pageTitle: 'Projects List'
+            },
           },
           {
             path: 'create',
             component: ProjectCreatePage,
             name: 'create-project',
+            meta: {
+              pageTitle: 'Create Project'
+            },
           },
           {
             path: 'update/:id',
             component: ProjectUpdatePage,
             name: 'update-project',
+            meta: {
+              pageTitle: 'Edit Project'
+            },
           },
           {
             path: 'detail/:id',
             component: ProjectDetailPage,
             name: 'detail-project',
+            meta: {
+              pageTitle: 'Project Details'
+            },
           },
         ],
       },
@@ -63,16 +84,25 @@ export default [
         path: 'employees',
         component: EmployeeListPage,
         name: 'all-employee',
+        meta: {
+          pageTitle: 'Employees List'
+        },
       },
       {
         path: 'activities',
         component: ActivitiesListPage,
         name: 'all-activities',
+        meta: {
+          pageTitle: 'Activities List'
+        },
       },
       {
         path: 'payins',
         component: PayinsListPage,
         name: 'all-payins',
+        meta: {
+          pageTitle: 'Payins'
+        },
       },
       {
         path: '*',
