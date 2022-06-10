@@ -1,40 +1,38 @@
 <template>
-  <v-col cols="12" sm="12" md="3" class="wrapper">
-    <v-card width="100%">
-      <v-card-title class="displayblock pb-2">
-        <span class="text-h5"
-          ><b> {{ headerTitle }} </b></span
-        >
-      </v-card-title>
-      <v-card-text>
-        <v-container>
-          <v-row>
-            <v-col cols="12" sm="12" md="12" class="px-0">
-              <v-text-field
-                outlined
-                v-model="searchQuery"
-                label="Search ..."
-                name="search"
-                hide-details
-            /></v-col>
-            <div class="card-container">
-              <v-col
-                cols="12"
-                sm="12"
-                md="12"
-                class="mb-2 border-line"
-                v-for="(task, index) in filteredTasks"
-                :key="`${index}-${task[keyToMap]}`"
-                @click="onAdd(task)"
-              >
-                {{ task[keyToMap] }}
-              </v-col>
-            </div>
-          </v-row>
-        </v-container>
-      </v-card-text>
-    </v-card>
-  </v-col>
+  <v-card width="100%" class="wrapper">
+    <v-card-title class="displayblock pb-2">
+      <span class="text-h5"
+        ><b> {{ headerTitle }} </b></span
+      >
+    </v-card-title>
+    <v-card-text>
+      <v-container>
+        <v-row>
+          <v-col cols="12" sm="12" md="12" class="px-0">
+            <v-text-field
+              outlined
+              v-model="searchQuery"
+              label="Search ..."
+              name="search"
+              hide-details
+          /></v-col>
+          <div class="card-container">
+            <v-col
+              cols="12"
+              sm="12"
+              md="12"
+              class="mb-2 border-line"
+              v-for="(task, index) in filteredTasks"
+              :key="`${index}-${task[keyToMap]}`"
+              @click="onAdd(task)"
+            >
+              {{ task[keyToMap] }}
+            </v-col>
+          </div>
+        </v-row>
+      </v-container>
+    </v-card-text>
+  </v-card>
 </template>
 
 <script>

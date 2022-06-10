@@ -8,26 +8,32 @@
       ref="projectForm"
     />
     <v-row>
-      <Tasks
-        is-project-task
-        key-to-map="name"
-        @add="addProjectTask"
-        :project-tasks="tasks"
-      />
-      <ProjectTasks
-        ref="projectTask"
-        @removeTask="removeProjectTask"
-        @removeDescription="removeProjectDescription"
-        @open="openTask"
-        :project-tasks="project.tasks"
-        :panel="panel"
-      />
-      <Tasks
-        :is-project-task="false"
-        key-to-map="description"
-        :project-tasks="descriptions"
-        @add="addProjectDescription"
-      />
+      <v-col cols="12" sm="6" md="3">
+        <Tasks
+          is-project-task
+          key-to-map="name"
+          @add="addProjectTask"
+          :project-tasks="tasks"
+        />
+      </v-col>
+      <v-col cols="12" sm="6" md="6">
+        <ProjectTasks
+          ref="projectTask"
+          @removeTask="removeProjectTask"
+          @removeDescription="removeProjectDescription"
+          @open="openTask"
+          :project-tasks="project.tasks"
+          :panel="panel"
+        />
+      </v-col>
+      <v-col cols="12" sm="6" md="3">
+        <Tasks
+          :is-project-task="false"
+          key-to-map="description"
+          :project-tasks="descriptions"
+          @add="addProjectDescription"
+        />
+      </v-col>
     </v-row>
   </v-row>
 </template>
