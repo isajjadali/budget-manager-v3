@@ -1,5 +1,6 @@
+const {ActivitiesType} = require('../enums');
 module.exports = function (sequelize, DataTypes) {
-  const {INTEGER, DECIMAL, BOOLEAN} = DataTypes;
+  const {INTEGER, DECIMAL, BOOLEAN, STRING, VIRTUAL} = DataTypes;
   const Activities = sequelize.$$defineModel(
     'Activities',
     {
@@ -29,8 +30,22 @@ module.exports = function (sequelize, DataTypes) {
         type: BOOLEAN,
       },
       isPayin: {
-        defaultValue: false,
-        type: BOOLEAN,
+        type: VIRTUAL,
+        get() {
+          return this.getDataValue('type') === ActivitiesType.payin;
+        }
+      },
+      isMaterial: {
+        type: VIRTUAL,
+        get() {
+          return this.getDataValue('type') === ActivitiesType.material;
+        }
+      },
+      isLabour: {
+        type: VIRTUAL,
+        get() {
+          return this.getDataValue('type') === ActivitiesType.labour;
+        }
       },
       projectId: {
         references: {
@@ -39,6 +54,10 @@ module.exports = function (sequelize, DataTypes) {
         },
         type: INTEGER,
       },
+      type: {
+        type: STRING,
+        defaultValue: ActivitiesType.labour
+      }
     },
     {
       paranoid: false,

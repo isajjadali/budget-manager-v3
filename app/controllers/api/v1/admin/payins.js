@@ -1,5 +1,6 @@
 const {asyncMiddleware} = global;
 const {Dates, Activities, Projects, Sequelize} = global.db;
+const {ActivitiesType} = global.appEnums;
 const findCreateDate = require(`${global.paths.middlewares}/find-create-date`);
 
 module.exports = (router) => {
@@ -24,8 +25,8 @@ module.exports = (router) => {
         offset: req.offset,
       };
       const where = {
-        isPayin: {
-          [Sequelize.Op.eq]: true
+        type: {
+          [Sequelize.Op.eq]: ActivitiesType.payin
         }
       };
       if (projectIds) {
@@ -70,7 +71,7 @@ module.exports = (router) => {
       const activity = await Activities.create({
         ...req.body,
         dateId: req.date.id,
-        isPaid: true,
+        type: ActivitiesType.payin,
         isPayin: true,
       });
       return res.http200(activity);

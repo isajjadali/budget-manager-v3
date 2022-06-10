@@ -2,7 +2,7 @@ const moment = require('moment');
 const {startCase} = require('lodash');
 const {getHashedPassword, createToken} = global.commonFunctions;
 const {getSetMethods} = global.sequelizeFunctions;
-const {Statuses, Roles} = global.appEnums;
+const {Statuses, Roles, ActivitiesType} = global.appEnums;
 const {Errors} = global.appTranslations;
 
 module.exports = function (sequelize, DataTypes) {
@@ -132,7 +132,7 @@ module.exports = function (sequelize, DataTypes) {
       amount: amount || this.rate,
       employeeId: this.id,
       isPaid: !!amount,
-      isPayin: false,
+      type: ActivitiesType.labour
     };
     const savedActivity = await global.db.Activities.create(newActivity);
     await this.update({

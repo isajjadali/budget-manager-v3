@@ -1,15 +1,42 @@
 <template>
-  <v-form v-model="invalid" ref="createForm">
+  <v-form
+    ref="createForm"
+    v-model="invalid"
+  >
     <div>
       <v-row>
         <v-card width="100%">
           <v-card-title>
             <span class="text-h5 pa-3"><b> {{ headerTitle }} </b></span>
           </v-card-title>
-          <v-card-text>
+          <div class="d-flex justify-center">
+            <v-btn-toggle
+              v-model="activityType"
+              color="primary"
+              dense
+              tile
+              group
+            >
+              <v-btn value="labour-cost">
+                Labour
+              </v-btn>
+              <v-btn value="material-cost">
+                Material
+              </v-btn>
+              <v-btn value="payin">
+                Payin
+              </v-btn>
+            </v-btn-toggle>
+          </div>
+          <v-card-text class="pt-0">
             <v-container>
               <v-row>
-                <v-col cols="12" sm="6" md="4" class="ma-3">
+                <v-col
+                  cols="12"
+                  sm="6"
+                  md="4"
+                  class="ma-3"
+                >
                   <v-text-field
                     v-model.number="newActivity.amount"
                     label="Amount"
@@ -18,7 +45,12 @@
                     type="number"
                   />
                 </v-col>
-                <v-col cols="12" sm="6" md="4" class="ma-3">
+                <v-col
+                  cols="12"
+                  sm="6"
+                  md="4"
+                  class="ma-3"
+                >
                   <v-menu
                     v-model="dateMenu"
                     :close-on-content-click="true"
@@ -45,13 +77,13 @@
                 </v-col>
               </v-row>
               <v-row>
-                <v-col v-if="!isPayin">
+                <v-col v-if="isEmployeeFieldVisible">
                   <v-select
                     v-model="newActivity.employeeId"
                     :items="employees"
                     item-text="fullName"
                     item-value="id"
-                    :rules="[requiredEmployee]"
+                    :rules="[isEmployeeFieldVisible && requiredEmployee]"
                     label="Available Employees"
                   />
                 </v-col>
@@ -72,12 +104,18 @@
           </v-card-text>
           <v-card-actions class="pa-5">
             <v-spacer />
-            <v-btn color="blue darken-1" text @click="onCancel"> Close </v-btn>
+            <v-btn
+              color="blue darken-1"
+              text
+              @click="onCancel"
+            >
+              Close
+            </v-btn>
             <v-btn
               :disabled="!invalid"
               color="primary"
-              @click="onSave"
               rounded
+              @click="onSave"
             >
               Save
             </v-btn>
@@ -89,43 +127,46 @@
 </template>
 
 <script>
-import { CURRENCY_SYMBOL } from '@/enums';
+import {CURRENCY_SYMBOL} from '@/enums';
 
 export default {
-  name: "ActivityCreate",
+  name: 'ActivityCreate',
   props: {
-    isPayin: [], 
-    employees: [], 
+    isPayin: [],
+    employees: [],
     projects: [],
     newActivity: Object,
   },
   data: () => ({
-    requiredProject: (p) => !!p || "Project is required",
-    requiredEmployee: (e) => !!e || "Employee is required",
-    positiveAmount: (a) => a >= 0 || "Amount must be Positive",
+    requiredProject: (p) => !!p || 'Project is required',
+    requiredEmployee: (e) => !!e || 'Employee is required',
+    positiveAmount: (a) => a >= 0 || 'Amount must be Positive',
+    activityType: 'labour-cost',
     dateMenu: false,
     invalid: true,
     CURRENCY_SYMBOL,
     headerTitle: String,
   }),
-  methods: {
-    onSave() {
-      this.$emit("save", this.newActivity);
-    },
-    onCancel() {
-      this.$emit("cancel");
-    },
-  },
   computed: {
+    isEmployeeFieldVisible() {
+      return this.activityType === 'labour-cost';
+    }
   },
   mounted() {
     this.invalid = false;
     if (this.isPayin) {
-      this.headerTitle = "Create Payin";
+      this.headerTitle = 'Create Payin';
+    } else {
+      this.headerTitle = 'Create Activity';
     }
-    else {
-      this.headerTitle = "Create Activity";
-    }
+  },
+  methods: {
+    onSave() {
+      this.$emit('save', {...this.newActivity, type: this.activityType});
+    },
+    onCancel() {
+      this.$emit('cancel');
+    },
   },
 };
 </script>
