@@ -73,7 +73,7 @@ module.exports = (router) => {
         ]);
         const materialCost = sumBy(tasks, "materialCost");
         const laborCost = sumBy(
-          flatMap(map(tasks, (p) => p.ProjectTaskDescriptions)),
+          flatMap(map(tasks, (p) => p.descriptions)),
           "laborCost"
         );
         const allPayins = filter(activities, { amount: true });

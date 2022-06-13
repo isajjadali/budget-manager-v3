@@ -8,6 +8,8 @@ import PayinsListPage from './pages/Payins/ListPage';
 import LayoutPage from '@/pages/LayoutPage';
 import ProjectCreatePage from '@/pages/Projects/CreatePage';
 import ProjectUpdatePage from '@/pages/Projects/UpdatePage';
+import ProjectIndexPage from '@/pages/Projects/IndexPage';
+import ProjectDetailPage from '@/pages/Projects/DetailPage';
 
 export default [
   {
@@ -27,19 +29,35 @@ export default [
         name: 'dashboard',
       },
       {
-        path: 'projects',
-        component: ProjectListPage,
-        name: 'all-project',
-      },
-      {
-        path: 'create-project',
-        component: ProjectCreatePage,
-        name: 'create-project',
-      },
-      {
-        path: 'update-project/:id',
-        component: ProjectUpdatePage,
-        name: 'update-project',
+        path: 'project',
+        component: ProjectIndexPage,
+        name: 'project-index',
+        children: [
+          {
+            path: '',
+            redirect: 'list',
+          },
+          {
+            path: 'list',
+            component: ProjectListPage,
+            name: 'all-projects',
+          },
+          {
+            path: 'create',
+            component: ProjectCreatePage,
+            name: 'create-project',
+          },
+          {
+            path: 'update/:id',
+            component: ProjectUpdatePage,
+            name: 'update-project',
+          },
+          {
+            path: 'detail/:id',
+            component: ProjectDetailPage,
+            name: 'detail-project',
+          },
+        ],
       },
       {
         path: 'employees',
@@ -58,9 +76,8 @@ export default [
       },
       {
         path: '*',
-        redirect: 'projects',
+        redirect: '/dashboard',
       },
     ],
-    redirect: '/dashboard',
-  },
+  }
 ];

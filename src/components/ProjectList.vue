@@ -19,7 +19,7 @@
                   <th class="text-left">Name</th>
                   <th class="text-left">Client Email</th>
                   <th class="text-left">Status</th>
-                  <th class="text-center">Edit</th>
+                  <th class="text-center">Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -31,11 +31,20 @@
                   <td @click="onItemClick(project)">{{ project.status }}</td>
                   <td class="text-center">
                     <v-btn
+                      v-if="project.status === 'DRAFT'"
                       text
                       color="light-blue"
                       @click="onItemClick(project); reveal = true;"
                     >
                       Edit
+                    </v-btn>
+                    <v-btn
+                      v-else
+                      text
+                      color="light-blue"
+                      @click="onItemClick(project); reveal = true;"
+                    >
+                      Detail
                     </v-btn>
                   </td>
                 </tr>
@@ -72,7 +81,11 @@ export default {
       this.toggleModalOpen = false;
     },
     onItemClick(project) {
-      this.$router.push(`update-project/${project.id}`);
+      if (project.status === 'DRAFT') {
+        this.$router.push(`update/${project.id}`);
+      } else {
+        this.$router.push(`detail/${project.id}`);
+      }
     },
   },
   computed: {

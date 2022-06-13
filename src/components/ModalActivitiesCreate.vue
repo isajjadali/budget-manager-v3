@@ -69,7 +69,6 @@ export default {
       }
       this.$emit('save', activity);
       this.cleanUpModal();
-      console.log("Created :", activity);
     },
     cleanUpModal() {
       this.dialog = false;
