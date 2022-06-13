@@ -105,6 +105,11 @@ export default {
       ],
     };
   },
+  computed: {
+    daysLeft() {
+      return 20;
+    }
+  },
   methods: {
     ...mapActions ('global', ['getProject']),
     openTask(task) {
@@ -124,7 +129,6 @@ export default {
   async mounted() {
     const id = this.$route.params.id;
     this.project = await this.getProject(id);
-    console.log(this.project);
   },
 }
 </script>

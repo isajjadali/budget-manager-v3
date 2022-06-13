@@ -110,7 +110,7 @@
                       class="py-0"
                     >
                       <v-text-field
-                        v-model="task.materialCost"
+                        v-model.number="task.materialCost"
                         class="l-amount"
                         label="Material Cost"
                         name="MaterialCost"
