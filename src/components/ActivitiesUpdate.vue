@@ -26,7 +26,7 @@
                   <v-text-field
                     v-model.number="currentData.amount"
                     label="Amount"
-                    :rules="[rules.positiveAmount]"
+                    :rules="[rules.positiveAmount, rules.required]"
                     value=""
                     :prefix="CURRENCY_SYMBOL"
                     type="number"
@@ -138,7 +138,6 @@ export default {
       positiveAmount: (a) => a >= 0 || "Amount must be Positive",
     },
     CURRENCY_SYMBOL,
-    headerTitle: String,
     isFormValid: true,
   }),
   methods: {
@@ -149,13 +148,21 @@ export default {
       this.$emit('cancel');
     },
   },
+  computed: {
+    headerTitle() {
+      if (this.currentData.isPayin) {
+        return "Update Payin";
+      }
+      else if (this.currentData.isLabour) {
+        return "Update Activity (Labour)";
+      }
+      else if (this.currentData.isMaterial) {
+        return "Update Activity (Material)";
+      }
+    },
+  },
   mounted() {
-    if (this.isPayin) {
-      this.headerTitle = "Update Payin";
-    }
-    else {
-      this.headerTitle = "Update Activity";
-    }
+    
   }
 };
 </script>

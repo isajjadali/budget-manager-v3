@@ -1,6 +1,6 @@
 const activitiesCommonField = {
   date: {type: 'string'},
-  employeeId: {type: 'number'},
+  employeeId: {type: 'number', isOptional: true},
   projectId: {type: 'number'},
   amount: {type: 'number', isOptional: true},
   type: {type: 'string'},

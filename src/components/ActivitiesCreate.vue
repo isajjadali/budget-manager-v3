@@ -17,13 +17,13 @@
               tile
               group
             >
-              <v-btn value="labour-cost">
+              <v-btn value="LABOUR">
                 Labour
               </v-btn>
-              <v-btn value="material-cost">
+              <v-btn value="MATERIAL">
                 Material
               </v-btn>
-              <v-btn value="payin">
+              <v-btn value="PAYINS">
                 Payin
               </v-btn>
             </v-btn-toggle>
@@ -41,7 +41,7 @@
                     v-model.number="newActivity.amount"
                     label="Amount"
                     :prefix="CURRENCY_SYMBOL"
-                    :rules="[positiveAmount]"
+                    :rules="amountFieldRules"
                     type="number"
                   />
                 </v-col>
@@ -83,7 +83,7 @@
                     :items="employees"
                     item-text="fullName"
                     item-value="id"
-                    :rules="[isEmployeeFieldVisible && requiredEmployee]"
+                    :rules="[isEmployeeFieldVisible && required]"
                     label="Available Employees"
                   />
                 </v-col>
@@ -94,7 +94,7 @@
                     v-model="newActivity.projectId"
                     :items="projects"
                     item-text="name"
-                    :rules="[requiredProject]"
+                    :rules="[required]"
                     item-value="id"
                     label="Select Projects"
                   />
@@ -138,19 +138,25 @@ export default {
     newActivity: Object,
   },
   data: () => ({
-    requiredProject: (p) => !!p || 'Project is required',
-    requiredEmployee: (e) => !!e || 'Employee is required',
-    positiveAmount: (a) => a >= 0 || 'Amount must be Positive',
-    activityType: 'labour-cost',
+    required: (p) => !!p || 'Required !!',
+    positiveAmount: (p) => p >= 0 || 'Should not be negative !!',
+    activityType: 'LABOUR',
     dateMenu: false,
     invalid: true,
     CURRENCY_SYMBOL,
     headerTitle: String,
   }),
   computed: {
+    amountFieldRules() {
+      const rules = [this.positiveAmount];
+      if (this.activityType !== 'LABOUR') {
+        rules.push(this.required);
+      }
+      return rules;
+    },
     isEmployeeFieldVisible() {
-      return this.activityType === 'labour-cost';
-    }
+      return this.activityType === 'LABOUR';
+    },
   },
   mounted() {
     this.invalid = false;

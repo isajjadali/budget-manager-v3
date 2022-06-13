@@ -151,7 +151,6 @@ export default {
       await this.fetchData({forceRefresh: true, params: this.params});
     },
     async onActivityCreate() {
-      debugger;
       await this.fetchData({forceRefresh: true, params: this.params});
     },
   },

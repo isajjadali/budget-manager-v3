@@ -11,17 +11,33 @@
           <v-row>
             <v-col
               cols="12"
+              sm="1"
+              md="1"
+              class="ma-0 pr-0"
+            >
+              <v-icon v-if="activity.isLabour">
+                mdi-format-list-bulleted-square
+              </v-icon>
+              <v-icon v-else-if="activity.isMaterial">
+                mdi-plus
+              </v-icon>
+              <v-icon v-else>
+                mdi-minus
+              </v-icon>
+            </v-col>
+            <v-col
+              cols="12"
               sm="6"
-              :md="isPayin ? '5' : '4'"
-              class="d-flex align-center"
+              :md="isActivityTypeLabour ? '4' : '5'"
+              class="d-flex align-center pl-0"
             >
               {{ projectName }}
             </v-col>
             <v-col
-              v-if="!isPayin"
+              v-if="isActivityTypeLabour"
               cols="12"
               sm="6"
-              md="3"
+              md="2"
               class="d-flex align-center"
             >
               {{ activity.employee.fullName }}
@@ -29,14 +45,14 @@
             <v-col
               cols="12"
               sm="6"
-              :md="isPayin ? '5' : '4'"
+              :md="isActivityTypeLabour ? '4' : '5'"
               class="d-flex justify-end align-center"
             >
               <span><b>{{ CURRENCY_SYMBOL }}</b> {{ activity.amount }}</span>
             </v-col>
             <v-col
               cols="12"
-              :md="isPayin ? '2' : '1'"
+              :md="isActivityTypeLabour ? '1' : '1'"
               class="d-flex justify-end align-center"
             >
               <DropDownMenu @onActionSelected="onActionSelected" />
@@ -83,6 +99,13 @@ export default {
     projectName() {
       return this.activity.project?.name || 'No Project';
     },
+
+    isActivityTypeLabour() {
+      if (this.activity.type === 'LABOUR') {
+        return true;
+      }
+      return false;
+    }
   },
   methods: {
     onItemClick() {
@@ -102,6 +125,6 @@ export default {
       this.toggleConfirmationModal = false;
       this.$emit('delete', this.activity);
     },
-  }
+  },
 };
 </script>
