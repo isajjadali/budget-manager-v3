@@ -7,9 +7,9 @@ module.exports = async function (templateName, mailOptions) {
     try {
         const html = await templateMaker(path.resolve(path.join(__dirname, `../../view/${templateName}.ejs`)), mailOptions.variables || {});
         delete mailOptions.variables;
-        await sendEmail({ ...mailOptions, from: process.env.EMAIL, html });
-        console.info('Mail sent successfully!');
+        return sendEmail({ ...mailOptions, from: process.env.EMAIL, html })
     } catch (e) {
         console.error(e);
+        return e;
     }
 };

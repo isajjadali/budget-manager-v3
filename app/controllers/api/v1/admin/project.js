@@ -1,7 +1,10 @@
+const { ProjectStatus } = global.appEnums;
+
 const { sumBy, flatMap, map, filter } = require("lodash");
 const { asyncMiddleware } = global;
 const findCreateDate = require(`${global.paths.middlewares}/find-create-date`);
 const { sequelizeConfig } = require(`${global.paths.lib}/sequelize`);
+const sendMail = require(`${global.paths.lib}/email-sender`);
 const {
   ProjectPayins,
   Projects,
@@ -130,4 +133,34 @@ module.exports = (router) => {
       res.status(200).send(newPayIn);
     })
   );
+  router
+    .post("/:projectId/send-invoice",
+      asyncMiddleware(async (req, res, next) => {
+        const status = req.project.status;
+        if (status != ProjectStatus.Draft) {
+          return res.http200("Invoice already sent to client");
+        }
+
+        sendMail("common-email-format", {
+          to: req.project.clientEmail,
+          subject: "Project invoice",
+          attachments: [{
+            filename: 'businesscard1.pdf',
+            path: '/Users/mac/Downloads/businesscard1.pdf',
+            contentType: 'application/pdf'
+          }],
+          variables: {
+            userName: "Hi there!",
+            // url: `${"https://codebeautify.org/"}/email-changed`,
+            // button_text: 'buttonText',
+            email_content: 'Please find the attachment below.'
+          },
+        }).then(info => {
+          req.project.update({ status: ProjectStatus.PendingReview })
+          res.http200("Mail sent successfully!");
+        }).catch(error => {
+          res.http400(error);
+        })
+      })
+    )
 };
