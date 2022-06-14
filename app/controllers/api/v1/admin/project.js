@@ -144,15 +144,8 @@ module.exports = (router) => {
         sendMail("common-email-format", {
           to: req.project.clientEmail,
           subject: "Project invoice",
-          attachments: [{
-            filename: 'businesscard1.pdf',
-            path: '/Users/mac/Downloads/businesscard1.pdf',
-            contentType: 'application/pdf'
-          }],
           variables: {
             userName: "Hi there!",
-            // url: `${"https://codebeautify.org/"}/email-changed`,
-            // button_text: 'buttonText',
             email_content: 'Please find the attachment below.'
           },
         }).then(info => {
