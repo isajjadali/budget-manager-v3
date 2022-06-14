@@ -1,3 +1,5 @@
+const { split } = require("lodash");
+
 const {asyncMiddleware} = global;
 const findCreateDate = require(`${global.paths.middlewares}/find-create-date`);
 const {Roles, ActivitiesType} = global.appEnums;
@@ -91,25 +93,27 @@ module.exports = (router) => {
     )
     .get(
       asyncMiddleware(async (req, res) => {
-        const {projectIds, employeeIds, range, ...rest} = req.query;
+        const {projectIds, employeeIds, range, recordType, ...rest} = req.query;
         const filters = {
           ...rest,
           limit: req.limit,
           offset: req.offset,
         };
         const where = {
-          // employeeId: {
-          //   [Sequelize.Op.ne]: null,
-          // },
         };
-        if (projectIds) {
-          where.projectId = {
-            [Sequelize.Op.in]: projectIds.split(",").map((id) => Number(id)),
-          };
-        }
+          if (projectIds) {
+            where.projectId = {
+              [Sequelize.Op.in]: projectIds.split(",").map((id) => Number(id)),
+            };
+          }
         if (employeeIds) {
           where.employeeId = {
             [Sequelize.Op.in]: employeeIds.split(",").map((id) => Number(id)),
+          };
+        }
+        if (recordType) {
+          where.type = {
+            [Sequelize.Op.in]: recordType.split(","),
           };
         }
         if (range) {

@@ -53,7 +53,6 @@
       sm="12"
       md="9"
     >
-      <ActivitiesListHeader :is-payin="false" />
       <ActivitiesList
         :is-payin="false"
         :is-loading="isLoadingData.activities"
@@ -86,7 +85,7 @@ export default {
   },
   data() {
     return {
-      availableFilters: {employeeIds: [], projectIds: [], range: []},
+      availableFilters: {employeeIds: [], projectIds: [], range: [], recordType: []},
     };
   },
   computed: {
@@ -105,7 +104,7 @@ export default {
     },
   },
   created() {
-    const {employeeIds, projectIds, range} = this.$route.query;
+    const {employeeIds, projectIds, range, recordType} = this.$route.query;
     if (employeeIds) {
       this.availableFilters.employeeIds = employeeIds.split(',');
     }
@@ -114,6 +113,10 @@ export default {
     }
     if (range) {
       this.availableFilters.range = range.split(',');
+    }
+    if (recordType) {
+      this.availableFilters.recordType = recordType.split(',');
+
     }
   },
   methods: {
@@ -156,9 +159,11 @@ export default {
 
 <style lang="scss" scoped>
 .filter-sidebar {
-  height: calc(100vh - (64px + 24px + 20px + 60px));
+  min-height: calc(100vh - (64px + 24px + 20px + 60px));
   position: sticky;
   top: calc(64px + 24px);
   max-width: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 </style>

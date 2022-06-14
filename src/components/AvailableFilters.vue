@@ -17,7 +17,8 @@
 
 <script>
 import {mapState} from 'vuex';
-import {VSelect, VTextField} from 'vuetify/lib';
+import {VSelect} from 'vuetify/lib';
+import AvailableFilterRecordType from './AvailableFilterRecordType.vue';
 
 export default {
   name: 'AvailableFilters',
@@ -29,10 +30,13 @@ export default {
       }
     }
   },
+  data: () => {
+    return {};
+  },
   computed: {
-    ...mapState('global', ['employees', 'projects']),
+    ...mapState('global', ['employees', 'projects', 'activities']),
     availableFilters() {
-      return [this.employeeIdsFilter, this.projectIdsFilter]
+      return [ this.recordTypeFilters, this.employeeIdsFilter, this.projectIdsFilter,]
         .filter((filter) => !!this.activeFiltersValues[filter.name])
         .map((filter) => ({
           ...filter,
@@ -77,7 +81,26 @@ export default {
         },
         component: VSelect,
       };
-    }
+    },
+    recordTypeFilters() {
+      return {
+        name: 'recordType',
+        listeners: {
+          click: (value) => {
+            let values = this.activeFiltersValues.recordType;
+            
+            if (values.includes(value)) {
+              values = values.filter((v) => v !== value)
+            } else {
+              values.push(value);
+            }
+
+            this.emitChange({recordType: values});
+          }
+        },
+        component: AvailableFilterRecordType,
+      };
+    },
   },
   methods: {
     emitChange(updatedFilter) {
@@ -86,3 +109,14 @@ export default {
   }
 };
 </script>
+
+<style>
+.list-item {
+  height: 45px;
+  cursor: pointer;
+}
+.list-icon {
+  margin: 9px;
+  margin-right: 32px;
+}
+</style> 

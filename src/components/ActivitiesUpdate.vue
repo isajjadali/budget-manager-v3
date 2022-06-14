@@ -4,7 +4,10 @@
       <v-row>
         <v-card width="100%">
           <v-card-title>
-            <span class="text-h5 pa-3"><b> {{ headerTitle }} </b></span>
+            <span class="text-h5 pa-3"><b> Update Record ({{ ActivityTypeMap[currentData.type].label }}) </b></span>
+            <v-icon>
+              {{ActivityTypeMap[currentData.type].icon}}
+            </v-icon>
           </v-card-title>
           <v-card-text>
             <v-alert
@@ -113,7 +116,7 @@
 </template>
 
 <script>
-import { CURRENCY_SYMBOL } from '@/enums';
+import { CURRENCY_SYMBOL, ActivityTypeMap } from '@/enums';
 
 export default {
   name: 'ActivitiesUpdate',
@@ -133,6 +136,7 @@ export default {
   },
   data: () => ({
     taskDateMenu: false,
+    ActivityTypeMap,
     rules: {
       required: (value) => !!value || 'Required.',
       positiveAmount: (a) => a >= 0 || "Amount must be Positive",
@@ -149,17 +153,6 @@ export default {
     },
   },
   computed: {
-    headerTitle() {
-      if (this.currentData.isPayin) {
-        return "Update Payin";
-      }
-      else if (this.currentData.isLabour) {
-        return "Update Activity (Labour)";
-      }
-      else if (this.currentData.isMaterial) {
-        return "Update Activity (Material)";
-      }
-    },
   },
   mounted() {
     

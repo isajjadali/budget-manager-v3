@@ -15,26 +15,25 @@
               md="1"
               class="ma-0 pr-0"
             >
-              <v-icon v-if="activity.isLabour">
-                mdi-format-list-bulleted-square
-              </v-icon>
-              <v-icon v-else-if="activity.isMaterial">
-                mdi-plus
-              </v-icon>
-              <v-icon v-else>
-                mdi-minus
-              </v-icon>
+              <v-avatar>
+                <div class="record-icon grey lighten-2">
+                  <v-icon :color="iconColor">
+                    {{ActivityTypeMap[activity.type].icon}}
+                  </v-icon>
+                </div>
+              </v-avatar>
+              
             </v-col>
             <v-col
               cols="12"
               sm="6"
-              :md="isActivityTypeLabour ? '4' : '5'"
+              :md="activity.isLabour ? '4' : '5'"
               class="d-flex align-center pl-0"
             >
               {{ projectName }}
             </v-col>
             <v-col
-              v-if="isActivityTypeLabour"
+              v-if="activity.isLabour"
               cols="12"
               sm="6"
               md="2"
@@ -45,14 +44,14 @@
             <v-col
               cols="12"
               sm="6"
-              :md="isActivityTypeLabour ? '4' : '5'"
+              :md="activity.isLabour ? '4' : '5'"
               class="d-flex justify-end align-center"
             >
               <span><b>{{ CURRENCY_SYMBOL }}</b> {{ activity.amount }}</span>
             </v-col>
             <v-col
               cols="12"
-              :md="isActivityTypeLabour ? '1' : '1'"
+              :md="activity.isLabour ? '1' : '1'"
               class="d-flex justify-end align-center"
             >
               <DropDownMenu @onActionSelected="onActionSelected" />
@@ -73,6 +72,7 @@
 import {CURRENCY_SYMBOL} from '@/enums';
 import ConfirmationModal from './ConfirmationModal.vue';
 import DropDownMenu from './DropDownMenu.vue';
+import {ActivityTypeMap} from '@/enums';
 
 export default {
   components: {
@@ -91,6 +91,7 @@ export default {
   data() {
     return {
       CURRENCY_SYMBOL,
+      ActivityTypeMap,
       items: [{title: 'Edit', i: 1}, {title: 'Delete', i: 2}],
       toggleConfirmationModal: false,
     };
@@ -100,11 +101,11 @@ export default {
       return this.activity.project?.name || 'No Project';
     },
 
-    isActivityTypeLabour() {
-      if (this.activity.type === 'LABOUR') {
-        return true;
+    iconColor() {
+      if (!this.activity.isLabour) {
+        return 'black';
       }
-      return false;
+      return this.activity.isPaid ? 'blue' : 'red';
     }
   },
   methods: {
@@ -128,3 +129,11 @@ export default {
   },
 };
 </script>
+<style scoped>
+.record-icon {
+  --icon-size: 40px;
+  width: var(--icon-size);
+  height: var(--icon-size);
+  border-radius: 50%;
+}
+</style>

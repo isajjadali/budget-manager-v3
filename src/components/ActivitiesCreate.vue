@@ -7,7 +7,7 @@
       <v-row>
         <v-card width="100%">
           <v-card-title>
-            <span class="text-h5 pa-3"><b> {{ headerTitle }} </b></span>
+            <span class="text-h5 pa-3"><b> Create Record </b></span>
           </v-card-title>
           <div class="d-flex justify-center">
             <v-btn-toggle
@@ -17,14 +17,11 @@
               tile
               group
             >
-              <v-btn value="LABOUR">
-                Labour
-              </v-btn>
-              <v-btn value="MATERIAL">
-                Material
-              </v-btn>
-              <v-btn value="PAYINS">
-                Payin
+              <v-btn v-for="item in ActivityTypeList" :key="item.value" :value="item.value">
+                <v-icon left>
+                  {{item.icon}}
+                </v-icon>
+                {{item.label}}
               </v-btn>
             </v-btn-toggle>
           </div>
@@ -127,7 +124,7 @@
 </template>
 
 <script>
-import {CURRENCY_SYMBOL} from '@/enums';
+import {CURRENCY_SYMBOL, ActivityType, ActivityTypeList} from '@/enums';
 
 export default {
   name: 'ActivityCreate',
@@ -140,31 +137,27 @@ export default {
   data: () => ({
     required: (p) => !!p || 'Required !!',
     positiveAmount: (p) => p >= 0 || 'Should not be negative !!',
-    activityType: 'LABOUR',
+    activityType: ActivityType.labour,
+    ActivityTypeValue: ActivityType,
     dateMenu: false,
     invalid: true,
     CURRENCY_SYMBOL,
-    headerTitle: String,
+    ActivityTypeList,
   }),
   computed: {
     amountFieldRules() {
       const rules = [this.positiveAmount];
-      if (this.activityType !== 'LABOUR') {
+      if (this.activityType !== ActivityType.labour) {
         rules.push(this.required);
       }
       return rules;
     },
     isEmployeeFieldVisible() {
-      return this.activityType === 'LABOUR';
+      return this.activityType === ActivityType.labour;
     },
   },
   mounted() {
     this.invalid = false;
-    if (this.isPayin) {
-      this.headerTitle = 'Create Payin';
-    } else {
-      this.headerTitle = 'Create Activity';
-    }
   },
   methods: {
     onSave() {

@@ -13,7 +13,7 @@
         width="100%"
         v-on="on"
       >
-        Create {{ modalTitle }}
+        Create Record
       </v-btn>
     </template>
     <v-col cols="12">
