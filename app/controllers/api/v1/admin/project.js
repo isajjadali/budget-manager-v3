@@ -144,6 +144,8 @@ module.exports = (router) => {
         sendMail("common-email-format", {
           to: req.project.clientEmail,
           subject: "Project invoice",
+          attachments: [{
+          }],
           variables: {
             userName: "Hi there!",
             email_content: 'Please find the attachment below.'
