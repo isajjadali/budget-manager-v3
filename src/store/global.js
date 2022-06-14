@@ -117,6 +117,7 @@ export const actions = {
   async getProject({ commit }, id) {
     const response = await axios.get(`/admin/project/${id}`);
     commit("GET_PROJECT_ID", response.data);
+    return response.data;
   },
 
   async createProject({ commit, state }, project) {
@@ -182,8 +183,7 @@ export const actions = {
   },
 
   async createActivity({ commit, state }, newActivity) {
-    const response = await axios.post("/admin/activities", newActivity);
-    commit("SET_ACTIVITIES_LIST", [response.data, ...state.activities]);
+    await axios.post("/admin/activities", newActivity);
   },
 
   async updateActivity({commit}, activity) {
@@ -207,6 +207,7 @@ export const actions = {
     { commit, state },
     { forceRefresh = false, params = {} } = {}
   ) {
+    debugger;
     if (!forceRefresh && state.payins.length) {
       return;
     }
@@ -222,16 +223,16 @@ export const actions = {
   },
 
   async createPayin({ commit, state }, newPayin) {
-    const response = await axios.post("/admin/payins", newPayin);
-    commit("SET_PAYINS_LIST", [response.data, ...state.payins]);
+    await axios.post("/admin/payins", newPayin);
+    // commit("SET_PAYINS_LIST", [response.data, ...state.payins]);
   },
 
   async updatePayin({ commit }, payin) {
     const response = await axios.put(`/admin/payins/${payin.id}`, payin);
   },
 
-  async deletePayin({ commit, state }, payin) {
-    state.payins = state.payins.filter((p) => p.id !== payin.id);
+  async deletePayin({ commit }, payin) {
+    await axios.delete(`admin/payins/${payin.id}`, payin);
   },
 };
 

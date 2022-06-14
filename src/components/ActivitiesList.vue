@@ -36,7 +36,7 @@
       :message="notFoundMessage"
       style="height: calc(100vh - (64px + 72px + 24px + 60px))"
     >
-      <template #createButton>
+      <template>
         <ModalActivitiesCreate
           :is-payin="isPayin"
           @save="onActivityCreate"
@@ -144,14 +144,15 @@ export default {
     },
     async onActivityDelete(activity) {
       if (activity.isPayin) {
-        alert('Payin Deleted');
+        await this.deletePayin(activity);
       } else {
         await this.deleteActivity(activity);
       }
       await this.fetchData({forceRefresh: true, params: this.params});
     },
-    onActivityCreate() {
-      this.fetchAllActivities({forceRefresh: true, params: this.filtersForAPI});
+    async onActivityCreate() {
+      debugger;
+      await this.fetchData({forceRefresh: true, params: this.params});
     },
   },
   mounted() {

@@ -2,31 +2,38 @@
   <v-row>
     <ProjectForm
       :project="project"
+      :isProjectCreate="isProjectCreate"
       @projectChange="onChangeInProject"
       @save="onSave"
       ref="projectForm"
     />
     <v-row>
-      <Tasks
-        is-project-task
-        key-to-map="name"
-        @add="addProjectTask"
-        :project-tasks="tasks"
-      />
-      <ProjectTasks
-        ref="projectTask"
-        @removeTask="removeProjectTask"
-        @removeDescription="removeProjectDescription"
-        @open="openTask"
-        :project-tasks="project.tasks"
-        :panel="panel"
-      />
-      <Tasks
-        :is-project-task="false"
-        key-to-map="description"
-        :project-tasks="descriptions"
-        @add="addProjectDescription"
-      />
+      <v-col cols="12" sm="6" md="3">
+        <Tasks
+          is-project-task
+          key-to-map="name"
+          @add="addProjectTask"
+          :project-tasks="tasks"
+        />
+      </v-col>
+      <v-col cols="12" sm="6" md="6">
+        <ProjectTasks
+          ref="projectTask"
+          @removeTask="removeProjectTask"
+          @removeDescription="removeProjectDescription"
+          @open="openTask"
+          :project-tasks="project.tasks"
+          :panel="panel"
+        />
+      </v-col>
+      <v-col cols="12" sm="6" md="3">
+        <Tasks
+          :is-project-task="false"
+          key-to-map="description"
+          :project-tasks="descriptions"
+          @add="addProjectDescription"
+        />
+      </v-col>
     </v-row>
   </v-row>
 </template>
@@ -43,6 +50,7 @@ export default {
     project: {
       type: Object,
     },
+    isProjectCreate: Boolean,
   },
   data: () => ({
     rules: {
@@ -52,10 +60,10 @@ export default {
     search: "",
     statuses: ["DRAFT", "PENDINGREVIEW", "ONGOING", "COMPLETED"],
     toggleModalOpen: false,
+    task: undefined,
     // project: {
     //   tasks: [],
     // },
-    task: undefined,
   }),
   methods: {
     ...mapActions("global", [
@@ -102,7 +110,7 @@ export default {
     },
 
     addProjectDescription(description) {
-      if (this.task) {
+      if (this.task >= 0) {
         let obj = JSON.parse(JSON.stringify(description));
         delete obj.id;
         this.project.tasks[this.task].descriptions = [
@@ -123,7 +131,14 @@ export default {
     },
 
     async onSave() {
-      this.$emit("save", this.project);
+      let formIsInvalid = await this.$refs.projectTask.isFormValid();
+
+      if (formIsInvalid) {
+        this.$emit("save", this.project);
+        this.$toast.success ("Project Saved Successfully");
+      } else {
+        this.$toast.error ("Required* Fields are Empty");
+      }
     },
   },
   computed: {

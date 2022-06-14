@@ -67,7 +67,7 @@ export default {
       } else {
         await this.createActivity(activity);
       }
-      this.$emit('save', activity.data);
+      this.$emit('save', activity);
       this.cleanUpModal();
     },
     cleanUpModal() {

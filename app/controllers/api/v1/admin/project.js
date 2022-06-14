@@ -1,25 +1,15 @@
-const {
-  sumBy,
-  flatMap,
-  map,
-  filter
-} = require("lodash");
-const {
-  asyncMiddleware
-} = global;
+const { ProjectStatus } = global.appEnums;
+
+const { sumBy, flatMap, map, filter } = require("lodash");
+const { asyncMiddleware } = global;
 const findCreateDate = require(`${global.paths.middlewares}/find-create-date`);
+const { sequelizeConfig } = require(`${global.paths.lib}/sequelize`);
+const sendMail = require(`${global.paths.lib}/email-sender`);
 const {
-  sequelizeConfig
-} = require(`${global.paths.lib}/sequelize`);
-const {
-  ExpenseItems,
-  Expenses,
   ProjectPayins,
   Projects,
   Sequelize,
-  UserProjectPayouts,
   Tasks,
-  Descriptions,
   ProjectTasks,
   ProjectTaskDescriptions,
 } = global.db;
@@ -264,7 +254,7 @@ module.exports = (router) => {
         ]);
         const materialCost = sumBy(tasks, "materialCost");
         const laborCost = sumBy(
-          flatMap(map(tasks, (p) => p.ProjectTaskDescriptions)),
+          flatMap(map(tasks, (p) => p.descriptions)),
           "laborCost"
         );
         const allPayins = filter(activities, {
@@ -334,4 +324,29 @@ module.exports = (router) => {
       res.status(200).send(newPayIn);
     })
   );
+  router
+    .post("/:projectId/send-invoice",
+      asyncMiddleware(async (req, res, next) => {
+        const status = req.project.status;
+        if (status != ProjectStatus.Draft) {
+          return res.http200("Invoice already sent to client");
+        }
+
+        sendMail("common-email-format", {
+          to: req.project.clientEmail,
+          subject: "Project invoice",
+          attachments: [{
+          }],
+          variables: {
+            userName: "Hi there!",
+            email_content: 'Please find the attachment below.'
+          },
+        }).then(info => {
+          req.project.update({ status: ProjectStatus.PendingReview })
+          res.http200("Mail sent successfully!");
+        }).catch(error => {
+          res.http400(error);
+        })
+      })
+    )
 };
