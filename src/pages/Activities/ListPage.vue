@@ -32,11 +32,9 @@
       >
         <ActivitiesPayments
           :current-list="activities"
-          :is-payin="false"
         />
         <div class="px-5 pt-5 d-flex justify-center">
           <ModalActivitiesCreate
-            :is-payin="false"
             @save="onActivityCreate"
           />
         </div>
@@ -54,7 +52,6 @@
       md="9"
     >
       <ActivitiesList
-        :is-payin="false"
         :is-loading="isLoadingData.activities"
         :fetch-data="fetchAllActivities"
         :params="filtersForAPI"
@@ -68,7 +65,6 @@ import {mapActions, mapState} from 'vuex';
 import ModalActivitiesCreate from '../../components/ModalActivitiesCreate.vue';
 import ActivitiesList from '../../components/ActivitiesList.vue';
 import AvailableFilters from '@/components/AvailableFilters';
-import ActivitiesListHeader from '@/components/ActivitiesHeader';
 import ActivitiesPayments from '@/components/ActivitiesPayments.vue';
 import CustomDatePicker from '@/components/CustomDatePicker/CustomDatePicker';
 import {RANGE_VALUE_MAP} from '@/components/CustomDatePicker/date-picker-config';
@@ -80,7 +76,6 @@ export default {
     ActivitiesList,
     ActivitiesPayments,
     AvailableFilters,
-    ActivitiesListHeader,
     CustomDatePicker,
   },
   data() {

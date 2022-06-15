@@ -4,7 +4,6 @@ import DashBoardPage from './pages/DashBoardPage';
 import ProjectListPage from './pages/Projects/ListPage';
 import EmployeeListPage from './pages/Employees/ListPage';
 import ActivitiesListPage from './pages/Activities/ListPage';
-import PayinsListPage from './pages/Payins/ListPage';
 import LayoutPage from '@/pages/LayoutPage';
 import ProjectCreatePage from '@/pages/Projects/CreatePage';
 import ProjectUpdatePage from '@/pages/Projects/UpdatePage';
@@ -89,19 +88,11 @@ export default [
         },
       },
       {
-        path: 'activities',
+        path: 'records',
         component: ActivitiesListPage,
         name: 'all-activities',
         meta: {
-          pageTitle: 'Activities List'
-        },
-      },
-      {
-        path: 'payins',
-        component: PayinsListPage,
-        name: 'all-payins',
-        meta: {
-          pageTitle: 'Payins'
+          pageTitle: 'Records List'
         },
       },
       {

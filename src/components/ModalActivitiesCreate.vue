@@ -19,7 +19,6 @@
     <v-col cols="12">
       <ActivitiesCreate
         ref="activityCreateForm"
-        :is-payin="isPayin"
         :employees="employees"
         :projects="projects"
         :newActivity="newActivity"
@@ -39,7 +38,6 @@ export default {
     ActivitiesCreate,
   },
   props: {
-    isPayin: Boolean,
   },
   data: () => ({
     dialog: false,
@@ -51,22 +49,15 @@ export default {
   }),
   computed: {
     ...mapState('global', ['isCreatingActivity', 'employees', 'projects']),
-    modalTitle() {
-      return this.isPayin ? 'Payin' : 'Activity';
-    }
   },
   methods: {
-    ...mapActions('global', ['createActivity', 'fetchAllEmployees', 'fetchAllProjects', 'createPayin',]),
+    ...mapActions('global', ['createActivity', 'fetchAllEmployees', 'fetchAllProjects']),
     onClose() {
       this.$emit('close');
       this.cleanUpModal();
     },
     async onSave(activity) {
-      if (this.isPayin) {
-        await this.createPayin(activity);
-      } else {
-        await this.createActivity(activity);
-      }
+      await this.createActivity(activity);
       this.$emit('save', activity);
       this.cleanUpModal();
     },

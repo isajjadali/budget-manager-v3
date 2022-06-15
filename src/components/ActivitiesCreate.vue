@@ -129,7 +129,6 @@ import {CURRENCY_SYMBOL, ActivityType, ActivityTypeList} from '@/enums';
 export default {
   name: 'ActivityCreate',
   props: {
-    isPayin: [],
     employees: [],
     projects: [],
     newActivity: Object,

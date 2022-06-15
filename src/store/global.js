@@ -6,7 +6,6 @@ export const state = () => ({
   projects: [],
   employees: [],
   activities: [],
-  payins: [],
   tasks: [],
   comingProject: {},
   isCreatingProject: false,
@@ -17,7 +16,6 @@ export const state = () => ({
   isLoadingData: {
     employees: true,
     activities: false,
-    payins: false,
   },
 });
 
@@ -69,17 +67,6 @@ export const mutations = {
   //==================================== Activities Mutations
   SET_ACTIVITIES_LIST(state, activities) {
     state.activities = activities;
-  },
-  //==================================== Payins Mutations
-  SET_PAYINS_LIST(state, allPayins) {
-    state.payins = allPayins;
-  },
-
-  UPDATE_PAYIN(state, updatedPayin) {
-    const allPayins = state.payins.filter(
-      (payins) => payins.id !== updatedPayin.id
-    );
-    state.payins = [updatedPayin, ...allPayins];
   },
   //==================================== Tasks and Description Mutations
   SET_TASKS_LIST(state, data) {
@@ -163,6 +150,13 @@ export const actions = {
     commit('UPDATE_EMPLOYEE', updatedEmployee.data);
   },
 
+  async deleteEmployee({ commit }, employee) {
+    const response = await axios.delete(
+      `/admin/employee/${employee.id}`,
+      employee
+    )
+  },
+
   //==================================== Activities Actions
   async fetchAllActivities(
     {commit, state},
@@ -201,37 +195,6 @@ export const actions = {
       `/admin/activities/${activity.id}`,
       activity
     );
-  },
-  //==================================== Payins Actions
-  async fetchAllPayins(
-    {commit, state},
-    {forceRefresh = false, params = {}} = {}
-  ) {
-    if (!forceRefresh && state.payins.length) {
-      return;
-    }
-    const loading = {key: 'payins', value: true};
-    commit('SET_IS_LOADING_DATA', loading);
-
-    const response = await axios.get('/admin/payins', {
-      params
-    });
-    commit('SET_PAYINS_LIST', response.dataItems);
-    loading.value = false;
-    commit('SET_IS_LOADING_DATA', loading);
-  },
-
-  async createPayin({commit, state}, newPayin) {
-    await axios.post('/admin/payins', newPayin);
-    // commit("SET_PAYINS_LIST", [response.data, ...state.payins]);
-  },
-
-  async updatePayin({commit}, payin) {
-    const response = await axios.put(`/admin/payins/${payin.id}`, payin);
-  },
-
-  async deletePayin({commit}, payin) {
-    await axios.delete(`admin/payins/${payin.id}`, payin);
   },
 };
 

@@ -29,11 +29,11 @@
                   <v-text-field
                     v-model.number="currentData.amount"
                     label="Amount"
-                    :rules="[rules.positiveAmount, rules.required]"
+                    :rules="amountFieldRules"
                     value=""
                     :prefix="CURRENCY_SYMBOL"
                     type="number"
-                    :disabled="isPayin ? false : !currentData.isPaid"
+                    :disabled="!currentData.isPaid"
                   />
                 </v-col>
                 <v-col
@@ -116,7 +116,7 @@
 </template>
 
 <script>
-import { CURRENCY_SYMBOL, ActivityTypeMap } from '@/enums';
+import { CURRENCY_SYMBOL, ActivityTypeMap, ActivityType } from '@/enums';
 
 export default {
   name: 'ActivitiesUpdate',
@@ -130,9 +130,6 @@ export default {
     },
     employees: [],
     projects: [],
-    isPayin: {
-      type: Boolean,
-    },
   },
   data: () => ({
     taskDateMenu: false,
@@ -153,9 +150,15 @@ export default {
     },
   },
   computed: {
+    amountFieldRules() {
+      const rules = [this.rules.positiveAmount];
+      if (!this.currentData.isLabour) {
+        rules.push(this.rules.required);
+      }
+      return rules;
+    },
   },
   mounted() {
-    
   }
 };
 </script>

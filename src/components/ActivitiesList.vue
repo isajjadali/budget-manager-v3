@@ -24,7 +24,6 @@
         cols="12"
       >
         <ActivitiesItem
-          :is-payin="activity.isPayin"
           :activity="activity"
           @itemClicked="onItemClick(item, $event)"
           @delete="onActivityDelete"
@@ -38,13 +37,11 @@
     >
       <template>
         <ModalActivitiesCreate
-          :is-payin="isPayin"
           @save="onActivityCreate"
         />
       </template>
     </MessageComponent>
     <ModalEdit
-      :is-payin="activeActivity.isPayin"
       :activity="activeActivity"
       :is-open="toggleModalOpen"
       :projects="projects"
@@ -73,7 +70,6 @@ export default {
     ModalActivitiesCreate,
   },
   props: {
-    isPayin: Boolean,
     isLoading: Boolean,
     fetchData: {
       type: Function,
@@ -95,16 +91,13 @@ export default {
     notFoundMessage: '',
   }),
   computed: {
-    ...mapState('global', ['activities', 'payins', 'projects', 'employees']),
+    ...mapState('global', ['activities', 'projects', 'employees']),
     currentList() {
-      if (this.isPayin) {
-        return this.payins;
-      }
       return this.activities;
     },
   },
   methods: {
-    ...mapActions('global', ['updateActivity', 'deleteActivity', 'updatePayin', 'deletePayin']),
+    ...mapActions('global', ['updateActivity', 'deleteActivity']),
 
     onItemClick(item, activity) {
       this.toggleModalOpen = true;
@@ -131,11 +124,7 @@ export default {
       }
     },
     async OnSave(activity) {
-      if (activity.isPayin) {
-        await this.updatePayin(activity);
-      } else {
-        await this.updateActivity(activity);
-      }
+      await this.updateActivity(activity);
       await this.fetchData({forceRefresh: true, params: this.params});
       this.toggleModalOpen = false;
     },
@@ -143,11 +132,7 @@ export default {
       this.toggleModalOpen = false;
     },
     async onActivityDelete(activity) {
-      if (activity.isPayin) {
-        await this.deletePayin(activity);
-      } else {
-        await this.deleteActivity(activity);
-      }
+      await this.deleteActivity(activity);
       await this.fetchData({forceRefresh: true, params: this.params});
     },
     async onActivityCreate() {
@@ -155,13 +140,8 @@ export default {
     },
   },
   mounted() {
-    if (this.isPayin) {
-      this.loadingMessage = 'Getting Payins Please Wait !!';
-      this.notFoundMessage = 'Payins Not Found !!';
-    } else {
-      this.loadingMessage = 'Getting Activities Please Wait !!';
-      this.notFoundMessage = 'Activities Not Found !!';
-    }
+    this.loadingMessage = 'Getting Activities Please Wait !!';
+    this.notFoundMessage = 'Activities Not Found !!';
   }
 };
 </script>

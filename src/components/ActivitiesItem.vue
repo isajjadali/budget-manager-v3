@@ -84,9 +84,6 @@ export default {
       type: Object,
       required: true,
     },
-    isPayin: {
-      type: Boolean,
-    },
   },
   data() {
     return {
