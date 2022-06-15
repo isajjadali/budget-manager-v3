@@ -33,9 +33,6 @@ import {CURRENCY_SYMBOL} from '@/enums';
 export default {
   name: 'ActivitiesListHeader',
   props: {
-    isPayin: {
-      type: Boolean
-    }
   },
   data() {
     return {

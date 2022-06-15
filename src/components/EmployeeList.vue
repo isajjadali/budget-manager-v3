@@ -14,7 +14,7 @@
       <EmployeeCard 
         :employee="employee" 
         @editEmployee="onEmployeeClick"
-        @delete="deleteEmployee"
+        @delete="onDeleteEmployee"
         @activityLink="onActivityButtonClick"
       />
     </v-col>
@@ -44,6 +44,7 @@ import EmployeeCard from './EmployeeCard.vue';
 import LoaderView from './LoaderView.vue';
 import MessageComponent from './MessageComponent.vue';
 import ModalEmployeeCreate from './ModalEmployeeCreate.vue';
+import {ActivityType} from '@/enums';
 
 export default {
   name: "EmployeeList",
@@ -57,13 +58,14 @@ export default {
         type: Object,
       },
       isToggleOpen: false,
+      ActivityType,
     };
   },
   computed: {
     ...mapState ('global', ['isLoadingData']),
   },
   methods: {
-    ...mapActions("global", ['fetchAllEmployees', 'updateEmployee']),
+    ...mapActions("global", ['fetchAllEmployees', 'updateEmployee', 'deleteEmployee']),
     editEmployee(employee) {
       this.activeEmployee = employee;
     },
@@ -80,10 +82,18 @@ export default {
       this.isToggleOpen = false;
     },
     onActivityButtonClick(employee) {
-      this.$router.push({ name: 'all-activities', query: {employeeIds: `${employee.id}`}});
+      this.$router.push({ 
+        name: 'all-activities', 
+        query: { 
+          employeeIds: `${employee.id}`,
+          recordType: `${ActivityType.labour}`
+        }
+      });
     },
-    deleteEmployee(employee) {
-      alert('Employee deleted', employee.fullName);
+    async onDeleteEmployee(employee) {
+      console.log("employee delete");
+      await this.deleteEmployee(employee);
+      this.fetchAllEmployees(true);
     },
   },
   mounted() {

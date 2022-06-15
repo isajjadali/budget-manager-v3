@@ -8,6 +8,7 @@ import vuetify from './plugins/vuetify';
 import routes from './routes';
 import store from './store';
 import axiosInterceptor from './interceptor';
+import pageTitleMixin from './mixins/pageTitleMixin';
 
 Vue.config.productionTip = false;
 
@@ -46,6 +47,7 @@ const options = {
 Vue.use(VueIziToast, options);
 
 Vue.use(VueRouter);
+Vue.mixin(pageTitleMixin);
 new Vue({
   vuetify,
   router,
