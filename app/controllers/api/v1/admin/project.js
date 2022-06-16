@@ -1,9 +1,20 @@
-const { ProjectStatus } = global.appEnums;
+const {
+  ProjectStatus
+} = global.appEnums;
 
-const { sumBy, flatMap, map, filter } = require("lodash");
-const { asyncMiddleware } = global;
+const {
+  sumBy,
+  flatMap,
+  map,
+  filter
+} = require("lodash");
+const {
+  asyncMiddleware
+} = global;
 const findCreateDate = require(`${global.paths.middlewares}/find-create-date`);
-const { sequelizeConfig } = require(`${global.paths.lib}/sequelize`);
+const {
+  sequelizeConfig
+} = require(`${global.paths.lib}/sequelize`);
 const sendMail = require(`${global.paths.lib}/email-sender`);
 const {
   ProjectPayins,
@@ -13,6 +24,7 @@ const {
   ProjectTasks,
   ProjectTaskDescriptions,
 } = global.db;
+const pdfConverter = require(`${global.paths.lib}/pdf-convertor`);
 
 module.exports = (router) => {
   router
@@ -60,184 +72,15 @@ module.exports = (router) => {
     })
   );
 
-
-  const path = require("path")
-  var templatePath = path.resolve(path.join(global.appRoot, '/templates/qoutation.ejs'));
-  let ejs = require('ejs');
-  console.log(templatePath)
-  var fs = require('fs');
-  var pdf = require('html-pdf');
-  var inlineCss = require('inline-css');
-  const constants = require("../../../../templates/constants")
-
-  // var srcURL = global.appRoot.replace("\app", "");
-  const absoultPath = path.resolve(path.join(global.appRoot, ''));
-  var options = {
-    format: 'A4',
-    // base: `file://${absoultPath}/`,
-    "header": {
-      "height": "45mm",
-      // "contents": {
-      //   default: `<img src="${constants.header}" style="width:100%;height:100%" alt = "" > `
-      // }
-      // "contents": `Testing Testing`
-    },
-    "footer": {
-      "height": "45mm",
-      // "contents": {
-      //   default: `<img src="${constants.footer}" style="width:100%;height:100%" alt = "" > `
-      // }
-    },
-    "orientation": "portrait", // portrait or landscape 
-    "zoomFactor": "1", // default is 1 
-    "type": "pdf", // allowed file types: png, jpeg, pdf 
-    "quality": "75",
+  async function getProjectWithTasks(req, res, next) {
+    req.project.tasks = await req.project.getProjectTasks({
+      include: [{
+        model: ProjectTaskDescriptions,
+        as: 'descriptions',
+      }]
+    })
+    next()
   }
-  var inlineOption = {
-    applyStyleTags: true,
-    url: templatePath
-  };
-
-  router
-    .route("/generate-pdf")
-    .get(
-      asyncMiddleware(async (req, res) => {
-        ejs.renderFile(templatePath, {
-          project: {
-            name: "Testing Project",
-            projectLogo: constants.logo,
-            header: constants.header,
-            footer: constants.footer,
-            "tasks": [{
-                "name": "Task 1",
-                "materialCost": 2000,
-                "id": 1,
-                "createdAt": "2022-06-03T14:52:59.000Z",
-                "updatedAt": "2022-06-03T14:52:59.000Z",
-                "deletedAt": null,
-                "projectId": 1,
-                "descriptions": [{
-                    "laborCost": 400,
-                    "id": 1,
-                    "createdAt": "2022-06-03T14:52:59.000Z",
-                    "updatedAt": "2022-06-03T14:52:59.000Z",
-                    "deletedAt": null,
-                    "projectTaskId": 1,
-                    "description": "desc-1"
-                  },
-                  {
-                    "laborCost": 700,
-                    "id": 2,
-                    "createdAt": "2022-06-03T14:52:59.000Z",
-                    "updatedAt": "2022-06-03T14:52:59.000Z",
-                    "deletedAt": null,
-                    "projectTaskId": 1,
-                    "description": "desc-2"
-                  },
-                  {
-                    "laborCost": 300,
-                    "id": 3,
-                    "createdAt": "2022-06-03T14:52:59.000Z",
-                    "updatedAt": "2022-06-03T14:52:59.000Z",
-                    "deletedAt": null,
-                    "projectTaskId": 1,
-                    "description": "desc-3"
-                  }
-                ]
-              },
-              {
-                "name": "Task 1",
-                "materialCost": 2000,
-                "id": 1,
-                "createdAt": "2022-06-03T14:52:59.000Z",
-                "updatedAt": "2022-06-03T14:52:59.000Z",
-                "deletedAt": null,
-                "projectId": 1,
-                "descriptions": [{
-                    "laborCost": 400,
-                    "id": 1,
-                    "createdAt": "2022-06-03T14:52:59.000Z",
-                    "updatedAt": "2022-06-03T14:52:59.000Z",
-                    "deletedAt": null,
-                    "projectTaskId": 1,
-                    "description": "desc-1"
-                  },
-                  {
-                    "laborCost": 700,
-                    "id": 2,
-                    "createdAt": "2022-06-03T14:52:59.000Z",
-                    "updatedAt": "2022-06-03T14:52:59.000Z",
-                    "deletedAt": null,
-                    "projectTaskId": 1,
-                    "description": "desc-2"
-                  },
-                  {
-                    "laborCost": 300,
-                    "id": 3,
-                    "createdAt": "2022-06-03T14:52:59.000Z",
-                    "updatedAt": "2022-06-03T14:52:59.000Z",
-                    "deletedAt": null,
-                    "projectTaskId": 1,
-                    "description": "desc-3"
-                  }
-                ]
-              },
-              {
-                "name": "Task 1",
-                "materialCost": 2000,
-                "id": 1,
-                "createdAt": "2022-06-03T14:52:59.000Z",
-                "updatedAt": "2022-06-03T14:52:59.000Z",
-                "deletedAt": null,
-                "projectId": 1,
-                "descriptions": [{
-                    "laborCost": 400,
-                    "id": 1,
-                    "createdAt": "2022-06-03T14:52:59.000Z",
-                    "updatedAt": "2022-06-03T14:52:59.000Z",
-                    "deletedAt": null,
-                    "projectTaskId": 1,
-                    "description": "desc-1"
-                  },
-                  {
-                    "laborCost": 700,
-                    "id": 2,
-                    "createdAt": "2022-06-03T14:52:59.000Z",
-                    "updatedAt": "2022-06-03T14:52:59.000Z",
-                    "deletedAt": null,
-                    "projectTaskId": 1,
-                    "description": "desc-2"
-                  },
-                  {
-                    "laborCost": 300,
-                    "id": 3,
-                    "createdAt": "2022-06-03T14:52:59.000Z",
-                    "updatedAt": "2022-06-03T14:52:59.000Z",
-                    "deletedAt": null,
-                    "projectTaskId": 1,
-                    "description": "desc-3"
-                  }
-                ]
-              }
-            ]
-          }
-        }, function (err, response) {
-          if (err) return console.log(err);
-          console.log("response", response);
-          inlineCss(response, inlineOption)
-            .then(function (htmlRes) {
-              console.log(htmlRes)
-              pdf.create(htmlRes, options).toFile('./businesscard2.pdf', function (err, response) {
-                if (err) return console.log(err);
-                console.log("response", response);
-                res.status(200).send(response); // { filename: '/app/businesscard.pdf' }
-              });
-
-            })
-        })
-      })
-      // var html = fs.readFileSync(templatePath, 'utf8');
-    );
 
   router
     .route("/:projectId")
@@ -324,29 +167,47 @@ module.exports = (router) => {
       res.status(200).send(newPayIn);
     })
   );
+
+  router
+    .route("/:projectId/preview")
+    .get(
+      asyncMiddleware(getProjectWithTasks),
+      asyncMiddleware(async (req, res) => {
+        const previewHtml = await pdfConverter.ejsToHtml("qoutation", {
+          project: req.project
+        })
+        res.status(200).send({previewHtml});
+      })
+    );
+
   router
     .post("/:projectId/send-invoice",
+      asyncMiddleware(getProjectWithTasks),
       asyncMiddleware(async (req, res, next) => {
         const status = req.project.status;
         if (status != ProjectStatus.Draft) {
           return res.http200("Invoice already sent to client");
         }
-
-        sendMail("common-email-format", {
+        const pdf = await pdfConverter("qoutation", {
+          project: req.project
+        })
+        const info = await sendMail("common-email-format", {
           to: req.project.clientEmail,
           subject: "Project invoice",
           attachments: [{
+            filename: 'qoutation.pdf',
+            content: Buffer.from(pdf, 'utf-8')
           }],
           variables: {
             userName: "Hi there!",
             email_content: 'Please find the attachment below.'
           },
-        }).then(info => {
-          req.project.update({ status: ProjectStatus.PendingReview })
-          res.http200("Mail sent successfully!");
-        }).catch(error => {
-          res.http400(error);
         })
+        await req.project.update({
+          status: ProjectStatus.PendingReview
+        })
+        res.http200("Mail sent successfully!");
+
       })
     )
 };

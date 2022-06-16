@@ -20,7 +20,9 @@ const config = {
     freezeTableName: true,
   },
   migrationStorageTableName: 'sequelize_meta',
-  logging: message => dbLogger.debug(message),
+  // logging: message => dbLogger.debug(message),
+  logging: false,
+
 };
 
 const envConfigPath = path.resolve(path.join(__dirname, `./database.${env}.js`));
