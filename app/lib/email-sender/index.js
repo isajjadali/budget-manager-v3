@@ -5,7 +5,7 @@ const sendEmail = require('./mailer');
 
 module.exports = async function (templateName, mailOptions) {
     try {
-        const html = await templateMaker(path.resolve(path.join(__dirname, `../../view/${templateName}.ejs`)), mailOptions.variables || {});
+        const html = await templateMaker(path.resolve(path.join(__dirname, `../../templates/${templateName}.ejs`)), mailOptions.variables || {});
         delete mailOptions.variables;
         return sendEmail({ ...mailOptions, from: process.env.EMAIL, html })
     } catch (e) {
