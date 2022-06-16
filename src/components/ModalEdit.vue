@@ -14,7 +14,6 @@
       </v-col>
       <v-col v-else cols="12">
         <ActivitiesUpdate
-          :isPayin="isPayin"
           :currentData="activity" 
           :projects="projects"
           :employees="employees"
@@ -48,7 +47,6 @@ export default {
     isOpen: Boolean,
     projects: [],
     employees: [],
-    isPayin: Boolean,
     isEmployee: {
       type: Boolean,
       default() {

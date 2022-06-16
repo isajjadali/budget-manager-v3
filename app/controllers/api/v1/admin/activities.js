@@ -1,6 +1,8 @@
+const { split } = require("lodash");
+
 const {asyncMiddleware} = global;
 const findCreateDate = require(`${global.paths.middlewares}/find-create-date`);
-const {Roles} = global.appEnums;
+const {Roles, ActivitiesType} = global.appEnums;
 const {Users, Activities, Projects, Dates, Sequelize} = global.db;
 
 module.exports = (router) => {
@@ -67,36 +69,51 @@ module.exports = (router) => {
       asyncMiddleware(findCreateDate()),
       asyncMiddleware(getEmployee),
       asyncMiddleware(async (req, res) => {
-        const {amount, projectId} = req.body;
-        const activity = await req.employee.logActivity({
-          amount,
-          projectId,
-          dateId: req.date.id,
-        });
-        res.http200(activity);
+        const {amount, projectId, type} = req.body;
+
+        if (req.body.type === ActivitiesType.labour) {
+          const activity = await req.employee.logActivity({
+            amount,
+            projectId,
+            type,
+            dateId: req.date.id,
+          });
+          res.http200(activity);
+        } else {
+          const activity = await Activities.create({
+            amount,
+            projectId,
+            type,
+            isPaid: true,
+            dateId: req.date.id,
+          });
+          res.http200(activity);
+        }
       })
     )
     .get(
       asyncMiddleware(async (req, res) => {
-        const {projectIds, employeeIds, range, ...rest} = req.query;
+        const {projectIds, employeeIds, range, recordType, ...rest} = req.query;
         const filters = {
           ...rest,
           limit: req.limit,
           offset: req.offset,
         };
         const where = {
-          employeeId: {
-            [Sequelize.Op.ne]: null,
-          },
         };
-        if (projectIds) {
-          where.projectId = {
-            [Sequelize.Op.in]: projectIds.split(",").map((id) => Number(id)),
-          };
-        }
+          if (projectIds) {
+            where.projectId = {
+              [Sequelize.Op.in]: projectIds.split(",").map((id) => Number(id)),
+            };
+          }
         if (employeeIds) {
           where.employeeId = {
             [Sequelize.Op.in]: employeeIds.split(",").map((id) => Number(id)),
+          };
+        }
+        if (recordType) {
+          where.type = {
+            [Sequelize.Op.in]: recordType.split(","),
           };
         }
         if (range) {
@@ -116,6 +133,7 @@ module.exports = (router) => {
                 where: {
                   roles: Roles.Employee,
                 },
+                required: false,
               },
               {
                 model: Projects,
@@ -152,42 +170,52 @@ module.exports = (router) => {
           projectId: req.project ? req.project.id : req.activity.projectId,
         };
 
-        let activityAmount = +req.activity.amount;
-
-        if (!req.activity.isPaid) {
-          activityAmount = activityAmount * -1;
+        if (req.activity.type === ActivitiesType.labour) {
+          let activityAmount = +req.activity.amount;
+  
+          if (!req.activity.isPaid) {
+            activityAmount = activityAmount * -1;
+          }
+          await req.activityOwnedByEmployee.update({
+            balance: +req.activityOwnedByEmployee.balance + activityAmount,
+          });
+          if(req.activityOwnedByEmployee.id === req.employee.id) {
+            req.employee.balance = req.activityOwnedByEmployee.balance;
+          }
+          await req.activity.destroy({paranoid: false});
+          const activity = await req.employee.logActivity(newActivity);
+          return res.http200(activity);
+        } else {
+          await req.activity.destroy({paranoid: false});
+          const activity = await Activities.create({
+            ...newActivity,
+            isPaid: true,
+          });
+          return res.http200(activity);
         }
-        await req.activityOwnedByEmployee.update({
-          balance: +req.activityOwnedByEmployee.balance + activityAmount,
-        });
-        if(req.activityOwnedByEmployee.id === req.employee.id) {
-          req.employee.balance = req.activityOwnedByEmployee.balance;
-        }
-        await req.activity.destroy({paranoid: false});
-        const activity = await req.employee.logActivity(newActivity);
-
-        return res.http200(activity);
       })
     )
     .delete(
       asyncMiddleware(async (req, res) => {
         let activityAmount = +req.activity.amount;
 
-        if (!req.activity.isPaid) {
-          activityAmount = activityAmount * -1;
-        }
-        const employee = await Users.$$findOne({
-          query: {
-            where: {
-              id: req.activity.employeeId,
-              roles: Roles.Employee,
+        if (req.activity.type === ActivitiesType.labour) {
+          if (!req.activity.isPaid) {
+            activityAmount = activityAmount * -1;
+          }
+          const employee = await Users.$$findOne({
+            query: {
+              where: {
+                id: req.activity.employeeId,
+                roles: Roles.Employee,
+              },
             },
-          },
-        });
-
-        await employee.update({
-          balance: +employee.balance + activityAmount,
-        });
+          });
+  
+          await employee.update({
+            balance: +employee.balance + activityAmount,
+          });
+        }
         await req.activity.destroy({paranoid: false});
         return res.http200({message: 'Deleted activity successfully.'});
       })

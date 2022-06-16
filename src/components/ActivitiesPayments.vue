@@ -28,9 +28,6 @@ import {flatMap, map, filter, sumBy} from 'lodash';
 export default {
   props: {
     currentList: [],
-    isPayin: {
-      type: Boolean,
-    },
   },
   data: () => {
     return {
@@ -47,11 +44,7 @@ export default {
     },
   },
   mounted() {
-    if (this.isPayin) {
-      this.amountTitle = 'Total Received';
-    } else {
-      this.amountTitle = 'Paid';
-    }
+    this.amountTitle = 'Paid';
   },
 };
 </script>
