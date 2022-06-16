@@ -22,7 +22,6 @@
       />
       </v-col>
     </v-dialog>
-  
 </template>
 
 <script>

@@ -7,7 +7,7 @@
     >
       <v-card width="100%">
         <v-card-title class="text-h6">
-          Are you sure you want to delete..??
+          {{ message }}
         </v-card-title>
         <v-card-actions>
           <v-spacer></v-spacer>
@@ -37,6 +37,7 @@
       toggleDialog: {
         type: Boolean
       },
+      message: '',
     },
     data () {
       return {
