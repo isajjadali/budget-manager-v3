@@ -120,6 +120,18 @@ export const actions = {
 
     commit('SET_TASKS_LIST', response.data);
   },
+
+  async fetchPreviewPDF (_, projectId) {
+    const response = await axios.get(`/admin/project/${projectId}/preview`, {
+      responseType: 'arraybuffer',
+    });
+
+    var file = new Blob([response.data], {type: 'application/pdf'});
+    var fileURL = window.URL.createObjectURL(file);
+    return fileURL;
+    
+
+  },
   //==================================== Employees Actions
   async fetchAllEmployees({commit, state}, forceRefresh = false) {
     if (!forceRefresh && state.employees.length) {

@@ -8,6 +8,7 @@ const {
   map,
   filter
 } = require("lodash");
+const ReadableStream = require('stream').Readable;
 const {
   asyncMiddleware
 } = global;
@@ -173,10 +174,15 @@ module.exports = (router) => {
     .get(
       asyncMiddleware(getProjectWithTasks),
       asyncMiddleware(async (req, res) => {
-        const previewHtml = await pdfConverter.ejsToHtml("qoutation", {
+        const pdfBuffer = await pdfConverter("qoutation", {
           project: req.project
-        })
-        res.status(200).send({previewHtml});
+        });
+        res.setHeader('Content-Type', 'application/pdf');
+        const pdfStream = new ReadableStream();
+        pdfStream.push(pdfBuffer);
+        pdfStream.push(null);
+
+        pdfStream.pipe(res);
       })
     );
 

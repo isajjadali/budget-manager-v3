@@ -9,6 +9,10 @@
           <v-btn color="primary" dark rounded> Create Project </v-btn>
         </router-link>
     </v-col>
+    <v-col cols="12" v-if="objURL">
+      <!-- <pdf :src="objURL"></pdf> -->
+      <iframe :src="objURL" width="100%" height="1000px"></iframe>
+    </v-col>
     <v-col cols="12">
       <div class="d-flex">
         <v-card width="100%">
@@ -59,6 +63,7 @@
 
 <script>
 import { mapState, mapActions } from "vuex";
+import pdf from 'vue-pdf'
 
 export default {
   name: "ProjectList",
@@ -67,10 +72,11 @@ export default {
       toggleModalOpen: false,
       header: "All Projects ",
       activeProject: {},
+      objURL: null
     };
   },
   methods: {
-    ...mapActions("global", ["fetchAllProjects", "updateProject"]),
+    ...mapActions("global", ["fetchAllProjects", "updateProject", "fetchPreviewPDF"]),
 
     async onSave(project) {
       await this.updateProject(project);
@@ -88,11 +94,15 @@ export default {
       }
     },
   },
+  components: {
+    pdf
+  },
   computed: {
     ...mapState("global", ["projects"]),
   },
-  mounted() {
+  async mounted() {
     this.fetchAllProjects(true);
+    this.objURL = await this.fetchPreviewPDF(2)
   },
 };
 </script>
