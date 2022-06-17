@@ -3,21 +3,31 @@
     <v-card width="100%">
       <v-card-text>
         <v-row class="ma-0 pt-1">
-          <v-col cols="12" sm="6" md="6">
+          <v-col
+            cols="12"
+            sm="6"
+            md="6"
+          >
             <v-row>
-              <v-col cols="12" md="6">
+              <v-col
+                cols="12"
+                md="6"
+              >
                 <v-text-field
+                  v-model="project.clientEmail"
                   label="Client Email"
                   :rules="[rules.required]"
-                  v-model="project.clientEmail"
                   :hide-details="true"
                 />
               </v-col>
-              <v-col cols="12" md="6">
+              <v-col
+                cols="12"
+                md="6"
+              >
                 <v-text-field
+                  v-model="project.clientAddress"
                   label="Client Address"
                   :rules="[rules.required]"
-                  v-model="project.clientAddress"
                   :hide-details="true"
                 />
               </v-col>
@@ -30,18 +40,23 @@
                   auto-grow
                   clearable
                   prepend-inner-icon="mdi-comment"
-                ></v-textarea>
+                />
               </v-col>
             </v-row>
           </v-col>
-          <v-divider vertical></v-divider>
-          <v-col cols="12" sm="6" md="6">
-            <h2>*pdf File*</h2>
+          <v-divider vertical />
+          <v-col
+            cols="12"
+            sm="6"
+            md="6"
+            style="min-height: 60vh"
+          >
+            <ProjectInvoicePreview :project-id="project.id" />
           </v-col>
         </v-row>
       </v-card-text>
       <v-card-actions class="pa-5">
-        <v-spacer></v-spacer>
+        <v-spacer />
         <v-btn
           color="blue darken-1"
           text
@@ -52,8 +67,8 @@
         <v-btn
           color="primary"
           rounded
-          @click="onSave"
           :disabled="!isValid"
+          @click="onSave"
         >
           Save
         </v-btn>
@@ -63,7 +78,12 @@
 </template>
 
 <script>
+import ProjectInvoicePreview from '@/components/ProjectInvoicePreview.vue';
+
 export default {
+  components: {
+    ProjectInvoicePreview
+  },
   props: {
     project: {
       type: Object,
@@ -85,5 +105,5 @@ export default {
       this.$emit('save', this.project);
     },
   },
-}
+};
 </script>

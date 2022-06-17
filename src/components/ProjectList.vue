@@ -2,37 +2,54 @@
   <v-row>
     <v-col cols="12 d-flex justify-end">
       <router-link
-          :to="{
-            name: 'create-project',
-          }"
+        :to="{
+          name: 'create-project',
+        }"
+      >
+        <v-btn
+          color="primary"
+          dark
+          rounded
         >
-          <v-btn color="primary" dark rounded> Create Project </v-btn>
-        </router-link>
-    </v-col>
-    <v-col cols="12" v-if="objURL">
-      <!-- <pdf :src="objURL"></pdf> -->
-      <iframe :src="objURL" width="100%" height="1000px"></iframe>
+          Create Project
+        </v-btn>
+      </router-link>
     </v-col>
     <v-col cols="12">
       <div class="d-flex">
         <v-card width="100%">
           <v-simple-table>
-            <template v-slot: default>
+            <template #default>
               <thead>
                 <tr>
-                  <th class="text-left">Name</th>
-                  <th class="text-left">Client Email</th>
-                  <th class="text-left">Status</th>
-                  <th class="text-center">Actions</th>
+                  <th class="text-left">
+                    Name
+                  </th>
+                  <th class="text-left">
+                    Client Email
+                  </th>
+                  <th class="text-left">
+                    Status
+                  </th>
+                  <th class="text-center">
+                    Actions
+                  </th>
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="project in projects" :key="project.id">
-                  <td @click="onItemClick(project)">{{ project.name }}</td>
+                <tr
+                  v-for="project in projects"
+                  :key="project.id"
+                >
+                  <td @click="onItemClick(project)">
+                    {{ project.name }}
+                  </td>
                   <td @click="onItemClick(project)">
                     {{ project.clientEmail }}
                   </td>
-                  <td @click="onItemClick(project)">{{ project.status }}</td>
+                  <td @click="onItemClick(project)">
+                    {{ project.status }}
+                  </td>
                   <td class="text-center">
                     <v-btn
                       v-if="project.status === 'DRAFT'"
@@ -62,21 +79,21 @@
 </template>
 
 <script>
-import { mapState, mapActions } from "vuex";
-import pdf from 'vue-pdf'
+import { mapState, mapActions } from 'vuex';
+import pdf from 'vue-pdf';
 
 export default {
-  name: "ProjectList",
+  name: 'ProjectList',
   data() {
     return {
       toggleModalOpen: false,
-      header: "All Projects ",
+      header: 'All Projects ',
       activeProject: {},
       objURL: null
     };
   },
   methods: {
-    ...mapActions("global", ["fetchAllProjects", "updateProject", "fetchPreviewPDF"]),
+    ...mapActions('global', ['fetchAllProjects', 'updateProject', 'fetchPreviewPDF']),
 
     async onSave(project) {
       await this.updateProject(project);
@@ -98,11 +115,11 @@ export default {
     pdf
   },
   computed: {
-    ...mapState("global", ["projects"]),
+    ...mapState('global', ['projects']),
   },
   async mounted() {
     this.fetchAllProjects(true);
-    this.objURL = await this.fetchPreviewPDF(2)
+    this.objURL = await this.fetchPreviewPDF(2);
   },
 };
 </script>
