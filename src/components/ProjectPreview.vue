@@ -8,10 +8,10 @@
             sm="6"
             md="6"
           >
+            <h2 class="py-5">Send Invoice to Client</h2>
             <v-row>
               <v-col
                 cols="12"
-                md="6"
               >
                 <v-text-field
                   v-model="project.clientEmail"
@@ -22,27 +22,26 @@
               </v-col>
               <v-col
                 cols="12"
-                md="6"
               >
-                <v-text-field
+                <v-textarea
                   v-model="project.clientAddress"
                   label="Client Address"
+                  rows="3"
                   :rules="[rules.required]"
                   :hide-details="true"
                 />
               </v-col>
             </v-row>
-            <v-row>
-              <v-col>
-                <v-textarea
-                  label="Message For Client"
-                  rows="3"
-                  auto-grow
-                  clearable
-                  prepend-inner-icon="mdi-comment"
-                />
-              </v-col>
-            </v-row>
+            <v-col cols="12">
+              <v-textarea
+                v-model="invoiceNotes"
+                label="Message For Client"
+                rows="8"
+                auto-grow
+                clearable
+                prepend-inner-icon="mdi-comment"
+              />
+            </v-col>
           </v-col>
           <v-divider vertical />
           <v-col
@@ -54,31 +53,36 @@
             <ProjectInvoicePreview :project-id="project.id" />
           </v-col>
         </v-row>
-      </v-card-text>
-      <v-card-actions class="pa-5">
         <v-spacer />
-        <v-btn
-          color="blue darken-1"
-          text
-          @click="onCancel"
-        >
-          cancel
-        </v-btn>
-        <v-btn
-          color="primary"
-          rounded
-          :disabled="!isValid"
-          @click="onSave"
-        >
-          Save
-        </v-btn>
-      </v-card-actions>
+        <v-col cols="12" class="d-flex justify-end pb-5">
+          <v-btn
+            color="blue darken-1"
+            text
+            @click="onCancel"
+          >
+            cancel
+          </v-btn>
+          <v-btn
+            color="primary"
+            rounded
+            :disabled="!isValid || !isMailSent"
+            :loading="!isMailSent"
+            @click="onSave"
+          >
+            Save
+          </v-btn>
+        </v-col>
+      </v-card-text>
+      <!-- <v-card-actions class="pa-5">
+        
+      </v-card-actions> -->
     </v-card>
   </v-form>
 </template>
 
 <script>
 import ProjectInvoicePreview from '@/components/ProjectInvoicePreview.vue';
+import { mapActions } from "vuex";
 
 export default {
   components: {
@@ -88,6 +92,9 @@ export default {
     project: {
       type: Object,
     },
+    isMailSent: {
+      type: Boolean,
+    },
   },
   data: () => {
     return {
@@ -95,15 +102,21 @@ export default {
         required: (value) => !!value || 'Required',
       },
       isValid: false,
+      invoiceNotes: '',
+      objURL: null,
     };
   },
   methods: {
+    ...mapActions('global', ['fetchPreviewPDF']),
     onCancel() {
       this.$emit('cancel');
     },
     onSave() {
-      this.$emit('save', this.project);
+      this.$emit('save', {...this.project, message: this.invoiceNotes});
     },
   },
-};
+  async mounted() {
+    this.objURL = await this.fetchPreviewPDF(this.project.id);
+  },
+}
 </script>

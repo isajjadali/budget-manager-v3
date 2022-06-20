@@ -194,11 +194,16 @@ module.exports = (router) => {
         if (status != ProjectStatus.Draft) {
           return res.http200("Invoice already sent to client");
         }
+        const clientEmail = req.body.clientEmail || req.project.clientEmail;
+        const clientAddress = req.body.clientAddress || req.project.clientAddress;
+        const invoiceNotes = req.body.invoiceNotes;
+
         const pdf = await pdfConverter("qoutation", {
-          project: req.project
-        })
+          project: Object.assign(req.project, { clientAddress, clientEmail, invoiceNotes })
+        });
+        
         const info = await sendMail("common-email-format", {
-          to: req.project.clientEmail,
+          to: clientEmail,
           subject: "Project invoice",
           attachments: [{
             filename: 'qoutation.pdf',
@@ -210,7 +215,10 @@ module.exports = (router) => {
           },
         })
         await req.project.update({
-          status: ProjectStatus.PendingReview
+          // status: ProjectStatus.PendingReview,
+          clientEmail,
+          clientAddress,
+          invoiceNotes,
         })
         res.http200("Mail sent successfully!");
 

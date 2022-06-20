@@ -6,14 +6,8 @@
           name: 'create-project',
         }"
       >
-        <v-btn
-          color="primary"
-          dark
-          rounded
-        >
-          Create Project
-        </v-btn>
-      </router-link>
+          <v-btn color="primary" dark rounded> Create Project </v-btn>
+        </router-link>
     </v-col>
     <v-col cols="12">
       <div class="d-flex">
@@ -89,7 +83,6 @@ export default {
       toggleModalOpen: false,
       header: 'All Projects ',
       activeProject: {},
-      objURL: null
     };
   },
   methods: {
@@ -111,9 +104,7 @@ export default {
       }
     },
   },
-  components: {
-    pdf
-  },
+  components: {},
   computed: {
     ...mapState('global', ['projects']),
   },

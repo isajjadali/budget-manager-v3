@@ -16,6 +16,7 @@ export const state = () => ({
   isLoadingData: {
     employees: true,
     activities: false,
+    previewPdf: true,
   },
 });
 
@@ -121,19 +122,20 @@ export const actions = {
     commit('SET_TASKS_LIST', response.data);
   },
 
-  async fetchPreviewPDF(_, projectId) {
+  async fetchPreviewPDF (_, projectId) {
+    const loading = {};
     const response = await axios.get(`/admin/project/${projectId}/preview`, {
       responseType: 'arraybuffer',
     });
 
-    const fileBlob = new Blob([response], {type: 'application/pdf'});
-    const fileURL = window.URL.createObjectURL(fileBlob);
-    setTimeout(function () {
-      window.URL.revokeObjectURL(fileURL);
-    }, 7000);
+    var file = new Blob([response], {type: 'application/pdf'});
+    var fileURL = window.URL.createObjectURL(file);
     return fileURL;
+  },
 
-
+  async sendForReview (_, project) {
+    const response = await axios.post(`/admin/project/${project.id}/send-invoice`, project);
+    return response;
   },
   //==================================== Employees Actions
   async fetchAllEmployees({commit, state}, forceRefresh = false) {

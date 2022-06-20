@@ -91,7 +91,6 @@ export default {
       });
     },
     async onDeleteEmployee(employee) {
-      console.log("employee delete");
       await this.deleteEmployee(employee);
       this.fetchAllEmployees(true);
     },

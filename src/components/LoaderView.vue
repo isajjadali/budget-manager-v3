@@ -1,5 +1,5 @@
 <template>
-  <v-col cols="8">
+  <v-col :cols="isProjectPreview ? '10' : '8'">
     <v-progress-linear
       color="primary"
       indeterminate
@@ -11,5 +11,13 @@
 
 <script>
 export default {
+  props: {
+    isProjectPreview: {
+      type: Boolean,
+      default:() => {
+        return false;
+      }
+    }
+  },
 }
 </script>

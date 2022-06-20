@@ -16,42 +16,25 @@
       <v-col
         cols="12"
         sm="6"
-        md="2"
-        width="100%"
-      >
-        <v-select
-          v-model="project.status"
-          :items="statuses"
-          item-text="label"
-          item-value="value"
-          filled
-          label="Status"
-          class="float-right"
-          :rules="[rules.required]"
-          @change="onChange"
-        />
-      </v-col>
-      <v-col
-        cols="12"
-        sm="6"
-        md="2"
-        width="100%"
+        md="4"
+        class="d-flex justify-end"
       >
         <v-btn
-          color="primary"
-          class="ma-1 save-btn float-right"
-          elevation="9"
-          rounded
+          color="blue darken-1"
+              text
+          class="mr-1"
           :disabled="!isFormValid"
           @click="onSave"
         >
-          Save
+          Save As Draft
         </v-btn>
+        <ProjectCTA :project="project" />
       </v-col>
       <v-col
         cols="12"
         sm="12"
         md="3"
+        class="pb-0"
       >
         <v-text-field
           v-model="project.name"
@@ -61,6 +44,7 @@
           :rules="[rules.required]"
           type="text"
           @change="onChange"
+          :hide-details="true"
         />
       </v-col>
       <v-col
@@ -96,6 +80,10 @@
 </template>
 
 <script>
+import ProjectCTA from './ProjectCTA.vue';
+import LoaderView from './LoaderView.vue';
+
+const reNumberOnly = /\d+/g
 export default {
   name: 'ProjectCreate',
   props: {
@@ -110,40 +98,53 @@ export default {
     },
     isFormValid: true,
     isValid: true,
-    statuses: [
-      {
-        label: 'Draft',
-        value: 'DRAFT'
-      },
-      {
-        label: 'Pending Review',
-        value: 'PENDINGREVIEW'
-      },
-      {
-        label: 'On Going',
-        value: 'ONGOING'
-      },
-      {
-        label: 'Completed',
-        value: 'COMPLETED'
-      },
-    ],
     pageHeader: "",
+    queryDate: '',
+    dateSelection:[]
   }),
+  computed: {
+  //   dateSelection() {
+  //     if (!this.queryDate) {
+  //       return [];
+  //     }
+  //     return [
+  //       { label: this.queryDate + ' Days', value: this.queryDate + 'd' },
+  //       { label: this.queryDate + ' Weeks', value: this.queryDate + 'w' },
+  //       { label: this.queryDate + ' Months', value: this.queryDate + 'm' },
+  //     ];
+  //   },
+  },
   methods: {
-    onChange() {
-      this.$emit('projectChange', this.project);
+    onChange(val) {
+      console.log(val)
+      if (!val) {
+        return;
+      }
+      const number = reNumberOnly.exec(val);
+      this.queryDate = number ? number[0] : '';
+      this.dateSelection = [
+        { label: this.queryDate + ' Days', value: this.queryDate + 'd' },
+        { label: this.queryDate + ' Weeks', value: this.queryDate + 'w' },
+        { label: this.queryDate + ' Months', value: this.queryDate + 'm' },
+      ]
+      // this.$emit('projectChange', this.project);
     },
     onSave() {
       this.$emit('save', this.project);
     },
   },
   mounted() {
+    this.project.expectedEntDate = '34d';
+    this.queryDate = reNumberOnly.exec(this.project.expectedEntDate)[0];
     if (this.isProjectCreate) {
       this.pageHeader = "Create Project";
     } else {
       this.pageHeader = "Update Project";
     }
+  },
+  components: {
+    ProjectCTA,
+    LoaderView,
   },
 };
 </script>

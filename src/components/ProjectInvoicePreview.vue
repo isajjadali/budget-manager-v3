@@ -1,5 +1,5 @@
 <template>
-  <LoaderView v-if="loadingPdf" />
+  <LoaderView v-if="loadingPdf" :isProjectPreview="true" />
   <h3 v-else-if="!pdfBlobUrl">
     Unable to load pdf
   </h3>

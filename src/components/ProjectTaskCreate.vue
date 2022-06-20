@@ -61,9 +61,6 @@ export default {
     statuses: ["DRAFT", "PENDINGREVIEW", "ONGOING", "COMPLETED"],
     toggleModalOpen: false,
     task: undefined,
-    // project: {
-    //   tasks: [],
-    // },
   }),
   methods: {
     ...mapActions("global", [
@@ -83,6 +80,7 @@ export default {
       this.project.status = project.status;
       this.project.clientAddress = project.clientAddress;
       this.project.clientEmail = project.clientEmail;
+      this.project.expectedEndDate = project.expectedEndDate;
     },
 
     openTask(task) {
