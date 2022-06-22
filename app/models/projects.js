@@ -21,6 +21,16 @@ module.exports = function (sequelize, DataTypes) {
       type: STRING,
       defaultValue: ProjectStatus.Draft,
     },
+    startDate: {
+      type: DATEONLY,
+    },
+    endDate: {
+      type: DATEONLY,
+    },
+    feedback: {
+      type: STRING
+    }
+
   });
 
   /* ================== Model Associations ================== */

@@ -1,5 +1,5 @@
 const { ProjectStatus } = global.appEnums;
-
+const moment = require('moment');
 const { sumBy, flatMap, map, filter } = require("lodash");
 const { asyncMiddleware } = global;
 const findCreateDate = require(`${global.paths.middlewares}/find-create-date`);
@@ -158,4 +158,25 @@ module.exports = (router) => {
         })
       })
     )
+
+  router.post("/:projectId/start",
+    asyncMiddleware(async (req, res, next) => {
+      let body = {
+        startDate: moment().format('YYYY-MM-DD'),
+        status: ProjectStatus.OnGoing
+      }
+      await req.project.update(body);
+      res.http200("Project Start!");
+    }))
+
+  router.post("/:projectId/complete",
+    asyncMiddleware(async (req, res, next) => {
+      let body = {
+        endDate: moment().format('YYYY-MM-DD'),
+        status: ProjectStatus.Completed,
+        feedback: req.body.feedback
+      }
+      await req.project.update(body);
+      res.http200("Project Completed!");
+    }))
 };
