@@ -137,6 +137,16 @@ export const actions = {
     const response = await axios.post(`/admin/project/${project.id}/send-invoice`, project);
     return response;
   },
+
+  async startProject(_, project) {
+    const response = await axios.put(`/admin/project/${project.id}/start`, project);
+    return response;
+  },
+
+  async completeProject(_, project) {
+    const response = await axios.put(`/admin/project/${project.id}/complete`, project);
+    return response;
+  },
   //==================================== Employees Actions
   async fetchAllEmployees({commit, state}, forceRefresh = false) {
     if (!forceRefresh && state.employees.length) {

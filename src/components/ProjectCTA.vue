@@ -76,7 +76,7 @@ export default {
     };
   },
   methods: {
-    ...mapActions('global', ['sendForReview']),
+    ...mapActions('global', ['sendForReview', 'startProject', 'completeProject']),
     buttonClick() {
       if (this.project.status === this.ProjectStatus.pendingReview) {
         this.toggleConfirmationDialog = true;
@@ -94,17 +94,22 @@ export default {
       this.isMailSent = true;
       this.isOpen = false;
       this.$toast.success(response.message);
+      this.$router.push('/project/list');
     },
-    onConfirmationSave() {
+    async onConfirmationSave() {
       this.toggleConfirmationDialog = false;
+      this.isOpen = false;
+      const response = await this.startProject(this.project);
       this.$toast.success('Project Started');
     },
-    onCompletionSave(review) {
+    async onCompletionSave(review) {
       this.isOpen = false;
       if (review.selectionMessage) {
-        alert(review.selectionMessage);
+        const value = {...this.project, feedbackOnCompletion: review.selectionMessage};
+        await this.completeProject(value);
       } else {
-        alert(review.message);
+        const value = {...this.project, feedbackOnCompletion: review.message};
+        await this.completeProject(value);
       }
     },
   },

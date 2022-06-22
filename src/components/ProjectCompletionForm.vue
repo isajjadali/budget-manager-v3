@@ -48,25 +48,29 @@
           >
           </v-textarea>
         </v-col>
+        <v-col
+          cols="12"
+          sm="12"
+          md="12"
+          class="d-flex justify-end pb-5 pr-0"
+        >
+          <v-btn
+            color="blue darken-1"
+            text
+            @click="onCancel"
+          >
+            cancel
+          </v-btn>
+          <v-btn
+            color="primary"
+            rounded
+            @click="onSave"
+            :disabled="!isValid"
+          >
+            Save
+          </v-btn>
+        </v-col>
       </v-card-text>
-      <v-card-actions class="pa-5">
-        <v-spacer></v-spacer>
-        <v-btn
-          color="blue darken-1"
-          text
-          @click="onCancel"
-        >
-          cancel
-        </v-btn>
-        <v-btn
-          color="primary"
-          rounded
-          @click="onSave"
-          :disabled="!isValid"
-        >
-          Save
-        </v-btn>
-      </v-card-actions>
     </v-card>
   </v-form>
 </template>
@@ -102,6 +106,9 @@ export default {
       this.selection = '';
     },
     onSave() {
+      if (this.selection === 'Delayed') {
+        this.message = 'Reason: ' + this.message;
+      }
       if (this.selection === 'Other' || this.selection === 'Delayed') {
         this.selection = '';
       }

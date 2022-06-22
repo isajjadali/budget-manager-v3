@@ -74,7 +74,6 @@
 
 <script>
 import { mapState, mapActions } from 'vuex';
-import pdf from 'vue-pdf';
 
 export default {
   name: 'ProjectList',

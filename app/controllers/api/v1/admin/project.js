@@ -215,7 +215,7 @@ module.exports = (router) => {
           },
         })
         await req.project.update({
-          // status: ProjectStatus.PendingReview,
+          status: ProjectStatus.PendingReview,
           clientEmail,
           clientAddress,
           invoiceNotes,

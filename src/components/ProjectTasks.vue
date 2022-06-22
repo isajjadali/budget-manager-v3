@@ -19,9 +19,40 @@
         class="ma-3 expand-btn float-right"
         elevation="9"
         rounded
+        @click="togglePreviewModal = true"
       >
         Preview
       </v-btn>
+      <v-col 
+        cols="12" 
+        sm="8" 
+        md="4" 
+        class="d-flex align-center justify-center"
+      >
+        <v-dialog
+          v-model="togglePreviewModal"
+          class="d-flex align-center justify-center"
+          width="50%"
+          persistent
+        >
+          <v-card width="100%">
+            <v-card-text style="min-height: 80vh">
+              <ProjectInvoicePreview 
+                :projectId="projectId" 
+              />
+              <v-col class="d-flex justify-end pb-2">
+                <v-btn
+                  color="primary"
+                  rounded
+                  @click="togglePreviewModal = false"
+                >
+                  Close
+                </v-btn>
+              </v-col>
+            </v-card-text>
+          </v-card>
+        </v-dialog>
+      </v-col>
     </v-card-title>
     <v-card-text>
       <v-row v-if="isEdit">
@@ -213,10 +244,15 @@
 
 <script>
 import {CURRENCY_SYMBOL} from '@/enums';
+import ProjectInvoicePreview from './ProjectInvoicePreview.vue';
 
 export default {
   name: 'Tasks',
   props: {
+    projectId: {
+      type: Number,
+      required: true,
+    },
     projectTasks: [],
     panel: [],
     isEdit: {
@@ -239,6 +275,7 @@ export default {
           return true;
         }
       },
+      togglePreviewModal: false,
     };
   },
   computed: {
@@ -294,6 +331,9 @@ export default {
     onSave() {
       this.$emit('save');
     },
+  },
+  components: {
+    ProjectInvoicePreview,
   },
 };
 </script>

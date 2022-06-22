@@ -16,7 +16,6 @@ axios.interceptors.request.use(
 axios.interceptors.response.use(
   (response) => {
     if ([200, 201].includes(response.status)) {
-      console.log(response);
       return Promise.resolve(response.data);
     }
     return Promise.reject(response);

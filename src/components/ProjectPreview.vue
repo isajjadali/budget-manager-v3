@@ -60,7 +60,7 @@
             text
             @click="onCancel"
           >
-            cancel
+            Cancel
           </v-btn>
           <v-btn
             color="primary"
@@ -73,9 +73,6 @@
           </v-btn>
         </v-col>
       </v-card-text>
-      <!-- <v-card-actions class="pa-5">
-        
-      </v-card-actions> -->
     </v-card>
   </v-form>
 </template>
