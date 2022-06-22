@@ -4,7 +4,10 @@
       <v-row>
         <v-card width="100%">
           <v-card-title>
-            <span class="text-h5 pa-3"><b> {{ headerTitle }} </b></span>
+            <span class="text-h5 pa-3"><b> Update Record ({{ ActivityTypeMap[currentData.type].label }}) </b></span>
+            <v-icon>
+              {{ActivityTypeMap[currentData.type].icon}}
+            </v-icon>
           </v-card-title>
           <v-card-text>
             <v-alert
@@ -26,11 +29,11 @@
                   <v-text-field
                     v-model.number="currentData.amount"
                     label="Amount"
-                    :rules="[rules.positiveAmount]"
+                    :rules="amountFieldRules"
                     value=""
                     :prefix="CURRENCY_SYMBOL"
                     type="number"
-                    :disabled="isPayin ? false : !currentData.isPaid"
+                    :disabled="!currentData.isPaid"
                   />
                 </v-col>
                 <v-col
@@ -113,7 +116,7 @@
 </template>
 
 <script>
-import { CURRENCY_SYMBOL } from '@/enums';
+import { CURRENCY_SYMBOL, ActivityTypeMap, ActivityType } from '@/enums';
 
 export default {
   name: 'ActivitiesUpdate',
@@ -127,18 +130,15 @@ export default {
     },
     employees: [],
     projects: [],
-    isPayin: {
-      type: Boolean,
-    },
   },
   data: () => ({
     taskDateMenu: false,
+    ActivityTypeMap,
     rules: {
       required: (value) => !!value || 'Required.',
       positiveAmount: (a) => a >= 0 || "Amount must be Positive",
     },
     CURRENCY_SYMBOL,
-    headerTitle: String,
     isFormValid: true,
   }),
   methods: {
@@ -149,13 +149,16 @@ export default {
       this.$emit('cancel');
     },
   },
+  computed: {
+    amountFieldRules() {
+      const rules = [this.rules.positiveAmount];
+      if (!this.currentData.isLabour) {
+        rules.push(this.rules.required);
+      }
+      return rules;
+    },
+  },
   mounted() {
-    if (this.isPayin) {
-      this.headerTitle = "Update Payin";
-    }
-    else {
-      this.headerTitle = "Update Activity";
-    }
   }
 };
 </script>

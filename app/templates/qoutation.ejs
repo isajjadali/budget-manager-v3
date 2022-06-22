@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <title>Qoutation Title</title>
+</head>
+
+<body>
+    <div id="pageHeader">
+        <img src="<%= header %>" style="width:100%;" alt="">
+    </div>
+    <div id="pageContent">
+        <div class="row">
+            <div class="col-md-6">
+                <img src="<%= logo %>" class="img-logo" alt="">
+            </div>
+            <div class="col-md-6">
+                <div class="outer-div">
+
+                </div>
+                <h3 class="qoute-number">Qoutation #: 786/WBP/182</h3>
+                <h3 class="date">FEB 15, 2022</h3>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <table>
+                    <tr>
+                        <th class="headings"><strong>Task</strong> </th>
+                        <th class="d-headings"><strong>Description</strong> </th>
+                        <th class="headings"><strong>Material</strong> </th>
+                        <th class="headings"><strong>LaboUr</strong> </th>
+                    </tr>
+                    <% project.tasks.forEach(function(task){ %>
+                    <tr>
+                        <td class="innerText"><%= task.name %></td>
+                        <td class="innerText">
+                            <% task.descriptions.forEach(function(description){ %>
+                            - <p><%= description.description %></p>
+                            <% }); %>
+                        </td>
+                        <td class="innerText"><%= task.materialCost %></td>
+                        <td class="innerText"><%= sumBy(task.descriptions, "laborCost") %></td>
+                    </tr>
+                    <% }); %>
+                </table>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 text-center">
+                <h4 class="footer-text">WhiteBrick Property Maintenance</h4>
+                <h4 class="footer-text">THANK YOU FOR CHOOSING US!</h4>
+            </div>
+        </div>
+    </div>
+    <div id="pageFooter"><img src="<%= footer %>" style="width:100%;" alt=""></div>
+</body>
+<style>
+    table {
+        border: 1px solid black;
+        width: 90%;
+        margin-left: 5%;
+    }
+
+    .img-logo {
+        margin-top: 5%;
+        margin-left: 5%;
+    }
+
+    .qoute-number {
+        right: 10%;
+        position: absolute;
+        bottom: 40px;
+    }
+
+    .date {
+        right: 10%;
+        position: absolute;
+        bottom: 0;
+    }
+
+    .headings {
+        width: 20%;
+        border: 1px solid black;
+        padding: 20px;
+        font-size: 20px;
+        color: #184e0e;
+    }
+
+    .d-headings {
+        width: 40%;
+        border: 1px solid black;
+        padding: 20px;
+        font-size: 20px;
+        color: #184e0e;
+    }
+
+    .innerText {
+        border-left: 1px solid black;
+        padding: 10px;
+        padding-bottom: 30px;
+        font-size: 17px;
+        font-weight: 600;
+        color: #184e0e;
+    }
+
+    .text-center {
+        text-align: center;
+        position: fixed;
+        bottom: 0;
+    }
+
+    .footer-text {
+        font-weight: 600;
+        color: #184e0e;
+    }
+</style>
+
+</html>

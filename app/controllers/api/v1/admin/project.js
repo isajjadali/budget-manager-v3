@@ -2,8 +2,16 @@ const { ProjectStatus } = global.appEnums;
 const moment = require('moment');
 const { sumBy, flatMap, map, filter } = require("lodash");
 const { asyncMiddleware } = global;
+const {
+  sumBy,
+  flatMap,
+  map,
+  filter
+} = require("lodash");
 const findCreateDate = require(`${global.paths.middlewares}/find-create-date`);
-const { sequelizeConfig } = require(`${global.paths.lib}/sequelize`);
+const {
+  sequelizeConfig
+} = require(`${global.paths.lib}/sequelize`);
 const sendMail = require(`${global.paths.lib}/email-sender`);
 const {
   ProjectPayins,
@@ -13,6 +21,7 @@ const {
   ProjectTasks,
   ProjectTaskDescriptions,
 } = global.db;
+const pdfConverter = require(`${global.paths.lib}/pdf-convertor`);
 
 module.exports = (router) => {
   router
@@ -42,18 +51,33 @@ module.exports = (router) => {
             project.id
           );
         }
-        return res.http200({ ...project.toJSON(), tasks });
+        return res.http200({
+          ...project.toJSON(),
+          tasks
+        });
       })
     );
 
   router.param(
     "projectId",
     asyncMiddleware(async (req, res, next, projectId) => {
-      const project = await Projects.$$findByPk({ id: +projectId });
+      const project = await Projects.$$findByPk({
+        id: +projectId
+      });
       req.project = project;
       next();
     })
   );
+
+  async function getProjectWithTasks(req, res, next) {
+    req.project.tasks = await req.project.getProjectTasks({
+      include: [{
+        model: ProjectTaskDescriptions,
+        as: 'descriptions',
+      }]
+    })
+    next()
+  }
 
   router
     .route("/:projectId")
@@ -62,21 +86,23 @@ module.exports = (router) => {
         const [activities, tasks] = await Promise.all([
           req.project.getActivities(),
           req.project.getProjectTasks({
-            include: [
-              {
-                model: ProjectTaskDescriptions,
-                as: 'descriptions',
-              },
-            ],
+            include: [{
+              model: ProjectTaskDescriptions,
+              as: 'descriptions',
+            },],
           }),
         ]);
         const materialCost = sumBy(tasks, "materialCost");
         const laborCost = sumBy(
-          flatMap(map(tasks, (p) => p.ProjectTaskDescriptions)),
+          flatMap(map(tasks, (p) => p.descriptions)),
           "laborCost"
         );
-        const allPayins = filter(activities, { amount: true });
-        const allPayout = filter(activities, { amount: false });
+        const allPayins = filter(activities, {
+          amount: true
+        });
+        const allPayout = filter(activities, {
+          amount: false
+        });
         const projectLabourSpending = sumBy(allPayout, "amount");
         const projectAmountRecieved = sumBy(allPayins, "amount");
 
@@ -108,7 +134,10 @@ module.exports = (router) => {
           );
         }
 
-        return res.http200({ ...updatedProject.toJSON(), tasks });
+        return res.http200({
+          ...updatedProject.toJSON(),
+          tasks
+        });
       })
     )
     .delete(
@@ -124,7 +153,9 @@ module.exports = (router) => {
     "/:projectId/payins",
     asyncMiddleware(findCreateDate()),
     asyncMiddleware(async (req, res) => {
-      const { amount } = req.body;
+      const {
+        amount
+      } = req.body;
       const newPayIn = await ProjectPayins.create({
         amount,
         projectId: req.project.id,
@@ -133,29 +164,47 @@ module.exports = (router) => {
       res.status(200).send(newPayIn);
     })
   );
+
+  router
+    .route("/:projectId/preview")
+    .get(
+      asyncMiddleware(getProjectWithTasks),
+      asyncMiddleware(async (req, res) => {
+        const previewHtml = await pdfConverter.ejsToHtml("qoutation", {
+          project: req.project
+        })
+        res.status(200).send({ previewHtml });
+      })
+    );
+
   router
     .post("/:projectId/send-invoice",
+      asyncMiddleware(getProjectWithTasks),
       asyncMiddleware(async (req, res, next) => {
         const status = req.project.status;
         if (status != ProjectStatus.Draft) {
           return res.http200("Invoice already sent to client");
         }
-
-        sendMail("common-email-format", {
+        const pdf = await pdfConverter("qoutation", {
+          project: req.project
+        })
+        const info = await sendMail("common-email-format", {
           to: req.project.clientEmail,
           subject: "Project invoice",
           attachments: [{
+            filename: 'qoutation.pdf',
+            content: Buffer.from(pdf, 'utf-8')
           }],
           variables: {
             userName: "Hi there!",
             email_content: 'Please find the attachment below.'
           },
-        }).then(info => {
-          req.project.update({ status: ProjectStatus.PendingReview })
-          res.http200("Mail sent successfully!");
-        }).catch(error => {
-          res.http400(error);
         })
+        await req.project.update({
+          status: ProjectStatus.PendingReview
+        })
+        res.http200("Mail sent successfully!");
+
       })
     )
 
