@@ -198,6 +198,7 @@ module.exports = (router) => {
         const clientEmail = req.body.clientEmail || req.project.clientEmail;
         const clientAddress = req.body.clientAddress || req.project.clientAddress;
         const invoiceNotes = req.body.invoiceNotes;
+        const expectedEndDate = req.body.expectedEndDate;
 
         let totalCost = 0
         req.project && req.project.tasks.length && req.project.tasks.forEach((task) => {
@@ -205,7 +206,7 @@ module.exports = (router) => {
         }, {});
         req.project.totalCost = totalCost;
         const pdf = await pdfConverter("qoutation", {
-          project: Object.assign(req.project, { clientAddress, clientEmail, invoiceNotes })
+          project: Object.assign(req.project, { clientAddress, clientEmail, invoiceNotes, expectedEndDate })
         });
         
         const info = await sendMail("common-email-format", {
@@ -225,6 +226,7 @@ module.exports = (router) => {
           clientEmail,
           clientAddress,
           invoiceNotes,
+          expectedEndDate,
         })
         res.http200("Mail sent successfully!");
 
@@ -238,6 +240,7 @@ module.exports = (router) => {
         startDate: moment().format('YYYY-MM-DD'),
         status: ProjectStatus.OnGoing
       }
+      debugger;
       await req.project.update(body);
       res.http200("Project Start!");
     }))

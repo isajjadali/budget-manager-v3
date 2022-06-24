@@ -12,12 +12,25 @@
             <v-row>
               <v-col
                 cols="12"
+                md="6"
               >
                 <v-text-field
                   v-model="project.clientEmail"
                   label="Client Email"
                   :rules="[rules.required]"
-                  :hide-details="true"
+                  hide-details="auto"
+                />
+              </v-col>
+              <v-col
+                cols="12"
+                sm="6"
+                md="6"
+              >
+                <v-text-field
+                  v-model="project.expectedEndDate"
+                  label="Expected End Date"
+                  :rules="endDateValidation"
+                  hide-details="auto"
                 />
               </v-col>
               <v-col
@@ -28,13 +41,13 @@
                   label="Client Address"
                   rows="3"
                   :rules="[rules.required]"
-                  :hide-details="true"
+                  hide-details="auto"
                 />
               </v-col>
             </v-row>
             <v-col cols="12">
               <v-textarea
-                v-model="invoiceNotes"
+                v-model="project.message"
                 label="Message For Client"
                 rows="8"
                 auto-grow
@@ -92,16 +105,38 @@ export default {
     isMailSent: {
       type: Boolean,
     },
+    isExpectedEndDate: {
+      type: Boolean,
+      default() {
+        return true;
+      },
+    },
   },
   data: () => {
     return {
       rules: {
         required: (value) => !!value || 'Required',
+        validateExpectedEndDate(value) {
+          const reEndDate = /^\d*[D|M|W]$/g;
+          if(value && !reEndDate.test(value)) {
+            return 'End date should be like 1D, 1W OR 1M';
+          }
+          return true;
+        },
       },
       isValid: false,
       invoiceNotes: '',
       objURL: null,
     };
+  },
+  computed: {
+    endDateValidation(value) {
+      let dateRules = [this.rules.required];
+      if (this.rules.validateExpectedEndDate(value) != true) {
+        dateRules.push(this.rules.validateExpectedEndDate);
+      }
+      return dateRules;
+    }
   },
   methods: {
     ...mapActions('global', ['fetchPreviewPDF']),
@@ -109,6 +144,9 @@ export default {
       this.$emit('cancel');
     },
     onSave() {
+      // if (this.invoiceNotes) {
+      //   this.project.invoiceNotes = this.invoiceNotes;
+      // }
       this.$emit('save', {...this.project, message: this.invoiceNotes});
     },
   },

@@ -97,26 +97,46 @@
                   />
                 </v-col>
               </v-row>
+              <v-spacer />
+              <v-row class="mr-0">
+                <v-col 
+                  class="d-flex justify-end pr-0 pb-0"
+                  cols="12"
+                  md="12"
+                  sm="12"
+                >
+                  <v-btn
+                    color="blue darken-1"
+                    text
+                    @click="onCancel"
+                  >
+                    Close
+                  </v-btn>
+                  <v-btn
+                    :disabled="!invalid"
+                    color="primary"
+                    rounded
+                    @click="onSave"
+                  >
+                    Save
+                  </v-btn>
+                </v-col>
+                <v-col 
+                  class="py-0 d-flex justify-center"
+                  cols="12"
+                >
+                  <v-btn
+                    :disabled="!invalid"
+                    color="light-blue darken-4"
+                    text
+                    @click="addAndCreateClick"
+                  >
+                    <u>Add and Create Another</u>
+                  </v-btn>
+                </v-col>
+              </v-row>
             </v-container>
           </v-card-text>
-          <v-card-actions class="pa-5">
-            <v-spacer />
-            <v-btn
-              color="blue darken-1"
-              text
-              @click="onCancel"
-            >
-              Close
-            </v-btn>
-            <v-btn
-              :disabled="!invalid"
-              color="primary"
-              rounded
-              @click="onSave"
-            >
-              Save
-            </v-btn>
-          </v-card-actions>
         </v-card>
       </v-row>
     </div>
@@ -133,16 +153,18 @@ export default {
     projects: [],
     newActivity: Object,
   },
-  data: () => ({
-    required: (p) => !!p || 'Required !!',
-    positiveAmount: (p) => p >= 0 || 'Should not be negative !!',
-    activityType: ActivityType.labour,
-    ActivityTypeValue: ActivityType,
-    dateMenu: false,
-    invalid: true,
-    CURRENCY_SYMBOL,
-    ActivityTypeList,
-  }),
+  data: () => {
+    return {
+      required: (p) => !!p || 'Required !!',
+      positiveAmount: (p) => p >= 0 || 'Should not be negative !!',
+      activityType: ActivityType.labour,
+      ActivityTypeValue: ActivityType,
+      dateMenu: false,
+      invalid: true,
+      CURRENCY_SYMBOL,
+      ActivityTypeList,
+    }
+  },
   computed: {
     amountFieldRules() {
       const rules = [this.positiveAmount];
@@ -164,6 +186,9 @@ export default {
     },
     onCancel() {
       this.$emit('cancel');
+    },
+    addAndCreateClick() {
+      this.$emit('addAndCreate', {...this.newActivity, type: this.activityType});
     },
   },
 };

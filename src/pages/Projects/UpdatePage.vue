@@ -43,7 +43,7 @@ export default {
         });
       });
       await this.updateProject(newProject);
-      this.$router.push("/projects");
+      this.$router.push({ name: 'all-projects' });
     },
   },
   async mounted() {

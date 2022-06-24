@@ -25,6 +25,7 @@
       <ProjectPreview
         :project="project"
         :isMailSent="isMailSent"
+        :isExpectedEndDate="project.expectedEndDate ? true : false"
         @cancel="onCancel"
         @save="onPreviewSave"
       />
@@ -94,23 +95,26 @@ export default {
       this.isMailSent = true;
       this.isOpen = false;
       this.$toast.success(response.message);
-      this.$router.push('/project/list');
+      this.$router.push({ name: 'all-projects' });
     },
     async onConfirmationSave() {
-      this.toggleConfirmationDialog = false;
       this.isOpen = false;
+      this.project.status = this.ProjectStatus.onGoing;
       const response = await this.startProject(this.project);
-      this.$toast.success('Project Started');
+      this.$toast.success(response.message);
+      this.$router.push({ name: 'all-projects' });
     },
     async onCompletionSave(review) {
       this.isOpen = false;
       if (review.selectionMessage) {
-        const value = {...this.project, feedbackOnCompletion: review.selectionMessage};
+        const value = {...this.project, feedback: review.selectionMessage};
         await this.completeProject(value);
       } else {
-        const value = {...this.project, feedbackOnCompletion: review.message};
-        await this.completeProject(value);
+        const value = {...this.project, feedback: review.message};
+        const response = await this.completeProject(value);
+        this.$toast.success('Complete Project!');
       }
+      this.$router.push({ name: 'all-projects' });
     },
   },
   computed: {

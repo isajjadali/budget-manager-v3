@@ -139,12 +139,12 @@ export const actions = {
   },
 
   async startProject(_, project) {
-    const response = await axios.put(`/admin/project/${project.id}/start`, project);
+    const response = await axios.post(`/admin/project/${project.id}/start`, project);
     return response;
   },
 
   async completeProject(_, project) {
-    const response = await axios.put(`/admin/project/${project.id}/complete`, project);
+    const response = await axios.post(`/admin/project/${project.id}/complete`, project);
     return response;
   },
   //==================================== Employees Actions

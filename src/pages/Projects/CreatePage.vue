@@ -43,14 +43,10 @@ export default {
         })
       });
       await this.createProject(newProject);
-      this.$router.push("/projects");
+      this.$router.push({ name: 'all-projects' });
     },
   },
   async mounted() {
-    // let id = this.$route.params.id;
-    // if (id) {
-    //   this.project = await this.getProject(id);
-    // }
   },
 };
 </script>
