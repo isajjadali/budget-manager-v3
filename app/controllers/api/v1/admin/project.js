@@ -2,12 +2,6 @@ const { ProjectStatus } = global.appEnums;
 const moment = require('moment');
 const { sumBy, flatMap, map, filter } = require("lodash");
 const { asyncMiddleware } = global;
-const {
-  sumBy,
-  flatMap,
-  map,
-  filter
-} = require("lodash");
 const findCreateDate = require(`${global.paths.middlewares}/find-create-date`);
 const {
   sequelizeConfig
@@ -211,6 +205,7 @@ module.exports = (router) => {
   router.post("/:projectId/start",
     asyncMiddleware(async (req, res, next) => {
       let body = {
+        expectedEndDate: req.body.expectedEndDate,
         startDate: moment().format('YYYY-MM-DD'),
         status: ProjectStatus.OnGoing
       }
@@ -221,7 +216,6 @@ module.exports = (router) => {
   router.post("/:projectId/complete",
     asyncMiddleware(async (req, res, next) => {
       let body = {
-        endDate: moment().format('YYYY-MM-DD'),
         status: ProjectStatus.Completed,
         feedback: req.body.feedback
       }
@@ -229,3 +223,4 @@ module.exports = (router) => {
       res.http200("Project Completed!");
     }))
 };
+
