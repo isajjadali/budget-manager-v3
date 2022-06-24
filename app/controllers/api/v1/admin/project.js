@@ -13,6 +13,7 @@ const {
   asyncMiddleware
 } = global;
 const findCreateDate = require(`${global.paths.middlewares}/find-create-date`);
+const moment = require('moment');
 const {
   sequelizeConfig
 } = require(`${global.paths.lib}/sequelize`);
@@ -93,7 +94,7 @@ module.exports = (router) => {
             include: [{
               model: ProjectTaskDescriptions,
               as: 'descriptions',
-            }, ],
+            },],
           }),
         ]);
         const materialCost = sumBy(tasks, "materialCost");
@@ -198,6 +199,11 @@ module.exports = (router) => {
         const clientAddress = req.body.clientAddress || req.project.clientAddress;
         const invoiceNotes = req.body.invoiceNotes;
 
+        let totalCost = 0
+        req.project && req.project.tasks.length && req.project.tasks.forEach((task) => {
+          totalCost = totalCost + task.materialCost + sumBy(task.descriptions, "laborCost");
+        }, {});
+        req.project.totalCost = totalCost;
         const pdf = await pdfConverter("qoutation", {
           project: Object.assign(req.project, { clientAddress, clientEmail, invoiceNotes })
         });
@@ -224,4 +230,26 @@ module.exports = (router) => {
 
       })
     )
+
+  router.post("/:projectId/start",
+    asyncMiddleware(async (req, res, next) => {
+      let body = {
+        expectedEndDate: req.body.expectedEndDate,
+        startDate: moment().format('YYYY-MM-DD'),
+        status: ProjectStatus.OnGoing
+      }
+      await req.project.update(body);
+      res.http200("Project Start!");
+    }))
+
+  router.post("/:projectId/complete",
+    asyncMiddleware(async (req, res, next) => {
+      let body = {
+        status: ProjectStatus.Completed,
+        feedback: req.body.feedback
+      }
+      await req.project.update(body);
+      res.http200("Project Completed!");
+    }))
 };
+
