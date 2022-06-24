@@ -188,6 +188,11 @@ module.exports = (router) => {
         if (status != ProjectStatus.Draft) {
           return res.http200("Invoice already sent to client");
         }
+        let totalCost = 0
+        req.project && req.project.tasks.length && req.project.tasks.forEach((task) => {
+          totalCost = totalCost + task.materialCost + sumBy(task.descriptions, "laborCost");
+        }, {});
+        req.project.totalCost = totalCost;
         const pdf = await pdfConverter("qoutation", {
           project: req.project
         })

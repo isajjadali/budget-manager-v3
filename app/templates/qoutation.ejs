@@ -43,7 +43,7 @@
                         <td class="innerText"><%= task.name %></td>
                         <td class="d-innerText">
                             <% task.descriptions.forEach(function(description){ %>
-                            <p>- <%= description.description %></p>
+                            <p><%= description.description %></p>
                             <% }); %>
                         </td>
                         <td class="innerText">£ <%= task.materialCost %></td>
@@ -53,7 +53,7 @@
                     <tr>
                         <th id="total" colspan="3" class="total-text">Total Amount Quoted <span
                                 class="color-red">(including building material)</span></th>
-                        <td class="total-num">£ 200</td>
+                        <td class="total-num">£ <%= project.totalCost %></td>
                     </tr>
                 </table>
             </div>
