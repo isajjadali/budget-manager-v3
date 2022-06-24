@@ -1,16 +1,7 @@
-const {
-  ProjectStatus
-} = global.appEnums;
-
-const {
-  sumBy,
-  flatMap,
-  map,
-  filter
-} = require("lodash");
-const {
-  asyncMiddleware
-} = global;
+const { ProjectStatus } = global.appEnums;
+const moment = require('moment');
+const { sumBy, flatMap, map, filter } = require("lodash");
+const { asyncMiddleware } = global;
 const findCreateDate = require(`${global.paths.middlewares}/find-create-date`);
 const {
   sequelizeConfig
@@ -92,7 +83,7 @@ module.exports = (router) => {
             include: [{
               model: ProjectTaskDescriptions,
               as: 'descriptions',
-            }, ],
+            },],
           }),
         ]);
         const materialCost = sumBy(tasks, "materialCost");
@@ -176,7 +167,7 @@ module.exports = (router) => {
         const previewHtml = await pdfConverter.ejsToHtml("qoutation", {
           project: req.project
         })
-        res.status(200).send({previewHtml});
+        res.status(200).send({ previewHtml });
       })
     );
 
@@ -210,4 +201,26 @@ module.exports = (router) => {
 
       })
     )
+
+  router.post("/:projectId/start",
+    asyncMiddleware(async (req, res, next) => {
+      let body = {
+        expectedEndDate: req.body.expectedEndDate,
+        startDate: moment().format('YYYY-MM-DD'),
+        status: ProjectStatus.OnGoing
+      }
+      await req.project.update(body);
+      res.http200("Project Start!");
+    }))
+
+  router.post("/:projectId/complete",
+    asyncMiddleware(async (req, res, next) => {
+      let body = {
+        status: ProjectStatus.Completed,
+        feedback: req.body.feedback
+      }
+      await req.project.update(body);
+      res.http200("Project Completed!");
+    }))
 };
+
