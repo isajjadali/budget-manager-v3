@@ -10,9 +10,7 @@
 </head>
 
 <body>
-    <div id="pageHeader">
-        <img src="<%= header %>" style="width:100%;" alt="">
-    </div>
+    <div id="pageHeader"><img src="<%= header %>" style="width:100%;" alt=""></div>
     <div id="pageContent">
         <div class="row">
             <div class="col-md-6">
@@ -27,26 +25,36 @@
             </div>
         </div>
         <div class="row">
+            <div class="col-md-6">
+                <h4 class="address-text">To: <%= project.clientAddress %></h4>
+            </div>
+        </div>
+        <div class="row">
             <div class="col-12">
                 <table>
                     <tr>
                         <th class="headings"><strong>Task</strong> </th>
                         <th class="d-headings"><strong>Description</strong> </th>
-                        <th class="headings"><strong>Material</strong> </th>
-                        <th class="headings"><strong>LaboUr</strong> </th>
+                        <th class="headings"><strong>Material Cost</strong> </th>
+                        <th class="headings"><strong>Labour Cost</strong> </th>
                     </tr>
                     <% project.tasks.forEach(function(task){ %>
                     <tr>
                         <td class="innerText"><%= task.name %></td>
-                        <td class="innerText">
+                        <td class="d-innerText">
                             <% task.descriptions.forEach(function(description){ %>
-                            - <p><%= description.description %></p>
+                            <p><%= description.description %></p>
                             <% }); %>
                         </td>
-                        <td class="innerText"><%= task.materialCost %></td>
-                        <td class="innerText"><%= sumBy(task.descriptions, "laborCost") %></td>
+                        <td class="innerText">£ <%= task.materialCost %></td>
+                        <td class="innerText">£ <%= sumBy(task.descriptions, "laborCost") %></td>
                     </tr>
                     <% }); %>
+                    <tr>
+                        <th id="total" colspan="3" class="total-text">Total Amount Quoted <span
+                                class="color-red">(including building material)</span></th>
+                        <td class="total-num">£ <%= project.totalCost %></td>
+                    </tr>
                 </table>
             </div>
         </div>
@@ -71,31 +79,42 @@
         margin-left: 5%;
     }
 
+
+    .address-text {
+        margin-left: 5%;
+        color: #184e0e;
+        font-size: 12px;
+    }
+
     .qoute-number {
         right: 10%;
         position: absolute;
         bottom: 40px;
+        color: #184e0e;
+        font-size: 12px;
     }
 
     .date {
         right: 10%;
         position: absolute;
         bottom: 0;
+        color: #184e0e;
+        font-size: 12px;
     }
 
     .headings {
         width: 20%;
         border: 1px solid black;
-        padding: 20px;
-        font-size: 20px;
+        padding: 15px;
+        font-size: 11px;
         color: #184e0e;
     }
 
     .d-headings {
         width: 40%;
         border: 1px solid black;
-        padding: 20px;
-        font-size: 20px;
+        padding: 15px;
+        font-size: 10px;
         color: #184e0e;
     }
 
@@ -103,8 +122,37 @@
         border-left: 1px solid black;
         padding: 10px;
         padding-bottom: 30px;
-        font-size: 17px;
+        font-size: 12px;
         font-weight: 600;
+        color: #184e0e;
+    }
+
+    .total-text {
+        text-align: center;
+        border: 1px solid black;
+        padding: 10px;
+        padding-bottom: 30px;
+        font-size: 12px;
+        font-weight: 600;
+        color: #184e0e;
+    }
+
+    .total-num {
+        border: 1px solid black;
+        padding: 10px;
+        padding-bottom: 30px;
+        font-size: 12px;
+        font-weight: 600;
+        color: #184e0e;
+    }
+
+    .d-innerText {
+        border-left: 1px solid black;
+        padding: 10px;
+        padding-bottom: 30px;
+        font-size: 14px;
+        font-weight: 300;
+        font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
         color: #184e0e;
     }
 
@@ -114,9 +162,14 @@
         bottom: 0;
     }
 
+    .color-red {
+        color: red;
+    }
+
     .footer-text {
         font-weight: 600;
         color: #184e0e;
+        font-size: 12px;
     }
 </style>
 
