@@ -19,11 +19,12 @@
       <v-col cols="12" sm="6" md="6">
         <ProjectTasks
           ref="projectTask"
+          :project-tasks="project.tasks"
+          :panel="panel"
+          :project-id="project.id"
           @removeTask="removeProjectTask"
           @removeDescription="removeProjectDescription"
           @open="openTask"
-          :project-tasks="project.tasks"
-          :panel="panel"
         />
       </v-col>
       <v-col cols="12" sm="6" md="3">
@@ -61,9 +62,6 @@ export default {
     statuses: ["DRAFT", "PENDINGREVIEW", "ONGOING", "COMPLETED"],
     toggleModalOpen: false,
     task: undefined,
-    // project: {
-    //   tasks: [],
-    // },
   }),
   methods: {
     ...mapActions("global", [
@@ -83,6 +81,7 @@ export default {
       this.project.status = project.status;
       this.project.clientAddress = project.clientAddress;
       this.project.clientEmail = project.clientEmail;
+      this.project.expectedEndDate = project.expectedEndDate;
     },
 
     openTask(task) {

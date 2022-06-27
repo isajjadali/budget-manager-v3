@@ -16,42 +16,25 @@
       <v-col
         cols="12"
         sm="6"
-        md="2"
-        width="100%"
-      >
-        <v-select
-          v-model="project.status"
-          :items="statuses"
-          item-text="label"
-          item-value="value"
-          filled
-          label="Status"
-          class="float-right"
-          :rules="[rules.required]"
-          @change="onChange"
-        />
-      </v-col>
-      <v-col
-        cols="12"
-        sm="6"
-        md="2"
-        width="100%"
+        md="4"
+        class="d-flex justify-end"
       >
         <v-btn
-          color="primary"
-          class="ma-1 save-btn float-right"
-          elevation="9"
-          rounded
+          color="blue darken-1"
+          text
+          class="mr-1"
           :disabled="!isFormValid"
           @click="onSave"
         >
-          Save
+          Save As Draft
         </v-btn>
+        <ProjectCTA :project="project" />
       </v-col>
       <v-col
         cols="12"
         sm="12"
         md="3"
+        class="pb-0 mb-0"
       >
         <v-text-field
           v-model="project.name"
@@ -61,6 +44,7 @@
           :rules="[rules.required]"
           type="text"
           @change="onChange"
+          hide-details="auto"
         />
       </v-col>
       <v-col
@@ -76,6 +60,7 @@
           :rules="[rules.required]"
           type="email"
           @change="onChange"
+          hide-details="auto"
         />
       </v-col>
       <v-col
@@ -86,9 +71,27 @@
         <v-text-field
           v-model="project.clientAddress"
           outlined
+          :rules="[rules.required]"
           label="Client Address"
           name="clientAddress"
           @change="onChange"
+          hide-details="auto"
+        />
+      </v-col>
+      <v-col
+        cols="12"
+        sm="12"
+        md="3"
+      >
+        <v-text-field
+          v-model="project.expectedEndDate"
+          outlined
+          :rules="[rules.validateExpectedEndDate]"
+          label="Expected End Date"
+          name="expectedEndDate"
+          @change="onChange"
+          hint="End date should be like 1D, 1W OR 1M"
+          persistent-hint
         />
       </v-col>
     </v-row>
@@ -96,6 +99,10 @@
 </template>
 
 <script>
+import ProjectCTA from './ProjectCTA.vue';
+import LoaderView from './LoaderView.vue';
+import {ProjectStatus} from '@/enums';
+
 export default {
   name: 'ProjectCreate',
   props: {
@@ -107,29 +114,27 @@ export default {
   data: () => ({
     rules: {
       required: (value) => !!value || 'Required.',
+      validateExpectedEndDate(value) {
+        const reEndDate = /^\d*[D|M|W]$/g;
+        if(value && !reEndDate.test(value)) {
+          return 'End date should be like 1D, 1W OR 1M';
+        }
+        return true;
+      },
     },
     isFormValid: true,
-    isValid: true,
-    statuses: [
-      {
-        label: 'Draft',
-        value: 'DRAFT'
-      },
-      {
-        label: 'Pending Review',
-        value: 'PENDINGREVIEW'
-      },
-      {
-        label: 'On Going',
-        value: 'ONGOING'
-      },
-      {
-        label: 'Completed',
-        value: 'COMPLETED'
-      },
-    ],
     pageHeader: "",
+    ProjectStatus,
   }),
+  computed: {
+    validateExpectedEndDate(value) {
+      const reEndDate = /^\d*[D|M|W]$/g;
+      if(value && !reEndDate.test(value)) {
+        return 'end date should be like 1D, 1W OR 1M';
+      }
+      return value;
+    },
+  },
   methods: {
     onChange() {
       this.$emit('projectChange', this.project);
@@ -141,9 +146,14 @@ export default {
   mounted() {
     if (this.isProjectCreate) {
       this.pageHeader = "Create Project";
+      this.project.status = ProjectStatus.draft;
     } else {
       this.pageHeader = "Update Project";
     }
+  },
+  components: {
+    ProjectCTA,
+    LoaderView,
   },
 };
 </script>

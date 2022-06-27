@@ -1,6 +1,9 @@
 <template>
   <div>
     <v-row>
+      <v-col cols="12" class="d-flex justify-end">
+        <ProjectCTA :project="project" />
+      </v-col>
       <v-card width="100%">
         <v-row class="ma-0">
           <v-col
@@ -63,6 +66,7 @@
                 :panel="panel"
                 :projectTasks="project.tasks"
                 :isEdit="false"
+                :projectId="project.id"
                 @open="openTask"
               />
             </v-row>
@@ -87,6 +91,7 @@ import {mapActions} from 'vuex';
 import ProjectTasks from './ProjectTasks.vue';
 import ProjectDetailPaymentInfo from './ProjectDetailPaymentInfo.vue';
 import ProjectDetailProjectInfo from './ProjectDetailProjectInfo.vue';
+import ProjectCTA from './ProjectCTA.vue';
 
 export default {
   // Todo: projectMaterialCost is missing in object & Expected End Date & Days Left is also Hard Value
@@ -94,6 +99,7 @@ export default {
     ProjectTasks,
     ProjectDetailPaymentInfo,
     ProjectDetailProjectInfo,
+    ProjectCTA,
   },
   data: () => {
     return {

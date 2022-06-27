@@ -123,6 +123,7 @@
         </v-row>
         <ConfirmationModal
           :toggleDialog="toggleConfirmationModal"
+          :message="'Are you sure you want to delete..??'"
           @cancel="onCancel"
           @delete="onDelete"
         />

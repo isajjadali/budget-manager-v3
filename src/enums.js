@@ -24,10 +24,17 @@ export const ActivityTypeMap = {
   },
 };
 export const ActivityTypeList = Object.values(ActivityTypeMap); 
+export const ProjectStatus = {
+  draft: 'DRAFT',
+  pendingReview: 'PENDINGREVIEW',
+  onGoing: 'ONGOING',
+  completed: 'COMPLETED',
+};
 
 export default {
   CURRENCY_SYMBOL,
   ActivityType,
   ActivityTypeList,
   ActivityTypeMap,
+  ProjectStatus,
 };

@@ -58,6 +58,7 @@
             </v-col>
             <ConfirmationModal
               :toggle-dialog="toggleConfirmationModal"
+              :message="'Are you sure you want to delete..??'"
               @cancel="onCancel"
               @delete="onDelete"
             />

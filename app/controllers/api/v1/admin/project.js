@@ -1,8 +1,19 @@
-const { ProjectStatus } = global.appEnums;
-const moment = require('moment');
-const { sumBy, flatMap, map, filter } = require("lodash");
-const { asyncMiddleware } = global;
+const {
+  ProjectStatus
+} = global.appEnums;
+
+const {
+  sumBy,
+  flatMap,
+  map,
+  filter
+} = require("lodash");
+const ReadableStream = require('stream').Readable;
+const {
+  asyncMiddleware
+} = global;
 const findCreateDate = require(`${global.paths.middlewares}/find-create-date`);
+const moment = require('moment');
 const {
   sequelizeConfig
 } = require(`${global.paths.lib}/sequelize`);
@@ -164,10 +175,15 @@ module.exports = (router) => {
     .get(
       asyncMiddleware(getProjectWithTasks),
       asyncMiddleware(async (req, res) => {
-        const previewHtml = await pdfConverter.ejsToHtml("qoutation", {
+        const pdfBuffer = await pdfConverter("qoutation", {
           project: req.project
-        })
-        res.status(200).send({ previewHtml });
+        });
+        res.setHeader('Content-Type', 'application/pdf');
+        const pdfStream = new ReadableStream();
+        pdfStream.push(pdfBuffer);
+        pdfStream.push(null);
+
+        pdfStream.pipe(res);
       })
     );
 
@@ -179,16 +195,22 @@ module.exports = (router) => {
         if (status != ProjectStatus.Draft) {
           return res.http200("Invoice already sent to client");
         }
+        const clientEmail = req.body.clientEmail || req.project.clientEmail;
+        const clientAddress = req.body.clientAddress || req.project.clientAddress;
+        const invoiceNotes = req.body.invoiceNotes;
+        const expectedEndDate = req.body.expectedEndDate;
+
         let totalCost = 0
         req.project && req.project.tasks.length && req.project.tasks.forEach((task) => {
           totalCost = totalCost + task.materialCost + sumBy(task.descriptions, "laborCost");
         }, {});
         req.project.totalCost = totalCost;
         const pdf = await pdfConverter("qoutation", {
-          project: req.project
-        })
+          project: Object.assign(req.project, { clientAddress, clientEmail, invoiceNotes, expectedEndDate })
+        });
+        
         const info = await sendMail("common-email-format", {
-          to: req.project.clientEmail,
+          to: clientEmail,
           subject: "Project invoice",
           attachments: [{
             filename: 'qoutation.pdf',
@@ -200,7 +222,11 @@ module.exports = (router) => {
           },
         })
         await req.project.update({
-          status: ProjectStatus.PendingReview
+          status: ProjectStatus.PendingReview,
+          clientEmail,
+          clientAddress,
+          invoiceNotes,
+          expectedEndDate,
         })
         res.http200("Mail sent successfully!");
 
@@ -214,6 +240,7 @@ module.exports = (router) => {
         startDate: moment().format('YYYY-MM-DD'),
         status: ProjectStatus.OnGoing
       }
+      debugger;
       await req.project.update(body);
       res.http200("Project Start!");
     }))

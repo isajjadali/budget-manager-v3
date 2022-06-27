@@ -10,6 +10,10 @@ function getTitle(vm) {
       : title;
   }
 
+  if (!vm.$route) {
+    return null;
+  }
+
   if (vm.$route.meta?.pageTitle) {
     return vm.$route.meta.pageTitle;
   }
