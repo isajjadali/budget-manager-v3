@@ -10,9 +10,10 @@
       <v-btn
         rounded
         color="primary"
-        @click="buttonClick"
         v-bind="attrs"
         v-on="on"
+        :disabled="isDisabled"
+        @click="buttonClick"
       >
         {{ buttonText }}
       </v-btn>
@@ -66,6 +67,12 @@ export default {
   props: {
     project: {
       type: Object,
+    },
+    isDisabled: {
+      type: Boolean,
+      default() {
+        return false;
+      }
     },
   },
   data: () => {
@@ -128,7 +135,8 @@ export default {
       }
     },
   },
-  mounted() {},
+  mounted() {
+  },
 }
 </script>
 <style>

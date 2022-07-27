@@ -10,7 +10,7 @@
           </v-col>
           <v-col cols="12" sm="6" md="6" class="px-6 d-flex justify-end">
             <span 
-              :class="isProjectCost? 'black--text amount-font': 'red--text amount-font' "
+              :class="isPayoutCost? 'black--text amount-font': 'red--text amount-font' "
             > 
               {{ CURRENCY_SYMBOL}} {{ panelHeaderCost }}
             </span>
@@ -47,7 +47,7 @@ export default {
     project: {
       type: Object,
     },
-    isProjectCost: Boolean,
+    isPayoutCost: Boolean,
   },
   data: () => {
     return {
@@ -60,23 +60,22 @@ export default {
   },
   computed: {
     firstAmount() {
-      if (this.isProjectCost) {
+      if (this.isPayoutCost) {
         return this.project.totalMaterialCost;
       }
-      // return this.project.totalMaterialSpending;
-      return 12212;
+      return this.project.projectMaterialSpending;
     },
     secondAmount() {
-      if (this.isProjectCost) {
+      if (this.isPayoutCost) {
         return this.project.totalLaborCost;
       }
       return this.project.projectLabourSpending;
     },
     panelHeaderCost() {
-      if (this.isProjectCost) {
+      if (this.isPayoutCost) {
         return this.project.projectCost;
       } else {
-        const total = +this.project.projectLabourSpending;
+        let total = +this.project.projectLabourSpending;
         if (this.project.projectMaterialSpending) {
           total += +this.project.projectMaterialSpending;
         }
@@ -85,7 +84,7 @@ export default {
     },
   },
   mounted() {
-    if (this.isProjectCost) {
+    if (this.isPayoutCost) {
       this.panelHeader = "Total Project Cost";
       this.firstAmountTitle = "Total Material Cost";
       this.secondAmountTitle = "Total Labour Cost";

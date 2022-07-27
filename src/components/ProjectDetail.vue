@@ -1,7 +1,11 @@
 <template>
   <div>
     <v-row>
-      <v-col cols="12" class="d-flex justify-end">
+      <v-col 
+        v-if="project.status !== ProjectStatus.completed"
+        class="d-flex justify-end"
+        cols="12" 
+      >
         <ProjectCTA :project="project" />
       </v-col>
       <v-card width="100%">
@@ -24,10 +28,10 @@
 
     <v-row>
       <v-col cols="12" sm="4" md="4" class="pl-0">
-        <ProjectDetailPaymentInfo :isProjectCost="true" :project="project" />
+        <ProjectDetailPaymentInfo :isPayoutCost="false" :project="project" />
       </v-col>
       <v-col cols="12" sm="4" md="4" class="pl-0">
-        <ProjectDetailPaymentInfo :isProjectCost="false" :project="project" />
+        <ProjectDetailPaymentInfo :isPayoutCost="true" :project="project" />
       </v-col>
       <v-col cols="12" sm="4" md="4" class="pl-2">
         <v-card width="100%" class="ma-3">
@@ -86,7 +90,7 @@
 </template>
 
 <script>
-import {CURRENCY_SYMBOL} from '@/enums';
+import {CURRENCY_SYMBOL, ProjectStatus} from '@/enums';
 import {mapActions} from 'vuex';
 import ProjectTasks from './ProjectTasks.vue';
 import ProjectDetailPaymentInfo from './ProjectDetailPaymentInfo.vue';
@@ -108,6 +112,7 @@ export default {
       },
       panel: [],
       CURRENCY_SYMBOL,
+      ProjectStatus,
       activeTab: null,
       tabs: [
         { title: 'Active Tasks', path: '/' },

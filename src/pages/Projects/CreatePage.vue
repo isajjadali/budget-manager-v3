@@ -13,6 +13,7 @@
 
 <script>
 import { mapActions, mapState } from "vuex";
+import {ProjectStatus} from '@/enums';
 import ProjectTaskCreate from "../../components/ProjectTaskCreate.vue";
 
 export default {
@@ -22,8 +23,10 @@ export default {
   },
   data: () => ({
     dialog: false,
+    ProjectStatus,
     project: {
       tasks: [],
+      status: ProjectStatus.draft,
     },
   }),
   computed: {

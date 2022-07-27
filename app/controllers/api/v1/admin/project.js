@@ -102,13 +102,23 @@ module.exports = (router) => {
           flatMap(map(tasks, (p) => p.descriptions)),
           "laborCost"
         );
-        const allPayins = filter(activities, {
-          amount: true
+        const allPayins = activities.filter(activity => {
+          if (activity.amount && activity.isPayin) {
+            return activity.amount
+          }
         });
-        const allPayout = filter(activities, {
-          amount: false
+        const allMaterialPayouts = activities.filter(activity => {
+          if (activity.amount && activity.isMaterial) {
+            return activity.amount
+          }
         });
-        const projectLabourSpending = sumBy(allPayout, "amount");
+        const allLabourPayouts = activities.filter(activity => {
+          if (activity.amount && activity.isLabour) {
+            return activity.amount
+          }
+        });
+        const projectMaterialSpending = sumBy(allMaterialPayouts, "amount");
+        const projectLabourSpending = sumBy(allLabourPayouts, "amount");
         const projectAmountRecieved = sumBy(allPayins, "amount");
 
         res.http200({
@@ -119,6 +129,7 @@ module.exports = (router) => {
           projectCost: materialCost + laborCost,
           projectLabourSpending,
           projectAmountRecieved,
+          projectMaterialSpending,
         });
       })
     )

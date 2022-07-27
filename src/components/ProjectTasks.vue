@@ -117,8 +117,9 @@
               <v-expansion-panel
                 v-for="(task, taskIndex) in projectTasks"
                 :key="taskIndex"
+                @click="openTab(taskIndex)"
               >
-                <v-expansion-panel-header @click="openTab(taskIndex)">
+                <v-expansion-panel-header >
                   <v-row class="align-center" >
                     <v-col
                       cols="12"
@@ -133,6 +134,9 @@
                         type="text"
                         required
                         :readonly="isEdit? false : true"
+                        autocomplete="off"
+                        @focus="onFocus"
+                        @click="onFocus"
                       />
                     </v-col>
                     <v-col
@@ -146,10 +150,12 @@
                         label="Material Cost"
                         name="MaterialCost"
                         type="number"
-                        :rules="[rules.numberRequired]"
                         required
-                        @change="addCost"
+                        :rules="[rules.numberRequired]"
                         :readonly="isEdit? false : true"
+                        @change="addCost"
+                        @focus="onFocus"
+                        @click="onFocus"
                       />
                     </v-col>
                     <v-col
@@ -163,10 +169,12 @@
                         label="Labor Cost"
                         name="LaborCost"
                         type="number"
-                        :rules="[rules.numberRequired]"
                         required
-                        @change="addCost"
+                        :rules="[rules.numberRequired]"
                         :readonly="isEdit? false : true"
+                        @change="addCost"
+                        @focus="onFocus"
+                        @click="onFocus"
                       />
                     </v-col>
                     <v-col
@@ -182,6 +190,7 @@
                         color="error"
                         required
                         @click="removeProjectTask(taskIndex)"
+                        @focus="onFocus"
                       >
                         <v-icon>mdi-delete</v-icon>
                       </v-btn>
@@ -250,7 +259,6 @@ export default {
   name: 'Tasks',
   props: {
     projectId: {
-      type: Number,
       required: true,
     },
     projectTasks: [],
@@ -276,7 +284,7 @@ export default {
         }
       },
       togglePreviewModal: false,
-    };
+    }
   },
   computed: {
     totalLabourCost() {
@@ -326,6 +334,10 @@ export default {
       //   .map((task) => (task.materialCost ? task.materialCost : 0))
       //   .reduce((a, b) => +a + +b, 0);
       // this.totalAmout = +this.totalLabourCost + this.totalMaterialCost;
+    },
+
+    onFocus(e) {
+      e.stopPropagation();
     },
 
     onSave() {

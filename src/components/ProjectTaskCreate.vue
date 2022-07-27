@@ -87,14 +87,20 @@ export default {
     openTask(task) {
       if (task === undefined) {
         this.task = task;
-        if (this.panel.length && this.panel.length != 1) {
+        if (this.panel.length && this.panel.length >= 1) {
           this.panel = [];
         } else {
           this.panel = this.project.tasks.map((k, i) => i);
         }
       } else {
         this.task = task;
-        // this.panel = []
+        if(this.panel.indexOf(this.task) === -1){
+          this.panel.push(this.task)
+          this.panel.sort()
+        } else {
+          const index = this.panel.indexOf(this.task);
+          this.panel.splice(index, 1);
+        }
       }
     },
 

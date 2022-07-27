@@ -28,7 +28,7 @@
         >
           Save As Draft
         </v-btn>
-        <ProjectCTA :project="project" />
+        <ProjectCTA :project="project" :isDisabled="!isFormValid" />
       </v-col>
       <v-col
         cols="12"
@@ -146,7 +146,6 @@ export default {
   mounted() {
     if (this.isProjectCreate) {
       this.pageHeader = "Create Project";
-      this.project.status = ProjectStatus.draft;
     } else {
       this.pageHeader = "Update Project";
     }
