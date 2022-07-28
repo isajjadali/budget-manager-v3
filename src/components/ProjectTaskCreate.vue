@@ -101,6 +101,7 @@ export default {
           const index = this.panel.indexOf(this.task);
           this.panel.splice(index, 1);
         }
+        this.panel = [...this.panel]
       }
     },
 

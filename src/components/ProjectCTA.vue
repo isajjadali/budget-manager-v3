@@ -1,10 +1,11 @@
 <template>
   <v-dialog 
+    ref="dialog"
     v-model="isOpen"
     persistent
-    :width="project.status === ProjectStatus.draft ? '90%' : '550px'"
     transition="dialog-bottom-transition"
     style="overflow: hidden !important"
+    :width="project.status === ProjectStatus.draft ? '90%' : '550px'"
   >
     <template v-slot:activator="{ on, attrs }">
       <v-btn
@@ -98,11 +99,17 @@ export default {
     },
     async onPreviewSave(project) {
       this.isMailSent = false;
-      const response = await this.sendForReview(project);
-      this.isMailSent = true;
-      this.isOpen = false;
-      this.$toast.success(response.message);
-      this.$router.push({ name: 'all-projects' });
+      try {
+        const response = await this.sendForReview(project);
+        this.isMailSent = true;
+        this.isOpen = false;
+        this.$toast.success(response.message);
+        this.$router.push({ name: 'all-projects' });
+      } catch (e) {
+        this.$refs.dialog.animateClick();
+        this.$toast.error(e.data.error);
+        this.isMailSent = true;
+      } 
     },
     async onConfirmationSave() {
       this.isOpen = false;
